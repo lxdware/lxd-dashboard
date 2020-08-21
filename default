@@ -1,0 +1,28 @@
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+	root /var/www/html;
+	index index.html index.htm index.nginx-debian.html;
+	server_name _;
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+	
+	location ~ \.php$ {
+        #include snippets/fastcgi-php.conf;
+        #fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+		fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+    	fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    	include fastcgi_params;
+    	include snippets/fastcgi-php.conf;
+     }
+
+
+        location /admin {
+                auth_basic "LXDWARE Admin Area";
+                auth_basic_user_file /etc/nginx/.htpasswd;
+        }
+
+
+}

@@ -1,0 +1,115 @@
+<!-- Sidebar - Brand -->
+<a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+  <div class="sidebar-brand-icon rotate-n-0">
+    <!--<img src="theme/images/logo-white.png" style="width: 2rem;"></img>-->
+    <i class="fas fa-cube" style="width: 2rem;"></i>
+  </div>
+  <div class="sidebar-brand-text mx-3"><span style="color: #e95420;">LXD</span>WARE</div>
+</a>
+
+<!-- Divider -->
+<hr class="sidebar-divider">
+
+<div id="main">
+  <!-- Nav Item - Instances -->
+  <li class="nav-item">
+    <a class="nav-link" id="instancesLinkSidebar" href="#">
+      <i class="fas fa-fw fa-cube"></i>
+      <span>Instances</span></a>
+  </li>
+
+  <!-- Nav Item - Images -->
+  <li class="nav-item">
+    <a class="nav-link" id="imagesLinkSidebar" href="#">
+      <i class="fas fa-fw fa-box-open"></i>
+      <span>Images</span></a>
+  </li>
+
+  <!-- Nav Item - Profiles -->
+  <li class="nav-item">
+    <a class="nav-link" id="profilesLinkSidebar" href="#">
+      <i class="fas fa-fw fa-address-card"></i>
+      <span>Profiles</span></a>
+  </li>
+
+  <!-- Nav Item - Networks -->
+  <li class="nav-item">
+    <a class="nav-link" id="networksLinkSidebar" href="#">
+      <i class="fas fa-fw fa-network-wired"></i>
+      <span>Networks</span></a>
+  </li>
+
+  <!-- Nav Item - Storage Pools-->
+
+  <li class="nav-item">
+    <a class="nav-link" id="storagePoolsLinkSidebar" href="#">
+      <i class="fas fa-fw fa-hdd"></i>
+      <span>Storage Pools</span></a>
+  </li>
+
+</div>
+
+<!-- Divider -->
+<hr class="sidebar-divider">
+<div class="secondary">
+  <!-- Nav Item - Cluster-->
+  <li class="nav-item">
+    <a class="nav-link" id="clusterLinkSidebar" href="#">
+      <i class="fas fa-fw fa-layer-group"></i>
+      <span>Cluster</span>
+    </a>
+  </li>
+
+    <!-- Nav Item - Projects-->
+    <li class="nav-item">
+      <a class="nav-link" id="projectsLinkSidebar" href="#">
+        <i class="fas fa-fw fa-project-diagram"></i>
+        <span>Projects</span>
+      </a>
+    </li>
+
+  <!-- Nav Item - Operations-->
+  <li class="nav-item">
+    <a class="nav-link" id="operationsLinkSidebar" href="#">
+      <i class="fas fa-fw fa-exchange-alt"></i>
+      <span>Operations</span>
+    </a>
+  </li>
+
+  <!-- Nav Item - Certificates-->
+  <li class="nav-item">
+    <a class="nav-link" id="certificatesLinkSidebar" href="#">
+      <i class="fas fa-fw fa-wallet"></i>
+      <span>Certificates</span>
+    </a>
+  </li>
+</div>
+
+<!-- Divider -->
+<hr class="sidebar-divider">
+<div class="secondary">
+  <!-- Nav Item - Image Simplestream Repositories-->
+  <li class="nav-item">
+    <a class="nav-link" id="simplestreamsLinkSidebar" href="#">
+      <i class="fas fa-fw fa-archive"></i>
+      <span>Simplestreams</span>
+    </a>
+  </li>
+</div>
+
+
+<script>
+  $("#instancesLinkSidebar").attr("href", "instances.html?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
+  $("#imagesLinkSidebar").attr("href", "images.html?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
+  $("#profilesLinkSidebar").attr("href", "profiles.html?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
+  $("#networksLinkSidebar").attr("href", "networks.html?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
+  $("#storagePoolsLinkSidebar").attr("href", "storage-pools.html?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
+
+
+  $("#clusterLinkSidebar").attr("href", "cluster.html?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
+  $("#projectsLinkSidebar").attr("href", "projects.html?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
+  $("#operationsLinkSidebar").attr("href", "operations.html?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
+  $("#certificatesLinkSidebar").attr("href", "certificates.html?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
+
+  $("#simplestreamsLinkSidebar").attr("href", "simplestreams.html?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
+</script>

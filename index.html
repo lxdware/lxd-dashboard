@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
+
+  <title>LXDWARE - Welcome</title>
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+    }
+
+    .bg {
+      background-color: #262626;
+      background-image: linear-gradient(180deg,#262626,#333);
+      height: 100%;
+      background-position: center;
+      background-size: cover;
+      position: relative;
+      color: white;
+      font-family: "Ubuntu", Courier, monospace;
+      font-size: 25px;
+    }
+
+    .topleft {
+      position: absolute;
+      top: 0;
+      left: 16px;
+    }
+
+    .bottomleft {
+      position: absolute;
+      bottom: 0;
+      left: 16px;
+    }
+
+    .middle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    hr {
+      margin: auto;
+      width: 40%;
+    }
+
+    a:link {
+      text-decoration: none;
+      color:white;
+    }
+
+    a:visited {
+      text-decoration: none;
+      color:white;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      color:#e95420;
+    }
+
+    a:active {
+      text-decoration: underline;
+      color:white;
+    }
+
+    input[type=submit] {
+    background-color: #e95420 !important;
+    border-color: #e95420 !important;
+    color: #fff !important;
+    }
+    
+  </style>
+</head>
+
+<body>
+  <div class="bg">
+
+    <div class="topleft">
+      <p><a href="https://lxdware.com">LXDWARE</a></p>
+    </div>
+
+    <div class="middle">
+      <h1>Welcome</h1>
+      <hr>
+      <p>Take control of your virtual infrastructure.</p>
+      <br />
+      <form action="./admin/index.html">
+        <input type="submit" value="Login">
+      </form>
+    </div>
+
+    <div class="bottomleft">
+      <p>LXD Dashboard</p>
+    </div>
+
+  </div>
+</body>
+
+</html>

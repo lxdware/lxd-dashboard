@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <link rel="icon" type="image/png" href="theme/images/logo-white.png">
+
+  <title>LXDWARE</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="theme/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="theme/css/sb-admin-2.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+        <div class="sidebar-brand-icon rotate-n-0">
+          <!--<img src="theme/images/logo-white.png" style="width: 2rem;"></img>-->
+          <i class="fas fa-cube" style="width: 2rem;"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3"><span style="color: #e95420;">LXD</span>WARE</div>
+      </a>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item">
+        <a class="nav-link" href="index.html">
+          <i class="fas fa-fw fa-server"></i>
+          <span>Hosts</span></a>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider d-none d-md-block">  
+
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="text-center d-none d-md-inline">
+      <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+    </ul>
+    <!-- End of Sidebar -->
+
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+          <!-- Sidebar Toggle (Topbar) -->
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
+
+
+
+          <!-- Topbar Navbar -->
+          <ul class="navbar-nav ml-auto">
+
+            <li class="nav-item">
+              <a class="nav-link" href="#" data-toggle="modal" data-target="#clientCertModal">
+                <span class="mr-2 d-none d-lg-inline small text-primary">
+                  Client Certificate
+                </span>
+              </a> 
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="#" data-toggle="modal" data-target="#addLxdModal">
+                <span class="mr-2 d-none d-lg-inline small text-primary">
+                  Add Remote Host
+                </span>
+              </a> 
+            </li>
+
+            <div class="topbar-divider d-none d-sm-block"></div>
+
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span>
+              </a>
+              <!-- Dropdown - User Information -->
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="index.html">
+                  <i class="fas fa-server fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Hosts
+                </a>
+              </div>
+            </li>
+
+          </ul>
+
+        </nav>
+        <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Remote Host Configuration</h1>
+          </div>
+
+
+          <div class="row">
+            <div class="col-12">
+              <!-- LXD Host List -->
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary">LXD Remote Hosts</h6>
+                  <div class="dropdown no-arrow">
+                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                      <div class="dropdown-header">Options:</div>
+                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#clientCertModal">Client Certificate</a>
+                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addLxdModal">Add Remote Host</a>
+                    </div>
+                  </div>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-8">
+                      <div class="table-responsive">
+                        <table class="table" id="lxdListTable" width="100%" cellspacing="0">
+                        </table>
+                      </div>
+                    </div>
+                    <div class="col-4">
+                      <p>Before adding a remote host, first 
+                      copy the client <a href="#" data-toggle="modal" data-target="#clientCertModal">certificate</a> 
+                      information and paste it into a new file on your remote server such as <strong><em>lxdware.crt</em></strong>.  
+                      Then import the certificate on your remote LXD server by running the command: <code>lxc config trust add lxdware.crt</code>.</p>
+                      <p>The remote server must also be listening for remote connections. If this was not setup during the initial setup, 
+                      use <code>lxc config set core.https_address [::]</code> on the remote server to allow connections.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End LXD Host List -->
+            </div>
+          </div>
+
+      
+        </div>
+        <!-- /.container-fluid -->
+
+
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright &copy; lxdware.com 2020</span>
+          </div>
+        </div>
+      </footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+
+
+  <!-- Client Cert Modal-->
+  <div class="modal fade" id="clientCertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">LXD Client Cert</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+              <pre><div id="clientCert"></div></pre>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Dismiss</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Remote Host Modal-->
+  <div class="modal fade" id="addLxdModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add LXD Remote Host</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+          <div class="row">
+            <label class="col-3 col-form-label text-right">Address: </label>
+            <div class="col-7">
+              <div class="form-group">
+                <input type="text" class="form-control" id="hostInput" required="required" placeholder="IP address or FQDN of LXD server" name="host">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <label class="col-3 col-form-label text-right">Port: </label>
+            <div class="col-7">
+              <div class="form-group">
+                <input type="text" class="form-control"  id="portInput" required="required" placeholder="8443" value="8443" name="port">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <label class="col-3 col-form-label text-right">Alias: </label>
+            <div class="col-7">
+              <div class="form-group">
+                <input type="text" class="form-control"  id="aliasInput" placeholder="Enter name of server" name="alias">
+              </div>
+            </div>
+          </div>
+
+        </div> <!-- End Modal Body-->
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="#" onclick="addRemote()" data-dismiss="modal">Submit</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Remote Host Modal-->
+  <div class="modal fade" id="removeRemote" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Remove Remote Host</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Are you sure you want to remove this host?</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="#" onclick="removeRemote()" data-dismiss="modal">Yes</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="theme/vendor/jquery/jquery.min.js"></script>
+  <script src="theme/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="theme/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="theme/js/sb-admin-2.min.js"></script>
+
+</body>
+
+
+<script>
+  var remoteList = "";
+  var clientCert = "";
+
+  function loadPageContent(){
+    //Load the basic info for the remote card if changed
+    $.get("./php/lxd/remote-list.php", function (data) {
+      if (remoteList != data){  
+        $("#lxdListTable").html(data);
+        remoteList = data;
+      }
+    });
+
+    //Load the basic info for the certificate if changed
+    $.get("./php/lxd/lxc-cert.php", function (data) {
+      if (clientCert != data){  
+        $("#clientCert").html(data);
+        clientCert = data;
+      }
+    });
+
+  }
+
+  function addRemote(){
+    var hostName = $("#hostInput").val();
+    var portNumber = $("#portInput").val();
+    var aliasName = $("#aliasInput").val();
+    console.log("Info: adding remote host " + hostName + ":" + portNumber);
+    $.get("./php/lxd/remotes.php?host=" + encodeURI(hostName) + "&port=" + encodeURI(portNumber) + "&alias=" + encodeURI(aliasName) + "&action=addRemote",  function (data) {
+      console.log(data);
+      loadPageContent();
+    });
+  }
+
+  function removeRemote(remoteID){
+    console.log("Info: removing remote host, id number " + remoteID);
+    $.get("./php/lxd/remotes.php?id=" + encodeURI(remoteID) + "&action=removeRemote",  function (data) {
+      console.log(data);
+      loadPageContent();
+    });
+  }
+
+  $(document).ready(function(){
+
+    //Load the host list quickly first, offline hosts slow the page load
+    $.get("./php/lxd/remote-list.php?action=quickLoad", function (data) {
+      if (remoteList != data){  
+        $("#lxdListTable").html(data);
+        remoteList = data;
+      }
+    });
+
+    //Load the card contents
+    loadPageContent();
+
+    //Set page reload every 10 seconds
+    setInterval(function(){loadPageContent()}, 10000);
+  });
+
+</script>
+
+
+</html>
