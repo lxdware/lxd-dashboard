@@ -34,7 +34,7 @@ while($row = $db_results->fetchArray()){
   $remote_data = json_decode($remote_data, true);
   $profile_names = $remote_data['metadata']['profiles'];
   foreach ($profile_names as $profile_name){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/profiles/" . $profile_name;
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/profiles/" . $profile_name . "?project=" . $project;
     $profile_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $profile_data = json_decode($profile_data, true);
     $profile_data = $profile_data['metadata'];

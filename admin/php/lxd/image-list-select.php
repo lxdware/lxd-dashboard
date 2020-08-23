@@ -22,7 +22,7 @@ while($row = $db_results->fetchArray()){
   $remote_data = json_decode($remote_data, true);
   $image_urls = $remote_data['metadata'];
   foreach ($image_urls as $image_url){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . $image_url;
+    $url = "https://" . $row['host'] . ":" . $row['port'] . $image_url . "?project=" . $project;
     $image_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $image_data = json_decode($image_data, true);
     $image_data = $image_data['metadata'];

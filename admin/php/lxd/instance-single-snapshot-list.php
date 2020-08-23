@@ -35,7 +35,7 @@ while($row = $db_results->fetchArray()){
   $remote_data = json_decode($remote_data, true);
   $snapshot_urls = $remote_data['metadata'];
   foreach ($snapshot_urls as $snapshot_url){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . $snapshot_url;
+    $url = "https://" . $row['host'] . ":" . $row['port'] . $snapshot_url . "?project=" . $project;
     $snapshot_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $snapshot_data = json_decode($snapshot_data, true);
     $snapshot_data = $snapshot_data['metadata'];

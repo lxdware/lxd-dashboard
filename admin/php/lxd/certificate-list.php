@@ -23,7 +23,7 @@ while($row = $db_results->fetchArray()){
   echo '{ "data": [';
 
   foreach ($certificate_urls as $certificate_url){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . $certificate_url;
+    $url = "https://" . $row['host'] . ":" . $row['port'] . $certificate_url . "?project=" . $project;
     $certificate_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $certificate_data = json_decode($certificate_data, true);
     $certificate_data = $certificate_data['metadata'];

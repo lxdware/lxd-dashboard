@@ -23,7 +23,7 @@ while($row = $db_results->fetchArray()){
   echo '{ "data": [';
 
   foreach ($instance_urls as $instance_url){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . $instance_url;
+    $url = "https://" . $row['host'] . ":" . $row['port'] . $instance_url . "?project=" . $project;
     $instance_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $instance_data = json_decode($instance_data, true);
     $instance_data = $instance_data['metadata'];

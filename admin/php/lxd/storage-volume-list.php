@@ -25,7 +25,7 @@ while($row = $db_results->fetchArray()){
   echo '{ "data": [';
 
   foreach ($storage_volume_urls as $storage_volume_url){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . $storage_volume_url;
+    $url = "https://" . $row['host'] . ":" . $row['port'] . $storage_volume_url . "?project=" . $project;
     $storage_volume_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $storage_volume_data = json_decode($storage_volume_data, true);
     $storage_volume_data = $storage_volume_data['metadata'];

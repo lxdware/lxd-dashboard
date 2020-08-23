@@ -23,7 +23,7 @@ while($row = $db_results->fetchArray()){
   echo '{ "data": [';
 
   foreach ($storage_pool_urls as $storage_pool_url){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . $storage_pool_url;
+    $url = "https://" . $row['host'] . ":" . $row['port'] . $storage_pool_url . "?project=" . $project;
     $storage_pool_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $storage_pool_data = json_decode($storage_pool_data, true);
     $storage_pool_data = $storage_pool_data['metadata'];

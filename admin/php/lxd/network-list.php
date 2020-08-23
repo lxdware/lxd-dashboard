@@ -23,7 +23,7 @@ while($row = $db_results->fetchArray()){
   echo '{ "data": [';
 
   foreach ($network_urls as $network_url){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . $network_url;
+    $url = "https://" . $row['host'] . ":" . $row['port'] . $network_url . "?project=" . $project;
     $network_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $network_data = json_decode($network_data, true);
     $network_data = $network_data['metadata'];
