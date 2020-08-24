@@ -166,11 +166,11 @@
             </div>
 
             <div class="col-12">
-              <!-- Network Interface List -->
+              <!-- Network Devices List -->
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Network Interfaces</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">Network Devices</h6>
                   <div class="dropdown no-arrow">
                     <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
@@ -184,12 +184,12 @@
                 <!-- Card Body -->
                 <div class="card-body">
                   <div class="table-responsive">
-                    <table class="table" id="networkInterfaceTableList" width="100%" cellspacing="0">
+                    <table class="table" id="networkDeviceTableList" width="100%" cellspacing="0">
                     </table>
                   </div>
                 </div>
               </div>
-              <!-- End Network Interface ist -->
+              <!-- End Network Devices ist -->
             </div>
 
             <div class="col-12">
@@ -217,6 +217,33 @@
                 </div>
               </div>
               <!-- End Disk Device ist -->
+            </div>
+
+            <div class="col-12">
+              <!-- Proxy Device List -->
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary">Proxy Devices</h6>
+                  <div class="dropdown no-arrow">
+                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                      <div class="dropdown-header">Options:</div>
+                      
+                    </div>
+                  </div>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table" id="proxyDeviceTableList" width="100%" cellspacing="0">
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <!-- End Proxy Device ist -->
             </div>
 
 
@@ -475,8 +502,9 @@
   var operationNumber = "";
   var instanceDetails = "";
   var snapshotDetails = "";
-  var networkInternfaceDetails = "";
+  var networkDeviceDetails = "";
   var diskDeviceDetails = "";
+  var proxyDeviceDetails = "";
   var profileDetails = "";
   var redirectURL = "";
 
@@ -544,17 +572,25 @@
 
     //Load the network info for the network interfaces card if changed
     $.get("./php/lxd/instance-single-network-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
-      if (networkInternfaceDetails != data){  
-        $("#networkInterfaceTableList").html(data);
-        networkInternfaceDetails = data;
+      if (networkDeviceDetails != data){  
+        $("#networkDeviceTableList").html(data);
+        networkDeviceDetails = data;
       }  
     });
 
     //Load the disk info for the disk devices card if changed
-    $.get("./php/lxd/instance-single-device-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
+    $.get("./php/lxd/instance-single-disk-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
       if (diskDeviceDetails != data){  
         $("#diskDeviceTableList").html(data);
         diskDeviceDetails = data;
+      }  
+    });
+
+    //Load the proxy info for the proxy devices card if changed
+    $.get("./php/lxd/instance-single-proxy-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
+      if (proxyDeviceDetails != data){  
+        $("#proxyDeviceTableList").html(data);
+        proxyDeviceDetails = data;
       }  
     });
     

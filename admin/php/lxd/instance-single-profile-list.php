@@ -44,7 +44,7 @@ while($row = $db_results->fetchArray()){
 
     echo "<tr>";
 
-    echo "<td> <i class='fas fa-address-card fa-2x' style='color:#4e73df'></i> </td>";
+    echo "<td> <i class='fas fa-address-card fa-lg' style='color:#4e73df'></i> </td>";
     echo "<td>" . htmlentities($profile_data['name']) . "</td>";
     echo "<td>" . htmlentities($profile_data['description']) . "</td>";
 

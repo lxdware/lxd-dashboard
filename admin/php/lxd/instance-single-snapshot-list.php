@@ -49,7 +49,7 @@ while($row = $db_results->fetchArray()){
 
     echo "<tr>";
 
-    echo "<td> <i class='fas fa-clone fa-2x' style='color:#4e73df'></i> </td>";
+    echo "<td> <i class='fas fa-clone fa-lg' style='color:#4e73df'></i> </td>";
     echo "<td>" . htmlentities($snapshot_data['name']) . "</td>";
     echo "<td>" . htmlentities($state) . "</td>";
     echo "<td>" . htmlentities(number_format($snapshot_data['size']/1024/1024,2)) . "MB</td>";

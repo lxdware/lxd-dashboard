@@ -42,9 +42,9 @@ while($row = $db_results->fetchArray()){
 
     echo "<tr>";
     if ($network_data['state'] == "up")
-      echo "<td> <i class='fas fa-network-wired fa-2x' style='color:#4e73df'></i> </td>";
+      echo "<td> <i class='fas fa-network-wired fa-lg' style='color:#4e73df'></i> </td>";
     else
-      echo "<td> <i class='fas fa-network-wired fa-2x' style='color:#ddd'></i> </td>";
+      echo "<td> <i class='fas fa-network-wired fa-lg' style='color:#ddd'></i> </td>";
     echo "<td>" . htmlentities($network_name) . "</td>";
     echo "<td>" . htmlentities($network_data['hwaddr']) . "</td>";
 

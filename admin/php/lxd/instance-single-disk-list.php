@@ -51,7 +51,7 @@ while($row = $db_results->fetchArray()){
 
     echo "<tr>";
 
-    echo "<td> <i class='fas fa-hdd fa-2x' style='color:#4e73df'></i> </td>";
+    echo "<td> <i class='fas fa-hdd fa-lg' style='color:#4e73df'></i> </td>";
     echo "<td>" . htmlentities($disk_name) . "</td>";
     echo "<td>" . htmlentities($disk_path) . "</td>";
     echo "<td>" . htmlentities(number_format($disk_data['usage']/1024/1024,2)) . " MB</td>";
