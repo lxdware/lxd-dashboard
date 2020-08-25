@@ -222,36 +222,27 @@
   const urlParams = new URLSearchParams(queryString);
   const remoteName = urlParams.get('remote'); 
   const projectName = urlParams.get('project'); 
-  var loadSimplestreamsTable = true;
-
 
   function loadPageContent(){
-
-    if (loadSimplestreamsTable == false){
-      $('#simplestreamsListTable').DataTable().ajax.reload();
-    }
-
-    if (loadSimplestreamsTable == true){
-      $('#simplestreamsListTable').DataTable( {
-        ajax: "./php/lxd/simplestreams-list.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName),
-        columns: [
-          {},
-          { title: "Host" },
-          { title: "Alias" },
-          { title: "Protocol" },
-          { title: "Action" }
-        ],
-        order: [],
-        columnDefs: [
-          { targets: 0, orderable: false, width: "25px" }
-        ]
-      });
-      loadSimplestreamsTable = false;
-    }
-
+    $('#simplestreamsListTable').DataTable( {
+      ajax: "./php/lxd/simplestreams-list.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName),
+      columns: [
+        {},
+        { title: "Host" },
+        { title: "Alias" },
+        { title: "Protocol" },
+        { title: "Action" }
+      ],
+      order: [],
+      columnDefs: [
+        { targets: 0, orderable: false, width: "25px" }
+      ]
+    });
   }
 
-
+  function reloadPageContent() {
+    $('#simplestreamsListTable').DataTable().ajax.reload();
+  }
 
   function addSimplestreams(){
     var hostName = $("#hostInput").val();
@@ -259,7 +250,7 @@
     console.log("Info: adding simplestreams host " + hostName);
     $.get("./php/lxd/simplestreams.php?host=" + encodeURI(hostName) + "&alias=" + encodeURI(aliasName) + "&action=addSimplestreams",  function (data) {
       console.log(data);
-      loadPageContent();
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -267,10 +258,9 @@
     console.log("Info: removing simplesteams host, id " + simplestreamsID);
     $.get("./php/lxd/simplestreams.php?id=" + encodeURI(simplestreamsID) + "&action=removeSimplestreams",  function (data) {
       console.log(data);
-      loadPageContent();
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
-
 
 
   $(document).ready(function(){
@@ -286,8 +276,8 @@
     //Load the card contents
     loadPageContent();
 
-    //Set page reload every 7 seconds
-    setInterval(function(){loadPageContent()}, 7000);
+    //Set page reload every 15 seconds
+    setInterval(function(){reloadPageContent()}, 15000);
 
     $("#remoteListNav").load("./php/lxd/remote-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
     $("#projectListNav").load("./php/lxd/project-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));

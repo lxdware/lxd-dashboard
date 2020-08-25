@@ -334,6 +334,9 @@
     console.log("Info: adding remote host " + hostName + ":" + portNumber);
     $.get("./php/lxd/remotes.php?host=" + encodeURI(hostName) + "&port=" + encodeURI(portNumber) + "&alias=" + encodeURI(aliasName) + "&action=addRemote",  function (data) {
       console.log(data);
+      if (data.substring(0, 5) == "Error"){
+        console.log(data);
+      }
       loadPageContent();
     });
   }
@@ -342,6 +345,9 @@
     console.log("Info: removing remote host, id number " + remoteID);
     $.get("./php/lxd/remotes.php?id=" + encodeURI(remoteID) + "&action=removeRemote",  function (data) {
       console.log(data);
+      if (data.substring(0, 5) == "Error"){
+        console.log(data);
+      }
       loadPageContent();
     });
   }

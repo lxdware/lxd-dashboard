@@ -188,7 +188,6 @@
   const urlParams = new URLSearchParams(queryString);
   const remoteName = urlParams.get('remote');
   const projectName = urlParams.get('project');
-  var loadClusterMemberTable = true;
   var operationNumber = "";
 
 
@@ -205,37 +204,27 @@
   }
 
   function loadPageContent(){
-    //Check the status of an operation if running
-    if (operationNumber != ""){
-      $.get("./php/lxd/operation-status.php?remote=" + encodeURI(remoteName) + "&id=" + encodeURI(operationNumber) , operationStatusCheck); 
-    }
-
-    if (loadClusterMemberTable == false){
-      $('#clusterMemberListTable').DataTable().ajax.reload();
-    }
-
-    if (loadClusterMemberTable == true){
-      $('#clusterMemberListTable').DataTable( {
-        ajax: "./php/lxd/cluster-member-list.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName),
-        columns: [
-          {},
-          { title: "Server Name" },
-          { title: "URL" },
-          { title: "Database" },
-          { title: "Status" },
-          { title: "Message" },
-          { title: "Action" }
-        ],
-        order: [],
-        columnDefs: [
-          { targets: 0, orderable: false, width: "25px" }
-        ]
-      });
-      loadClusterMemberTable = false;
-    }
-
+    $('#clusterMemberListTable').DataTable( {
+      ajax: "./php/lxd/cluster-member-list.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName),
+      columns: [
+        {},
+        { title: "Server Name" },
+        { title: "URL" },
+        { title: "Database" },
+        { title: "Status" },
+        { title: "Message" },
+        { title: "Action" }
+      ],
+      order: [],
+      columnDefs: [
+        { targets: 0, orderable: false, width: "25px" }
+      ]
+    });
   }
 
+  function reloadPageContent() {
+    $('#clusterMemberListTable').DataTable().ajax.reload();
+  }
 
   //API uses sync
   function deleteClusterMember(memberToDelete){
@@ -246,7 +235,7 @@
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }
-      loadPageContent();
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -264,8 +253,8 @@
     //Load the card contents
     loadPageContent();
 
-    //Set page reload every 4 seconds
-    setInterval(function(){loadPageContent()}, 4000);
+    //Set page reload every 15 seconds
+    setInterval(function(){reloadPageContent()}, 15000);
 
     $("#remoteListNav").load("./php/lxd/remote-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
     $("#projectListNav").load("./php/lxd/project-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));

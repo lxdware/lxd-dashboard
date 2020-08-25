@@ -303,52 +303,29 @@
   const urlParams = new URLSearchParams(queryString);
   const remoteName = urlParams.get('remote'); 
   const projectName = urlParams.get('project'); 
-  var loadStoragePoolTable = true;
-  var operationNumber = "";
   var storagePoolToUpdate = "";
 
-  function operationStatusCheck(data){
-    var operationData = JSON.parse(data);
-    console.log(operationData);
-    if (operationData.error_code == 404 || operationData.status_code == 200){
-      operationNumber = "";
-      $('#spinner').hide();
-    }
-    if (operationData.metadata.status_code >= 400){
-      alert(operationData.metadata.err);
-    }
+  function loadPageContent(){
+    $('#storagePoolListTable').DataTable( {
+      ajax: "./php/lxd/storage-pool-list.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName),
+      columns: [
+        {},
+        { title: "Name" },
+        { title: "Description" },
+        { title: "Driver" },
+        { title: "Source" },
+        { title: "Size" },
+        { title: "Action" }
+      ],
+      order: [],
+      columnDefs: [
+        { targets: 0, orderable: false, width: "25px" }
+      ]
+    });
   }
 
-  function loadPageContent(){
-    //Check the status of an operation if running
-    if (operationNumber != ""){
-      $.get("./php/lxd/operation-status.php?remote=" + encodeURI(remoteName) + "&id=" + encodeURI(operationNumber) , operationStatusCheck); 
-    }
-    
-    if (loadStoragePoolTable == false){
-      $('#storagePoolListTable').DataTable().ajax.reload();
-    }
-
-    if (loadStoragePoolTable == true){
-      $('#storagePoolListTable').DataTable( {
-        ajax: "./php/lxd/storage-pool-list.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName),
-        columns: [
-          {},
-          { title: "Name" },
-          { title: "Description" },
-          { title: "Driver" },
-          { title: "Source" },
-          { title: "Size" },
-          { title: "Action" }
-        ],
-        order: [],
-        columnDefs: [
-          { targets: 0, orderable: false, width: "25px" }
-        ]
-      });
-      loadStoragePoolTable = false;
-    }
-
+  function reloadPageContent() {
+    $('#storagePoolListTable').DataTable().ajax.reload();
   }
 
   //API uses sync
@@ -361,10 +338,11 @@
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }
-      loadPageContent();
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
+  //API uses sync
   function createStoragePoolForm(){
     var storagePoolNameCreate = $("#storagePoolNameCreate").val();
     var storagePoolDescriptionCreate = $("#storagePoolDescriptionCreate").val();
@@ -377,7 +355,7 @@
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }
-      loadPageContent();
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -397,6 +375,7 @@
     });
   }
 
+  //API uses sync
   function updateStoragePool(){
     var storagePoolUpdateJSON = $("#jsonEditInput").val();
     console.log("Info: updating storage pool " + storagePoolToUpdate);
@@ -406,10 +385,9 @@
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }
-      loadPageContent();
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
-
 
   //API uses sync
   function deleteStoragePool(storagePoolToDelete){
@@ -420,10 +398,9 @@
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }
-      loadPageContent();
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
-
 
 
   $(document).ready(function(){
@@ -439,8 +416,8 @@
     //Load the card contents
     loadPageContent();
 
-    //Set page reload every 4 seconds
-    setInterval(function(){loadPageContent()}, 4000);
+    //Set page reload every 15 seconds
+    setInterval(function(){reloadPageContent()}, 15000);
 
     $("#remoteListNav").load("./php/lxd/remote-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
     $("#projectListNav").load("./php/lxd/project-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));

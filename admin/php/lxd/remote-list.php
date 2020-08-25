@@ -20,6 +20,7 @@ echo "</thead>";
 echo "<tbody>";
 
 $db = new SQLite3('/var/lxdware/data/sqlite/lxdware.sqlite');
+$db->busyTimeout(5000);
 
 $db_results = $db->query('SELECT * FROM lxd_hosts');
 
@@ -34,7 +35,7 @@ if ($db_results != false){
     } 
     else {
       $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0";
-      $data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+      $data = shell_exec("sudo curl --max-time 0.1 -k -L --cert $cert --key $key -X GET $url");
       $data = json_decode($data, true);
       if ($data['metadata']['auth'] == "trusted"){
         echo '<td> <a href="host.html?remote=' . $row['id'] . '&project=default"> <i class="fas fa-server fa-2x" style="color:#4e73df"></i> </a> </td>';
@@ -69,5 +70,7 @@ if ($db_results != false){
 }
 
 echo "</tbody>";
+
+$db->close();
 
 ?>

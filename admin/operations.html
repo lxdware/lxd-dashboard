@@ -212,54 +212,30 @@
   const urlParams = new URLSearchParams(queryString);
   const remoteName = urlParams.get('remote'); 
   const projectName = urlParams.get('project'); 
-  var loadOperationsTable = true;
-  var operationNumber = "";
-
-  function operationStatusCheck(data){
-    var operationData = JSON.parse(data);
-    console.log(operationData);
-    if (operationData.error_code == 404 || operationData.status_code == 200){
-      operationNumber = "";
-      $('#spinner').hide();
-    }
-    if (operationData.metadata.status_code >= 400){
-      alert(operationData.metadata.err);
-    }
-  }
 
   function loadPageContent(){
-    //Check the status of an operation if running
-    if (operationNumber != ""){
-      $.get("./php/lxd/operation-status.php?remote=" + encodeURI(remoteName) + "&id=" + encodeURI(operationNumber) , operationStatusCheck); 
-    }
-    
-    if (loadOperationsTable == false){
-      $('#operationListTable').DataTable().ajax.reload();
-    }
-
-    if (loadOperationsTable == true){
-      $('#operationListTable').DataTable( {
-        ajax: "./php/lxd/operation-list.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName),
-        columns: [
-          {},
-          { title: "ID" },
-          { title: "Class" },
-          { title: "Description" },
-          { title: "Status" },
-          { title: "Created" },
-          { title: "Cancelable" },
-          { title: "Action" }
-        ],
-        order: [],
-        columnDefs: [
-          { targets: 0, orderable: false, width: "25px" }
-        ]
-      });
-      loadOperationsTable = false;
-    }
-
+    $('#operationListTable').DataTable( {
+      ajax: "./php/lxd/operation-list.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName),
+      columns: [
+        {},
+        { title: "ID" },
+        { title: "Class" },
+        { title: "Description" },
+        { title: "Status" },
+        { title: "Created" },
+        { title: "Cancelable" },
+        { title: "Action" }
+      ],
+      order: [],
+      columnDefs: [
+        { targets: 0, orderable: false, width: "25px" }
+      ]
+    });
   }
 
+  function reloadPageContent(){
+    $('#operationListTable').DataTable().ajax.reload();
+  }
 
   //Called by Edit action, loads JSON data of project
   function loadOperationJson(operationToLoad){
@@ -276,7 +252,6 @@
     });
   }
 
-
   //API uses sync
   function deleteOperation(operationToDelete){
     console.log("Info: deleting operation " + operationToDelete);
@@ -286,11 +261,9 @@
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }
-      loadPageContent();
+      setTimeout(() => { reloadPageContent(); }, 1000); 
     });
   }
-
-
 
   $(document).ready(function(){
 
@@ -306,14 +279,13 @@
     loadPageContent();
 
     //Set page reload every 3 seconds
-    setInterval(function(){loadPageContent()}, 3000);
+    setInterval(function(){reloadPageContent()},  3000);
 
     $("#remoteListNav").load("./php/lxd/remote-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
     $("#projectListNav").load("./php/lxd/project-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
 
   });
 
-  
   
 </script>
 

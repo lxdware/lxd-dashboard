@@ -245,50 +245,27 @@
   const urlParams = new URLSearchParams(queryString);
   const remoteName = urlParams.get('remote'); 
   const projectName = urlParams.get('project'); 
-  var loadCertificateTable = true;
-  var operationNumber = "";
   var certificateToUpdate = "";
 
-  function operationStatusCheck(data){
-    var operationData = JSON.parse(data);
-    console.log(operationData);
-    if (operationData.error_code == 404 || operationData.status_code == 200){
-      operationNumber = "";
-      $('#spinner').hide();
-    }
-    if (operationData.metadata.status_code >= 400){
-      alert(operationData.metadata.err);
-    }
+  function loadPageContent(){
+    $('#certificateListTable').DataTable( {
+      ajax: "./php/lxd/certificate-list.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName),
+      columns: [
+        {},
+        { title: "Name" },
+        { title: "Type" },
+        { title: "Fingerprint" },
+        { title: "Action" }
+      ],
+      order: [],
+      columnDefs: [
+        { targets: 0, orderable: false, width: "25px" }
+      ]
+    });
   }
 
-  function loadPageContent(){
-    //Check the status of an operation if running
-    if (operationNumber != ""){
-      $.get("./php/lxd/operation-status.php?remote=" + encodeURI(remoteName) + "&id=" + encodeURI(operationNumber) , operationStatusCheck); 
-    }
-    
-    if (loadCertificateTable == false){
-      $('#certificateListTable').DataTable().ajax.reload();
-    }
-
-    if (loadCertificateTable == true){
-      $('#certificateListTable').DataTable( {
-        ajax: "./php/lxd/certificate-list.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName),
-        columns: [
-          {},
-          { title: "Name" },
-          { title: "Type" },
-          { title: "Fingerprint" },
-          { title: "Action" }
-        ],
-        order: [],
-        columnDefs: [
-          { targets: 0, orderable: false, width: "25px" }
-        ]
-      });
-      loadCertificateTable = false;
-    }
-
+  function reloadPageContent(){
+    $('#certificateListTable').DataTable().ajax.reload();
   }
 
   //API uses sync
@@ -301,7 +278,7 @@
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }
-      loadPageContent();
+      setTimeout(() => { reloadPageContent(); }, 1000); 
     });
   }
 
@@ -321,6 +298,7 @@
     });
   }
 
+  //API uses sync
   function updateCertificate(){
     var certificateUpdateJSON = $("#jsonEditInput").val();
     console.log("Info: updating certificate " + certificateToUpdate);
@@ -330,10 +308,9 @@
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }
-      loadPageContent();
+      setTimeout(() => { reloadPageContent(); }, 1000); 
     });
   }
-
 
   //API uses sync
   function deleteCertificate(certificateToDelete){
@@ -344,10 +321,9 @@
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }
-      loadPageContent();
+      setTimeout(() => { reloadPageContent(); }, 1000); 
     });
   }
-
 
 
   $(document).ready(function(){
@@ -363,15 +339,13 @@
     //Load the card contents
     loadPageContent();
 
-    //Set page reload every 4 seconds
-    setInterval(function(){loadPageContent()}, 4000);
+    //Set page reload every 15 seconds
+    setInterval(function(){reloadPageContent()}, 15000);
 
     $("#remoteListNav").load("./php/lxd/remote-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
     $("#projectListNav").load("./php/lxd/project-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
 
   });
-
-
 
 </script>
 

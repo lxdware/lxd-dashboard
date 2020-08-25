@@ -17,6 +17,7 @@ $cert = "/root/.config/lxc/client.crt";
 $key = "/root/.config/lxc/client.key";
 
 $db = new SQLite3('/var/lxdware/data/sqlite/lxdware.sqlite');
+$db->busyTimeout(5000);
 
 //Run the matching action
 switch ($action) {
@@ -32,20 +33,20 @@ switch ($action) {
       $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
       $data = json_decode($results, true);
 
-    if ($data['metadata']['auth'] == "trusted"){
-      $db->exec('CREATE TABLE IF NOT EXISTS lxd_hosts (id INTEGER PRIMARY KEY AUTOINCREMENT, host TEXT NOT NULL, port INTEGER NOT NULL, alias TEXT, protocol TEXT)');
-      $record_added = $db->exec("INSERT INTO lxd_hosts (host, port, alias, protocol) VALUES ('$host', $port, '$alias', 'lxd')");
-      if ($record_added)
-        echo "Connection Successful, record added";
-      else 
-        echo "Connection Successful, error adding record";
+      if ($data['metadata']['auth'] == "trusted"){
+        $db->exec('CREATE TABLE IF NOT EXISTS lxd_hosts (id INTEGER PRIMARY KEY AUTOINCREMENT, host TEXT NOT NULL, port INTEGER NOT NULL, alias TEXT, protocol TEXT)');
+        $record_added = $db->exec("INSERT INTO lxd_hosts (host, port, alias, protocol) VALUES ('$host', $port, '$alias', 'lxd')");
+        if ($record_added)
+          echo "Connection Successful, record added";
+        else 
+          echo "Error: Connection was successful, error adding record to database";
+      } 
+      else {
+        echo "Error: Unable to connect to host";
+      }
     } 
     else {
-      echo "Connection Problem";
-    }
-    } 
-    else {
-      echo "Invalid host or port";
+      echo "Error: Invalid host or port";
     }
   break;
 
@@ -54,10 +55,12 @@ switch ($action) {
     if ($record_removed)
       echo "Record removed";
     else 
-      echo "Error removing record"; 
+      echo "Error: Unable to remove record from database"; 
   break;
 
 }
+
+$db->close();
 
 
 ?>
