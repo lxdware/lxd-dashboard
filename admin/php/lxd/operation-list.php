@@ -55,7 +55,7 @@ while($row = $db_results->fetchArray()){
         echo '"' . htmlentities($may_cancel) . '",';
 
         echo '"';
-        echo "<a href='#' onclick=deleteOperation('".$operation_data['id']."')> <i class='fas fa-stop fa-2x' style='color:#ddd'></i> </a>";
+        echo "<a href='#' onclick=deleteOperation('".$operation_data['id']."')> <i class='fas fa-stop fa-lg' style='color:#ddd'></i> </a>";
         echo '"';
       }
         

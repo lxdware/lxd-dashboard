@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <link rel="icon" type="image/png" href="theme/images/logo-white.png">
+  <link rel="icon" type="image/png" href="theme/images/cube.png">
 
   <title>LXDWARE</title>
 
@@ -33,7 +33,7 @@
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
         <div class="sidebar-brand-icon rotate-n-0">
-          <!--<img src="theme/images/logo-white.png" style="width: 2rem;"></img>-->
+          <!--<img src="theme/images/cube.png" style="width: 2rem;"></img>-->
           <i class="fas fa-cube" style="width: 2rem;"></i>
         </div>
         <div class="sidebar-brand-text mx-3"><span style="color: #e95420;">LXD</span>WARE</div>
@@ -335,7 +335,7 @@
     $.get("./php/lxd/remotes.php?host=" + encodeURI(hostName) + "&port=" + encodeURI(portNumber) + "&alias=" + encodeURI(aliasName) + "&action=addRemote",  function (data) {
       console.log(data);
       if (data.substring(0, 5) == "Error"){
-        console.log(data);
+        alert(data);
       }
       loadPageContent();
     });
@@ -346,7 +346,7 @@
     $.get("./php/lxd/remotes.php?id=" + encodeURI(remoteID) + "&action=removeRemote",  function (data) {
       console.log(data);
       if (data.substring(0, 5) == "Error"){
-        console.log(data);
+        alert(data);
       }
       loadPageContent();
     });

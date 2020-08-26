@@ -25,10 +25,10 @@ switch ($action) {
       if ($record_added)
         echo "Connection Successful, record added";
       else 
-        echo "Connection Successful, error adding record";
+        echo "Error: Connection was successful, error adding record to database";
     } 
     else {
-      echo "Invalid host address or port number";
+      echo "Error: Invalid host or port";
     }
   break;
 
@@ -37,7 +37,7 @@ switch ($action) {
     if ($record_removed)
       echo "Record removed";
     else 
-      echo "Error removing record"; 
+      echo "Error: Unable to remove record from database; 
   break;
 
 }

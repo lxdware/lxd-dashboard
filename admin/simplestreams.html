@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <link rel="icon" type="image/png" href="theme/images/logo-white.png">
+  <link rel="icon" type="image/png" href="theme/images/cube.png">
 
   <title>LXDWARE</title>
 
@@ -250,6 +250,9 @@
     console.log("Info: adding simplestreams host " + hostName);
     $.get("./php/lxd/simplestreams.php?host=" + encodeURI(hostName) + "&alias=" + encodeURI(aliasName) + "&action=addSimplestreams",  function (data) {
       console.log(data);
+      if (data.substring(0, 5) == "Error"){
+        alert(data);
+      }
       setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
@@ -258,6 +261,9 @@
     console.log("Info: removing simplesteams host, id " + simplestreamsID);
     $.get("./php/lxd/simplestreams.php?id=" + encodeURI(simplestreamsID) + "&action=removeSimplestreams",  function (data) {
       console.log(data);
+      if (data.substring(0, 5) == "Error"){
+        alert(data);
+      }
       setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
