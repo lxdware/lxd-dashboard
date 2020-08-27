@@ -20,6 +20,9 @@
   <!-- Custom styles for this template-->
   <link href="theme/css/sb-admin-2.css" rel="stylesheet">
 
+  <!-- Custom styles for this page -->
+  <link href="theme/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
 </head>
 
 <body id="page-top">
@@ -301,30 +304,40 @@
   <!-- Custom scripts for all pages-->
   <script src="theme/js/sb-admin-2.min.js"></script>
 
+  <!-- Page level plugins -->
+  <script src="theme/vendor/datatables/jquery.dataTables.min.js"></script>
+  <script src="theme/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
 </body>
 
 
 <script>
-  var remoteList = "";
-  var clientCert = "";
 
   function loadPageContent(){
-    //Load the basic info for the remote card if changed
-    $.get("./php/lxd/remote-list.php", function (data) {
-      if (remoteList != data){  
-        $("#lxdListTable").html(data);
-        remoteList = data;
-      }
+    $('#lxdListTable').DataTable( {
+      ajax: "./php/lxd/remote-list.php",
+      columns: [
+        {},
+        { title: "Host" },
+        { title: "Port" },
+        { title: "Alias" },
+        { title: "Protocol" },
+        { title: "Action" }
+      ],
+      order: [],
+      columnDefs: [
+        { targets: 0, orderable: false, width: "25px" }
+      ]
     });
 
-    //Load the basic info for the certificate if changed
+    //Load the basic info for the certificate
     $.get("./php/lxd/lxc-cert.php", function (data) {
-      if (clientCert != data){  
-        $("#clientCert").html(data);
-        clientCert = data;
-      }
+      $("#clientCert").html(data);
     });
+  }
 
+  function reloadPageContent() {
+    $('#lxdListTable').DataTable().ajax.reload();
   }
 
   function addRemote(){
@@ -337,7 +350,7 @@
       if (data.substring(0, 5) == "Error"){
         alert(data);
       }
-      loadPageContent();
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -348,25 +361,16 @@
       if (data.substring(0, 5) == "Error"){
         alert(data);
       }
-      loadPageContent();
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
   $(document).ready(function(){
-
-    //Load the host list quickly first, offline hosts slow the page load
-    $.get("./php/lxd/remote-list.php?action=quickLoad", function (data) {
-      if (remoteList != data){  
-        $("#lxdListTable").html(data);
-        remoteList = data;
-      }
-    });
-
     //Load the card contents
     loadPageContent();
 
-    //Set page reload every 10 seconds
-    setInterval(function(){loadPageContent()}, 10000);
+    //Set page reload every 15 seconds
+    setInterval(function(){reloadPageContent()}, 15000);
   });
 
 </script>

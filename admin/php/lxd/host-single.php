@@ -18,6 +18,9 @@ while($row = $db_results->fetchArray()){
   //Instance Data
   $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/resources?project=" . $project;
   $resource_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+  if ($resource_data == NULL) {
+    echo "<strong>Error</strong>: Unable to connect to host <br /> <br />";
+  }
   $resource_data = json_decode($resource_data, true);
   $resource_data = $resource_data['metadata'];
 

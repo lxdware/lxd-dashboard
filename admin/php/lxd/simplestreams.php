@@ -37,7 +37,7 @@ switch ($action) {
     if ($record_removed)
       echo "Record removed";
     else 
-      echo "Error: Unable to remove record from database; 
+      echo "Error: Unable to remove record from database"; 
   break;
 
 }

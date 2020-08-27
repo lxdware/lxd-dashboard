@@ -1,5 +1,8 @@
 <?php
 
+$cert = "/root/.config/lxc/client.crt";
+$key = "/root/.config/lxc/client.key";
+
 if (isset($_GET['remote']))
   $remote = filter_var(urldecode($_GET['remote']), FILTER_SANITIZE_STRING);
 if (isset($_GET['project']))
@@ -29,6 +32,7 @@ while($row = $db_results->fetchArray()){
 
   $db_results2 = $db->query('SELECT * FROM lxd_hosts');
   while($row2 = $db_results2->fetchArray()){
+
     if ($row2['alias'] != "")
       $display_name2 = $row2['alias'];
     else
@@ -36,9 +40,9 @@ while($row = $db_results->fetchArray()){
     if ($row2['id'] == $remote)
       echo '<a class="dropdown-item"  href="host.html?remote=' . $row2['id'] . '&project=' . $project . '"><i class="fas fa-server fa-sm fa-fw mr-2 text-gray-400"></i><strong>' . htmlentities($display_name2) . '</strong></a>';
     else
-      echo '<a class="dropdown-item"  href="host.html?remote=' . $row2['id'] . '&project=default"><i class="fas fa-server fa-sm fa-fw mr-2 text-gray-400"></i>' . htmlentities($display_name2) . '</a>';
+      echo '<a class="dropdown-item"  href="host.html?remote=' . $row2['id'] . '&project=default"><i class="fas fa-server fa-sm fa-fw mr-2 text-gray-400"></i>' . htmlentities($display_name2) . '</a>'; 
+  
   }
-
   echo '</div>';
  //echo '</li>';
 
