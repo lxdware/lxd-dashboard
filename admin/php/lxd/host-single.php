@@ -15,11 +15,12 @@ $db_results = $db_statement->execute();
 
 while($row = $db_results->fetchArray()){
 
-  //Instance Data
+  //Host Resource Data
   $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/resources?project=" . $project;
   $resource_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
   if ($resource_data == NULL) {
     echo "<strong>Error</strong>: Unable to connect to host <br /> <br />";
+    exit;
   }
   $resource_data = json_decode($resource_data, true);
   $resource_data = $resource_data['metadata'];
@@ -36,9 +37,43 @@ while($row = $db_results->fetchArray()){
   $memory_used = number_format($resource_data['memory']['used']/1024/1024/1024,2); //current amount of memory used in GB
   $memory_free = $memory_total - $memory_used;
 
+  $url1 = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/instances?project=" . $project;
+  $instance_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url1");
+  $instance_data = json_decode($instance_data, true);
+  $instance_urls = $instance_data['metadata'];
+  $running_instances = 0;
+  foreach ($instance_urls as $instance_url){
+    $url2 = "https://" . $row['host'] . ":" . $row['port'] . $instance_url . "?project=" . $project;
+    $instance_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url2");
+    $instance_data = json_decode($instance_data, true);
+    $instance_data = $instance_data['metadata'];
+    if ($instance_data['status'] == "Running")
+      $running_instances++;
+  }
+
+
+  $url3 = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/images?project=" . $project;
+  $image_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url3");
+  $image_data = json_decode($image_data, true);
+  $image_urls = $image_data['metadata'];
+
+  $url4 = "https://" . $row['host'] . ":" . $row['port'] . $profile_url . "?project=" . $project;
+  $profile_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url4");
+  $profile_data = json_decode($profile_data, true);
+  $profile_urls = $profile_data['metadata'];
+
+  $url5 = "https://" . $row['host'] . ":" . $row['port'] . $network_url . "?project=" . $project;
+  $network_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url5");
+  $network_data = json_decode($network_data, true);
+  $network_urls = $network_data['metadata'];
+
+  $url6 = "https://" . $row['host'] . ":" . $row['port'] . $storage_pool_url . "?project=" . $project;
+  $storage_pool_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url6");
+  $storage_pool_data = json_decode($storage_pool_data, true);
+  $storage_pool_urls = $storage_pool_data['metadata'];
 
   echo '<div class="row">';
-    echo '<div class="col-xl-6 col-lg-7">';
+    echo '<div class="col-xl-5 col-lg-5">';
 
     echo "<strong>System Vendor</strong>: " . htmlentities($system_vendor) . "<br />";
     echo "<strong>System Product</strong>: " . htmlentities($system_product) . "<br />";
@@ -72,8 +107,66 @@ while($row = $db_results->fetchArray()){
   echo '</div>';
 
 
+  echo '<!-- Second Column -->';
+  echo '<div class="col-xl-3 col-lg-3">';
+
+  echo '<ul class="list-unstyled">';
+
+  echo '<li class="media" onclick="location.href=\'instances.html?remote='.$remote.'&project='.$project.'\'">';
+  echo '<i class="mr-3 mb-5 fas fa-cube fa-2x fa-fw" style="color:#ddd"></i>';
+  echo '<div class="media-body">';
+  echo '<h6 class="mt-0 mb-1"><strong>Instances:</strong></h6>';
+  echo $running_instances . " out of " . count($instance_urls) . " running"  ; 
+  echo '</div>';
+  echo '</li>';
+
+  echo '<li class="media" onclick="location.href=\'images.html?remote='.$remote.'&project='.$project.'\'">';
+  echo '<i class="mr-3 mb-5 fas fa-box-open fa-2x fa-fw" style="color:#ddd"></i>';
+  echo '<div class="media-body">';
+  echo '<h6 class="mt-0 mb-1"><strong>Images:</strong></h6>';
+  if (count($image_urls) != 1)
+    echo count($image_urls) . " images available";
+  else
+    echo count($image_urls) . " image available";
+  echo '</div>';
+  echo '</li>';
+
+  echo '<li class="media" onclick="location.href=\'profiles.html?remote='.$remote.'&project='.$project.'\'">';
+  echo '<i class="mr-3 mb-5 fas fa-address-card fa-2x fa-fw" style="color:#ddd"></i>';
+  echo '<div class="media-body">';
+  echo '<h6 class="mt-0 mb-1"><strong>Profiles:</strong></h6>';
+  echo count($profile_urls) . " profiles created"; 
+  echo '</div>';
+  echo '</li>';
+
+  echo '<li class="media" onclick="location.href=\'networks.html?remote='.$remote.'&project='.$project.'\'">';
+  echo '<i class="mr-3 mb-5 fas fa-network-wired fa-2x fa-fw" style="color:#ddd"></i>';
+  echo '<div class="media-body">';
+  echo '<h6 class="mt-0 mb-1"><strong>Networks:</strong></h6>';
+  if (count($network_urls) != 1)
+    echo count($network_urls) . " LXD managed networks";
+  else
+    echo count($network_urls) . " LXD managed network";
+  echo '</div>';
+  echo '</li>';
+
+  echo '<li class="media" onclick="location.href=\'storage-pools.html?remote='.$remote.'&project='.$project.'\'">';
+  echo '<i class="mr-3 mb-5 fas fa-hdd fa-2x fa-fw" style="color:#ddd"></i>';
+  echo '<div class="media-body">';
+  echo '<h6 class="mt-0 mb-1"><strong>Storage Pools:</strong></h6>';
+  if (count($storage_pool_urls) != 1)
+    echo count($storage_pool_urls) . " dedicated storage pools";
+  else
+    echo count($storage_pool_urls) . " dedicated storage pool"; 
+  echo '</div>';
+  echo '</li>';
+
+  echo '</ul>';
+
+  echo '</div>';
+
   echo '<!-- Donut Chart -->';
-  echo '<div class="col-xl-4 col-lg-5">';
+  echo '<div class="col-xl-4 col-lg-4">';
   echo '<div class="chart-pie pt-4">';
   echo '<canvas id="memoryDoughnutChart"></canvas>';
   echo '</div>';

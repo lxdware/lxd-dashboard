@@ -39,8 +39,12 @@ while($row = $db_results->fetchArray()){
    
     if ($project_data['name'] == $project)
       echo '<a class="dropdown-item"  href="'.$return_url.'?remote=' . $remote . '&project=' . $project_data['name'] . '"><i class="fas fa-project-diagram fa-sm fa-fw mr-2 text-gray-400"></i><strong>' . htmlentities($project_data['name']) . '</strong></a>';
-    else
-      echo '<a class="dropdown-item"  href="'.$return_url.'?remote=' . $remote . '&project=' . $project_data['name'] . '"><i class="fas fa-project-diagram fa-sm fa-fw mr-2 text-gray-400"></i>' . htmlentities($project_data['name']) . '</a>';
+    else {
+      if (basename($return_url) == "instance.html")
+        echo '<a class="dropdown-item"  href="instances.html?remote=' . $remote . '&project=' . $project_data['name'] . '"><i class="fas fa-project-diagram fa-sm fa-fw mr-2 text-gray-400"></i>' . htmlentities($project_data['name']) . '</a>';
+      else
+        echo '<a class="dropdown-item"  href="'.$return_url.'?remote=' . $remote . '&project=' . $project_data['name'] . '"><i class="fas fa-project-diagram fa-sm fa-fw mr-2 text-gray-400"></i>' . htmlentities($project_data['name']) . '</a>';
+    }
   }
 
   echo '</div>';
