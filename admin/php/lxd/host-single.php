@@ -57,17 +57,17 @@ while($row = $db_results->fetchArray()){
   $image_data = json_decode($image_data, true);
   $image_urls = $image_data['metadata'];
 
-  $url4 = "https://" . $row['host'] . ":" . $row['port'] . $profile_url . "?project=" . $project;
+  $url4 = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/profiles?project=" . $project;
   $profile_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url4");
   $profile_data = json_decode($profile_data, true);
   $profile_urls = $profile_data['metadata'];
 
-  $url5 = "https://" . $row['host'] . ":" . $row['port'] . $network_url . "?project=" . $project;
+  $url5 = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/networks?project=" . $project;
   $network_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url5");
   $network_data = json_decode($network_data, true);
   $network_urls = $network_data['metadata'];
 
-  $url6 = "https://" . $row['host'] . ":" . $row['port'] . $storage_pool_url . "?project=" . $project;
+  $url6 = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/storage-pools?project=" . $project;
   $storage_pool_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url6");
   $storage_pool_data = json_decode($storage_pool_data, true);
   $storage_pool_urls = $storage_pool_data['metadata'];
@@ -144,9 +144,9 @@ while($row = $db_results->fetchArray()){
   echo '<div class="media-body">';
   echo '<h6 class="mt-0 mb-1"><strong>Networks:</strong></h6>';
   if (count($network_urls) != 1)
-    echo count($network_urls) . " LXD managed networks";
+    echo count($network_urls) . " network interfaces";
   else
-    echo count($network_urls) . " LXD managed network";
+    echo count($network_urls) . " network interface";
   echo '</div>';
   echo '</li>';
 
