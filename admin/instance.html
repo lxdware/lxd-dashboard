@@ -115,15 +115,16 @@
                   <h6 class="m-0 font-weight-bold text-primary">Details</h6>
                   <div class="dropdown no-arrow">
                     <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                      Actions <i class="fas fa-caret-down fa-sm fa-fw"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                      <div class="dropdown-header">Options:</div>
+                      <!--<div class="dropdown-header">Options:</div>-->
                       <a class="dropdown-item" href="#" onclick="startInstance()" id="startInstanceOption">Start</a>
                       <a class="dropdown-item" href="#" onclick="stopInstance()" id="stopInstanceOption">Stop</a>
                       <a class="dropdown-item" href="#" onclick="restartInstance()" id="restartInstanceOption">Restart</a>
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameInstanceModal" id="renameInstanceOption">Rename</a>
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#copyInstanceModal" id="copyInstanceOption">Copy</a>
+                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#backupInstanceModal" id="backupInstanceOption">Backup</a>
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#publishInstanceModal" id="publishInstanceOption">Publish</a>
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#deleteInstanceModal" id="deleteInstanceOption">Delete</a>
                     </div>
@@ -139,19 +140,17 @@
 
 
             <div class="col-12">
+              <a id="snapshots"></a>
               <!-- Snapshot List -->
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Snapshots</h6>
                   <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                    <a class="dropdown-toggle" href="#" data-toggle="modal" data-target="#snapshotInstanceModal">
+                      <i class="fas fa-plus fa-sm fa-fw"></i>
+                      New Snapshot 
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                      <div class="dropdown-header">Options:</div>
-                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#snapshotInstanceModal">Create Snapshot</a>
-                    </div>
                   </div>
                 </div>
                 <!-- Card Body -->
@@ -166,20 +165,12 @@
             </div>
 
             <div class="col-12">
+              <a id="networkDevices"></a>
               <!-- Network Devices List -->
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Network Devices</h6>
-                  <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                      <div class="dropdown-header">Options:</div>
-                      
-                    </div>
-                  </div>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -193,20 +184,12 @@
             </div>
 
             <div class="col-12">
+              <a id="diskDevices"></a>
               <!-- Disk Device List -->
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Disk Devices</h6>
-                  <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                      <div class="dropdown-header">Options:</div>
-                      
-                    </div>
-                  </div>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -220,20 +203,12 @@
             </div>
 
             <div class="col-12">
+              <a id="proxyDevices"></a>
               <!-- Proxy Device List -->
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Proxy Devices</h6>
-                  <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                      <div class="dropdown-header">Options:</div>
-                      
-                    </div>
-                  </div>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -248,19 +223,17 @@
 
 
             <div class="col-12">
+              <a id="profiles"></a>
               <!-- Profile List -->
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Profiles</h6>
                   <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                    <a class="dropdown-toggle" href="#" data-toggle="modal" data-target="#attachProfileModal">
+                      <i class="fas fa-plus fa-sm fa-fw"></i>
+                      Attach Profile
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                      <div class="dropdown-header">Options:</div>
-                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#attachProfileModal">Attach Profile</a>
-                    </div>
                   </div>
                 </div>
                 <!-- Card Body -->
@@ -362,7 +335,6 @@
     </div>
   </div>
 
-
   <!-- Copy Instance Modal-->
   <div class="modal fade" id="copyInstanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -375,8 +347,8 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <label class="col-4 col-form-label text-right">Name:</label>
-              <div class="col-8">
+              <label class="col-3 col-form-label text-right">Name:</label>
+              <div class="col-9">
                 <div class="form-group">
                   <input type="text" id="copyName" class="form-control" placeholder="Instance name" name="copy">
                 </div>
@@ -391,6 +363,33 @@
     </div>
   </div>
 
+  <!-- Backup Instance Modal-->
+  <div class="modal fade" id="backupInstanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Backup Instance</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Name:</label>
+              <div class="col-9">
+                <div class="form-group">
+                  <input type="text" id="backupName" class="form-control" placeholder="Backup name" name="copy">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="backupInstance()" data-dismiss="modal">Ok</a>
+          </div>
+      </div>
+    </div>
+  </div>
   
   <!-- Delete Instance Modal-->
   <div class="modal fade" id="deleteInstanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -410,7 +409,6 @@
       </div>
     </div>
   </div>
-
 
   <!-- Attach Profile Modal-->
   <div class="modal fade" id="attachProfileModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -440,7 +438,6 @@
       </div>
     </div>
   </div>
-
 
   <!-- Publish Instance Modal-->
   <div class="modal fade" id="publishInstanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -480,6 +477,67 @@
       </div>
     </div>
   </div>
+
+  <!-- Load Log Modal-->
+  <div class="modal fade" id="loadLogModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Log Contents</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-12 col-form-label" id="logNameInput"></label>
+              <div class="col-12">
+                <div class="form-group text-right">
+                  <pre>
+                    <textarea name="log_data" class="form-control" id="logDataInput" rows="16" ></textarea>
+                  </pre>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load Backup Modal-->
+  <div class="modal fade" id="loadBackupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Backup Contents</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-12 col-form-label" id="backupNameInput"></label>
+              <div class="col-12">
+                <div class="form-group text-right">
+                  <pre>
+                    <textarea name="backup_data" class="form-control" id="backupDataInput" rows="16" ></textarea>
+                  </pre>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+            <button class="btn btn-warning" onclick="deleteBackup()" type="button" data-dismiss="modal">Delete</button>
+            <button class="btn btn-primary" onclick="downloadBackup()" type="button" data-dismiss="modal">Download</button>
+          </div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Bootstrap core JavaScript-->
   <script src="theme/vendor/jquery/jquery.min.js"></script>
@@ -567,7 +625,6 @@
     }
   }
   
-
   function loadPageContent(){
     //Display instance menu options based on state
     $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=status", displayMenuOptions)
@@ -621,7 +678,6 @@
     });
   }
 
-
   function reloadPageContent(){
      //Display instance menu options based on state
      $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=status", displayMenuOptions)
@@ -674,7 +730,6 @@
       }  
     });
   }
-
 
   function startInstance(){
     console.log("Info: starting instance " + instanceName);
@@ -865,6 +920,78 @@
         alert(operationData.metadata.err);
       }
       setTimeout(() => { operationStatusCheck(); }, 4000);
+    });
+  }
+
+  function loadLog(logPath){
+    console.log("Info: loading log " + logPath);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&path=" + encodeURI(logPath) + "&action=loadLog", function (data) {
+      //var operationData = JSON.parse(data);
+      //console.log(operationData);
+      //if (operationData.error_code >= 400){
+        //alert(operationData.error);
+      //}
+      $("#logNameInput").text(logPath);
+      $("#logDataInput").val(data);
+      $("#loadLogModal").modal('show');
+    });
+  }
+
+  function backupInstance(){
+    var backupName = $("#backupName").val();
+    console.log("Info: backing up instance " + instanceName + " to " + backupName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(backupName) + "&action=backupInstance", function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
+        $('#spinner').show();
+        operationNumber = operationData.metadata.id;
+      }
+      if (operationData.metadata.status_code >= 400){
+        alert(operationData.metadata.err);
+      }
+      setTimeout(() => { operationStatusCheck(); }, 4000);
+    });
+  }
+
+  function downloadBackup(){
+    backupPath = $("#backupNameInput").text();
+    console.log("Info: downloading backup " + backupPath);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&path=" + encodeURI(backupPath) + "&action=downloadBackup", function (data) {
+      //var operationData = JSON.parse(data);
+    console.log(data);
+    window.location.href = data;
+    });
+  }
+
+  function deleteBackup(){
+    backupPath = $("#backupNameInput").text();
+    console.log("Info: deleting backup " + backupPath);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&path=" + encodeURI(backupPath) + "&action=deleteBackup", function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
+        $('#spinner').show();
+        operationNumber = operationData.metadata.id;
+      }
+      if (operationData.metadata.status_code >= 400){
+        alert(operationData.metadata.err);
+      }
+      setTimeout(() => { operationStatusCheck(); }, 4000);
+    });
+  }
+
+  function loadBackup(backupPath){
+    console.log("Info: loading backup " + backupPath);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&path=" + encodeURI(backupPath) + "&action=loadBackup", function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      //if (operationData.error_code >= 400){
+        //alert(operationData.error);
+      //}
+      $("#backupNameInput").text(backupPath);
+      $("#backupDataInput").val(JSON.stringify(operationData.metadata, null, 2));
+      $("#loadBackupModal").modal('show');
     });
   }
 

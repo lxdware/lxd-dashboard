@@ -112,18 +112,18 @@ while($row = $db_results->fetchArray()){
 
   echo '<ul class="list-unstyled">';
 
-  echo '<li class="media" onclick="location.href=\'instances.html?remote='.$remote.'&project='.$project.'\'">';
-  echo '<i class="mr-3 mb-5 fas fa-cube fa-2x fa-fw" style="color:#ddd"></i>';
+  echo '<li class="media">';
+  echo '<i class="mr-3 mb-5 fas fa-cube fa-2x fa-fw" style="color:#aaa"></i>';
   echo '<div class="media-body">';
-  echo '<h6 class="mt-0 mb-1"><strong>Instances:</strong></h6>';
+  echo '<h6 class="mt-0 mb-1"><strong><a href="instances.html?remote='.$remote.'&project='.$project.'">Instances</a>:</strong></h6>';
   echo $running_instances . " out of " . count($instance_urls) . " running"  ; 
   echo '</div>';
   echo '</li>';
 
-  echo '<li class="media" onclick="location.href=\'images.html?remote='.$remote.'&project='.$project.'\'">';
-  echo '<i class="mr-3 mb-5 fas fa-box-open fa-2x fa-fw" style="color:#ddd"></i>';
+  echo '<li class="media">';
+  echo '<i class="mr-3 mb-5 fas fa-box-open fa-2x fa-fw" style="color:#aaa"></i>';
   echo '<div class="media-body">';
-  echo '<h6 class="mt-0 mb-1"><strong>Images:</strong></h6>';
+  echo '<h6 class="mt-0 mb-1"><strong><a href="images.html?remote='.$remote.'&project='.$project.'">Images</a>:</strong></h6>';
   if (count($image_urls) != 1)
     echo count($image_urls) . " images available";
   else
@@ -131,18 +131,18 @@ while($row = $db_results->fetchArray()){
   echo '</div>';
   echo '</li>';
 
-  echo '<li class="media" onclick="location.href=\'profiles.html?remote='.$remote.'&project='.$project.'\'">';
-  echo '<i class="mr-3 mb-5 fas fa-address-card fa-2x fa-fw" style="color:#ddd"></i>';
+  echo '<li class="media">';
+  echo '<i class="mr-3 mb-5 fas fa-address-card fa-2x fa-fw" style="color:#aaa"></i>';
   echo '<div class="media-body">';
-  echo '<h6 class="mt-0 mb-1"><strong>Profiles:</strong></h6>';
+  echo '<h6 class="mt-0 mb-1"><strong><a href="profiles.html?remote='.$remote.'&project='.$project.'">Profiles</a>:</strong></h6>';
   echo count($profile_urls) . " profiles created"; 
   echo '</div>';
   echo '</li>';
 
-  echo '<li class="media" onclick="location.href=\'networks.html?remote='.$remote.'&project='.$project.'\'">';
-  echo '<i class="mr-3 mb-5 fas fa-network-wired fa-2x fa-fw" style="color:#ddd"></i>';
+  echo '<li class="media">';
+  echo '<i class="mr-3 mb-5 fas fa-network-wired fa-2x fa-fw" style="color:#aaa"></i>';
   echo '<div class="media-body">';
-  echo '<h6 class="mt-0 mb-1"><strong>Networks:</strong></h6>';
+  echo '<h6 class="mt-0 mb-1"><strong><a href="networks.html?remote='.$remote.'&project='.$project.'">Networks</a>:</strong></h6>';
   if (count($network_urls) != 1)
     echo count($network_urls) . " network interfaces";
   else
@@ -150,10 +150,10 @@ while($row = $db_results->fetchArray()){
   echo '</div>';
   echo '</li>';
 
-  echo '<li class="media" onclick="location.href=\'storage-pools.html?remote='.$remote.'&project='.$project.'\'">';
-  echo '<i class="mr-3 mb-5 fas fa-hdd fa-2x fa-fw" style="color:#ddd"></i>';
+  echo '<li class="media">';
+  echo '<i class="mr-3 mb-5 fas fa-hdd fa-2x fa-fw" style="color:#aaa"></i>';
   echo '<div class="media-body">';
-  echo '<h6 class="mt-0 mb-1"><strong>Storage Pools:</strong></h6>';
+  echo '<h6 class="mt-0 mb-1"><strong><a href="storage-pools.html?remote='.$remote.'&project='.$project.'">Storage Pools</a>:</strong></h6>';
   if (count($storage_pool_urls) != 1)
     echo count($storage_pool_urls) . " dedicated storage pools";
   else

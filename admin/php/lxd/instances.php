@@ -21,6 +21,8 @@ if (isset($_GET['description']))
   $description = filter_var(urldecode($_GET['description']), FILTER_SANITIZE_STRING);
 if (isset($_GET['public']))
   $public = filter_var(urldecode($_GET['public']), FILTER_SANITIZE_STRING);
+if (isset($_GET['path']))
+  $path = filter_var(urldecode($_GET['path']), FILTER_SANITIZE_STRING);
 
 $db = new SQLite3('/var/lxdware/data/sqlite/lxdware.sqlite');
 $db_results = $db->query("SELECT * FROM lxd_hosts WHERE id = $remote LIMIT 1");
@@ -124,6 +126,29 @@ while($res = $db_results->fetchArray()){
       $url = $url . "/1.0/images?project=" . $project;
       $data = escapeshellarg('{"properties":{"description": "'. $description . '"}, "public": '. $public . ', "source":{"type": "instance", "name": "'. $instance . '"}}');
       $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
+      break;
+    case "loadLog":
+      $url = $url . $path . "?project=" . $project;
+      $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+      break;
+    case "downloadBackup":
+      mkdir('../../downloads');
+      $url = $url . $path . "/export?project=" . $project;
+      $results = shell_exec("sudo curl -k -L --output ../../downloads/".basename($path).".tar.gz --cert $cert --key $key -X GET $url");
+      $results = "downloads/".basename($path).".tar.gz";
+      break;
+    case "deleteBackup":
+      $url = $url . $path . "?project=" . $project;
+      $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X DELETE $url");
+      break;
+    case "backupInstance":
+      $url = $url . "/1.0/instances/" . $instance . "/backups?project=" . $project;
+      $data = escapeshellarg('{"name": "'. $name . '"}');
+      $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
+      break;
+    case "loadBackup":
+      $url = $url . $path . "?project=" . $project;
+      $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
       break;
   }
 }
