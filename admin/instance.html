@@ -68,9 +68,17 @@
             <li class="nav-item dropdown no-arrow" id="projectListNav">
             </li>
 
-            <div class="nav-item spinner-grow text-primary m-3" role="status" style="display:none;" id="spinner">
-              <span class="nav-item sr-only">Loading...</span>
-            </div>
+            <li>
+              <div class="nav-item spinner-grow text-primary m-3" role="status" style="display:none;" id="spinner">
+                <span class="nav-item sr-only">Loading...</span>
+              </div>
+            </li>
+
+            <li class="nav-item dropdown no-arrow" id="notificationArea" style="display: none;">
+              <div class="nav-link dropdown-toggle">
+                <span id="notification" class="mr-2 d-none d-lg-inline text-gray-600 small">Notification</span>
+              </div>
+            </li>
 
             <div class="topbar-divider d-none d-sm-block"></div>
 
@@ -114,13 +122,18 @@
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Details</h6>
                   <div class="dropdown no-arrow">
+                    <a class="dropdown-toggle" href="#" role="button" id="startLink" onclick="startInstance()" style="display: none;">
+                      <i class="fas fa-play fa-sm fa-fw"></i> Start 
+                    </a>
+                    <a class="dropdown-toggle" href="#" role="button" id="stopLink" onclick="stopInstance()" style="display: none;">
+                      <i class="fas fa-stop fa-sm fa-fw"></i> Stop 
+                    </a>
+                    <span>&nbsp; | &nbsp;</span>
                     <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Actions <i class="fas fa-caret-down fa-sm fa-fw"></i>
+                      <i class="fas fa-cog fa-sm fa-fw"></i> Actions 
                     </a>
                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                       <!--<div class="dropdown-header">Options:</div>-->
-                      <a class="dropdown-item" href="#" onclick="startInstance()" id="startInstanceOption">Start</a>
-                      <a class="dropdown-item" href="#" onclick="stopInstance()" id="stopInstanceOption">Stop</a>
                       <a class="dropdown-item" href="#" onclick="restartInstance()" id="restartInstanceOption">Restart</a>
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameInstanceModal" id="renameInstanceOption">Rename</a>
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#copyInstanceModal" id="copyInstanceOption">Copy</a>
@@ -221,7 +234,6 @@
               <!-- End Proxy Device ist -->
             </div>
 
-
             <div class="col-12">
               <a id="profiles"></a>
               <!-- Profile List -->
@@ -246,8 +258,6 @@
               </div>
               <!-- End Profile List -->
             </div>
-
-
 
           </div>
 
@@ -557,7 +567,7 @@
   const remoteName = urlParams.get('remote');
   const instanceName = urlParams.get('instance');
   const projectName = urlParams.get('project');
-  var operationNumber = "";
+  var operationNumbers = [];
   var instanceDetails = "";
   var snapshotDetails = "";
   var networkDeviceDetails = "";
@@ -570,58 +580,71 @@
   function displayMenuOptions(data){
     jsonData = JSON.parse(data);
     if (jsonData.metadata.status == "Stopped"){
-      $('#startInstanceOption').show();
-      $('#stopInstanceOption').hide();
+      $('#startLink').show();
+      $('#stopLink').hide();
       $('#restartInstanceOption').hide();
       $('#renameInstanceOption').show();
       $('#copyInstanceOption').show();
       $('#publishInstanceOption').show();
       $('#deleteInstanceOption').show();
+
+      startLink
     }
     else {
-      $('#startInstanceOption').hide();
-      $('#stopInstanceOption').show();
+      $('#startLink').hide();
+      $('#stopLink').show();
       $('#restartInstanceOption').show();
       $('#renameInstanceOption').hide();
       $('#copyInstanceOption').hide();
       $('#publishInstanceOption').hide();
       $('#deleteInstanceOption').hide();
+
     }
   }
 
   function operationStatusCheck(){
-    if (operationNumber != ""){
-      $.get("./php/lxd/operation-status.php?remote=" + encodeURI(remoteName) + "&id=" + encodeURI(operationNumber) , function (data) {
-        var operationData = JSON.parse(data);
-        console.log(operationData);
-        if (operationData.error_code == 404) { 
-          operationNumber = "";
-          $('#spinner').hide();
-          if (redirectURL != ""){
-            window.location.replace(redirectURL);
-          }
-          reloadPageContent();
-        } 
-        if (operationData.status_code == 200) {
-          if (operationData.metadata.status_code == 200){
-            operationNumber = "";
-            $('#spinner').hide();
+    operationNumbers = operationNumbers.filter(function(e){return e}); 
+    var numberOfOperations = operationNumbers.length;
+    if (numberOfOperations > 0){
+      $('#spinner').show();
+      for (i = 0; i < numberOfOperations; i++){
+        var elementNumber = i;
+        $.get("./php/lxd/operation-status.php?remote=" + encodeURI(remoteName) + "&id=" + encodeURI(operationNumbers[elementNumber]) , function (data) {
+          var operationData = JSON.parse(data);
+          console.log(operationData);
+          if (operationData.error_code == 404) { 
+            operationNumbers[elementNumber] = undefined;
             if (redirectURL != ""){
               window.location.replace(redirectURL);
             }
             reloadPageContent();
           }
-          if (operationData.metadata.status_code >= 400){
-            operationNumber = "";
-            $('#spinner').hide(); 
-            alert(operationData.metadata.err);
-            reloadPageContent();
-          }
-        }
-      }); 
-    }
-    if (operationNumber != "") {
+          if (operationData.status_code == 200) {
+            if (operationData.metadata.status_code == 103){
+              $('#notificationArea').show();
+              $('#notification').text(operationData.metadata.description);
+            }
+            if (operationData.metadata.status_code == 200){
+              operationNumbers[elementNumber] = undefined;
+              if (redirectURL != ""){
+                window.location.replace(redirectURL);
+              }
+              reloadPageContent();
+            }
+            if (operationData.metadata.status_code >= 400){
+              operationNumbers[elementNumber] = undefined;
+              alert(operationData.metadata.err);
+              reloadPageContent();
+            }
+          } 
+        });
+      }
       setTimeout(() => { operationStatusCheck(); }, 4000);
+    }
+    else {
+      $('#spinner').hide();
+      $('#notificationArea').hide();
+      $('#notification').text("");
     }
   }
   
@@ -737,8 +760,8 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        $('#spinner').show();
-        operationNumber = operationData.metadata.id;
+        operationNumbers.push(operationData.metadata.id);
+        operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
@@ -753,8 +776,8 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        $('#spinner').show();
-        operationNumber = operationData.metadata.id;
+        operationNumbers.push(operationData.metadata.id);
+        operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
@@ -769,13 +792,12 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        $('#spinner').show();
-        operationNumber = operationData.metadata.id;
+        operationNumbers.push(operationData.metadata.id);
+        operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
     });
   }
 
@@ -786,8 +808,8 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        $('#spinner').show();
-        operationNumber = operationData.metadata.id;
+        operationNumbers.push(operationData.metadata.id);
+        operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
@@ -803,8 +825,8 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        $('#spinner').show();
-        operationNumber = operationData.metadata.id;
+        operationNumbers.push(operationData.metadata.id);
+        operationStatusCheck();
         redirectURL = "instance.html?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(newInstanceName);
       }
       if (operationData.metadata.status_code >= 400){
@@ -821,8 +843,8 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        $('#spinner').show();
-        operationNumber = operationData.metadata.id;
+        operationNumbers.push(operationData.metadata.id);
+        operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
@@ -837,8 +859,8 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        $('#spinner').show();
-        operationNumber = operationData.metadata.id;
+        operationNumbers.push(operationData.metadata.id);
+        operationStatusCheck();
         redirectURL = "instances.html?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName)
       }
       if (operationData.metadata.status_code >= 400){
@@ -879,8 +901,8 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        $('#spinner').show();
-        operationNumber = operationData.metadata.id;
+        operationNumbers.push(operationData.metadata.id);
+        operationStatusCheck();
       }
       if (operationData.error_code >= 400){
         alert(operationData.error);
@@ -895,8 +917,8 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        $('#spinner').show();
-        operationNumber = operationData.metadata.id;
+        operationNumbers.push(operationData.metadata.id);
+        operationStatusCheck();
       }
       if (operationData.error_code >= 400){
         alert(operationData.error);
@@ -913,8 +935,8 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        $('#spinner').show();
-        operationNumber = operationData.metadata.id;
+        operationNumbers.push(operationData.metadata.id);
+        operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
@@ -944,8 +966,8 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        $('#spinner').show();
-        operationNumber = operationData.metadata.id;
+        operationNumbers.push(operationData.metadata.id);
+        operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
@@ -971,8 +993,8 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        $('#spinner').show();
-        operationNumber = operationData.metadata.id;
+        operationNumbers.push(operationData.metadata.id);
+        operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
