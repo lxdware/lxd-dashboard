@@ -8,6 +8,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
+  <meta http-equiv='cache-control' content='no-cache'> 
+  <meta http-equiv='expires' content='0'> 
+  <meta http-equiv='pragma' content='no-cache'> 
 
   <link rel="icon" type="image/png" href="theme/images/cube.png">
 
@@ -111,6 +114,10 @@
                   <i class="fas fa-server fa-sm fa-fw mr-2 text-gray-400"></i>
                   Hosts
                 </a>
+                <a class="dropdown-item" href="#" onclick="logout()">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logout
+                </a>
               </div>
             </li>
 
@@ -175,7 +182,6 @@
         <!-- /.container-fluid -->
 
 
-
       </div>
       <!-- End of Main Content -->
 
@@ -200,8 +206,6 @@
     <i class="fas fa-angle-up"></i>
   </a>
 
-
-
   <!-- Client Cert Modal-->
   <div class="modal fade" id="clientCertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -225,7 +229,6 @@
       </div>
     </div>
   </div>
-
 
   <!-- Remote Host Modal-->
   <div class="modal fade" id="addLxdModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -313,7 +316,22 @@
 
 <script>
 
+  function logout(){
+    var http = new XMLHttpRequest();
+    http.open("get", "../admin/index.html", false, "null", "null");
+    http.send("");
+    window.location.replace("../index.html");
+  }
+
   function loadPageContent(){
+    
+    //Check Authorization
+    $.get("./php/auth/auth-check.php", function (data) {
+      if (data != "true") {
+       window.location.replace("../index.html");
+      }
+    });
+
     $('#lxdListTable').DataTable( {
       ajax: "./php/lxd/remote-list.php",
       columns: [
@@ -366,6 +384,7 @@
   }
 
   $(document).ready(function(){
+
     //Load the card contents
     loadPageContent();
 

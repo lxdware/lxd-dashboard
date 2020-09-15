@@ -93,6 +93,10 @@
                   <i class="fas fa-server fa-sm fa-fw mr-2 text-gray-400"></i>
                   Hosts
                 </a>
+                <a class="dropdown-item" href="#" onclick="logout()">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logout
+                </a>
               </div>
             </li>
 
@@ -135,9 +139,10 @@
                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                       <!--<div class="dropdown-header">Options:</div>-->
                       <a class="dropdown-item" href="#" onclick="restartInstance()" id="restartInstanceOption">Restart</a>
+                      <!--<a class="dropdown-item" href="#" data-toggle="modal" data-target="#migrateInstanceModal" id="migrateInstanceOption">Migrate</a>-->
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameInstanceModal" id="renameInstanceOption">Rename</a>
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#copyInstanceModal" id="copyInstanceOption">Copy</a>
-                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#backupInstanceModal" id="backupInstanceOption">Backup</a>
+                      <a class="dropdown-item" href="#" onclick="initializeCreateBackup()" id="backupInstanceOption">Backup</a>
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#publishInstanceModal" id="publishInstanceOption">Publish</a>
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#deleteInstanceModal" id="deleteInstanceOption">Delete</a>
                     </div>
@@ -177,6 +182,31 @@
               <!-- End Snapshot List -->
             </div>
 
+            <div class="col-12">
+              <a id="profiles"></a>
+              <!-- Profile List -->
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary">Profiles</h6>
+                  <div class="dropdown no-arrow">
+                    <a class="dropdown-toggle" href="#" data-toggle="modal" data-target="#attachProfileModal">
+                      <i class="fas fa-plus fa-sm fa-fw"></i>
+                      Attach Profile
+                    </a>
+                  </div>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table" id="profileTableList" width="100%" cellspacing="0">
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <!-- End Profile List -->
+            </div>
+            
             <div class="col-12">
               <a id="networkDevices"></a>
               <!-- Network Devices List -->
@@ -232,31 +262,6 @@
                 </div>
               </div>
               <!-- End Proxy Device ist -->
-            </div>
-
-            <div class="col-12">
-              <a id="profiles"></a>
-              <!-- Profile List -->
-              <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Profiles</h6>
-                  <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" data-toggle="modal" data-target="#attachProfileModal">
-                      <i class="fas fa-plus fa-sm fa-fw"></i>
-                      Attach Profile
-                    </a>
-                  </div>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                  <div class="table-responsive">
-                    <table class="table" id="profileTableList" width="100%" cellspacing="0">
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <!-- End Profile List -->
             </div>
 
           </div>
@@ -345,6 +350,34 @@
     </div>
   </div>
 
+  <!-- Migrate Instance Modal-->
+  <div class="modal fade" id="migrateInstanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Migrate Instance</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-4 col-form-label text-right">Destination:</label>
+              <div class="col-8">
+                <div class="form-group">
+                  <input type="text" id="migrateDestination" class="form-control" placeholder="Destination Host">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="migrateInstance()" data-dismiss="modal">Ok</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Copy Instance Modal-->
   <div class="modal fade" id="copyInstanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -395,7 +428,7 @@
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="#" onclick="backupInstance()" data-dismiss="modal">Ok</a>
+            <a class="btn btn-primary" href="#" onclick="createBackup()" data-dismiss="modal">Ok</a>
           </div>
       </div>
     </div>
@@ -576,6 +609,12 @@
   var profileDetails = "";
   var redirectURL = "";
 
+  function logout(){
+    var http = new XMLHttpRequest();
+    http.open("get", "../admin", false, "null", "null");
+    http.send("");
+    window.location.replace("../index.html");
+  }
 
   function displayMenuOptions(data){
     jsonData = JSON.parse(data);
@@ -649,6 +688,14 @@
   }
   
   function loadPageContent(){
+
+    //Check Authorization
+    $.get("./php/auth/auth-check.php", function (data) {
+      if(data != "true"){
+       window.location.replace("../index.html");
+      }
+    });
+
     //Display instance menu options based on state
     $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=status", displayMenuOptions)
     
@@ -853,6 +900,24 @@
     });
   }
 
+  function migrateInstance(){
+    var migrateDestination = $("#migrateDestination").val();
+    console.log("Info: migrating instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&profile=default&instance_type=container&destination=" + encodeURI(migrateDestination) + "&action=migrateInstance", function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
+        operationNumbers.push(operationData.metadata.id);
+        operationStatusCheck();
+        //redirectURL = "instance.html?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName);
+      }
+      if (operationData.metadata.status_code >= 400){
+        alert(operationData.metadata.err);
+      }
+      setTimeout(() => { operationStatusCheck(); }, 4000);
+    });
+  }
+
   function deleteInstance(){
     console.log("Info: deleting instance " + instanceName);
     $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=deleteInstance", function (data) {
@@ -959,10 +1024,37 @@
     });
   }
 
-  function backupInstance(){
+  function initializeCreateBackup(){
+
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1;
+    
+    var day = now.getDate();
+    var hour = now.getHours();
+    var min = now.getMinutes();
+    var sec = now.getSeconds();
+
+    if (month < 10) 
+      month = '0' + month;
+    if (day < 10) 
+      day = '0' + day;
+    if (hour < 10) 
+      hour = '0' + hour;
+    if (min < 10) 
+      min = '0' + min;
+    if (sec < 10) 
+      sec = '0' + sec;
+
+    var backupName = instanceName + "-" + year + month + day + hour + min + sec;
+    $("#backupName").val(backupName);
+    $("#backupInstanceModal").modal('show');
+  }
+
+  function createBackup(){
     var backupName = $("#backupName").val();
     console.log("Info: backing up instance " + instanceName + " to " + backupName);
-    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(backupName) + "&action=backupInstance", function (data) {
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(backupName) + "&action=createBackup", function (data) {
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){

@@ -96,6 +96,10 @@
                   <i class="fas fa-server fa-sm fa-fw mr-2 text-gray-400"></i>
                   Hosts
                 </a>
+                <a class="dropdown-item" href="#" onclick="logout()">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logout
+                </a>
               </div>
             </li>
 
@@ -171,70 +175,70 @@
   </a>
 
 
-    <!-- Create Network Modal-->
-    <div class="modal fade" id="createNetworkModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Create Network</h5>
-              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item">
-                  <a class="nav-link active" id="form-tab" data-toggle="tab" href="#form" role="tab" aria-controls="form" aria-selected="true">Form</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" id="json-tab" data-toggle="tab" href="#json" role="tab" aria-controls="json" aria-selected="false">JSON</a>
-                </li>
-              </ul>
-              <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="form" role="tabpanel" aria-labelledby="form-tab">
-                  <br />
-                  <div class="row">
-                    <label class="col-3 col-form-label text-right">Name: </label>
-                    <div class="col-7">
-                      <div class="form-group">
-                        <input type="text" id="networkNameCreate" class="form-control" placeholder="Network Name" name="network_name">
-                      </div>
+  <!-- Create Network Modal-->
+  <div class="modal fade" id="createNetworkModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Create Network</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="form-tab" data-toggle="tab" href="#form" role="tab" aria-controls="form" aria-selected="true">Form</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="json-tab" data-toggle="tab" href="#json" role="tab" aria-controls="json" aria-selected="false">JSON</a>
+              </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade show active" id="form" role="tabpanel" aria-labelledby="form-tab">
+                <br />
+                <div class="row">
+                  <label class="col-3 col-form-label text-right">Name: </label>
+                  <div class="col-7">
+                    <div class="form-group">
+                      <input type="text" id="networkNameCreate" class="form-control" placeholder="Network Name" name="network_name">
                     </div>
-                  </div>
-                  <div class="row">
-                    <label class="col-3 col-form-label text-right">Description: </label>
-                    <div class="col-7">
-                      <div class="form-group">
-                        <input type="text" id="networkDescriptionCreate" class="form-control" placeholder="Enter Description" name="network_description">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="#" onclick="createNetworkForm()" data-dismiss="modal">Submit</a>
                   </div>
                 </div>
-                <div class="tab-pane fade" id="json" role="tabpanel" aria-labelledby="json-tab">
-                 <br />
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="form-group text-right">
-                        <pre>
-                          <textarea name="json" class="form-control" id="jsonCreateInput" rows="16" placeholder="Enter JSON data"></textarea>
-                        </pre>
-                      </div>
+                <div class="row">
+                  <label class="col-3 col-form-label text-right">Description: </label>
+                  <div class="col-7">
+                    <div class="form-group">
+                      <input type="text" id="networkDescriptionCreate" class="form-control" placeholder="Enter Description" name="network_description">
                     </div>
                   </div>
-                  <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="#" onclick="createNetworkJson()" data-dismiss="modal">Submit</a>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                  <a class="btn btn-primary" href="#" onclick="createNetworkForm()" data-dismiss="modal">Submit</a>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="json" role="tabpanel" aria-labelledby="json-tab">
+                <br />
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group text-right">
+                      <pre>
+                        <textarea name="json" class="form-control" id="jsonCreateInput" rows="16" placeholder="Enter JSON data"></textarea>
+                      </pre>
+                    </div>
                   </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                  <a class="btn btn-primary" href="#" onclick="createNetworkJson()" data-dismiss="modal">Submit</a>
                 </div>
               </div>
             </div>
-        </div>
+          </div>
       </div>
     </div>
+  </div>
 
   <!-- Edit Network Modal-->
   <div class="modal fade" id="editNetworkModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -317,7 +321,23 @@
   const projectName = urlParams.get('project'); 
   var networkToUpdate = "";
 
+
+  function logout(){
+    var http = new XMLHttpRequest();
+    http.open("get", "../admin", false, "null", "null");
+    http.send("");
+    window.location.replace("../index.html");
+  }
+
   function loadPageContent(){
+
+    //Check Authorization
+    $.get("./php/auth/auth-check.php", function (data) {
+      if(data != "true"){
+       window.location.replace("../index.html");
+      }
+    });
+
     $('#networkListTable').DataTable( {
       ajax: "./php/lxd/network-list.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName),
       columns: [

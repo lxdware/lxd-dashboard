@@ -96,6 +96,10 @@
                   <i class="fas fa-server fa-sm fa-fw mr-2 text-gray-400"></i>
                   Hosts
                 </a>
+                <a class="dropdown-item" href="#" onclick="logout()">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logout
+                </a>
               </div>
             </li>
 
@@ -248,7 +252,22 @@
   const storagePoolName = urlParams.get('pool');  
   var storageVolumeToUpdate = "";
 
+  function logout(){
+    var http = new XMLHttpRequest();
+    http.open("get", "../admin", false, "null", "null");
+    http.send("");
+    window.location.replace("../index.html");
+  }
+
   function loadPageContent(){
+
+    //Check Authorization
+    $.get("./php/auth/auth-check.php", function (data) {
+      if(data != "true"){
+       window.location.replace("../index.html");
+      }
+    });
+
     $('#storageVolumeListTable').DataTable( {
       ajax: "./php/lxd/storage-volume-list.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&pool=" + encodeURI(storagePoolName),
       columns: [
