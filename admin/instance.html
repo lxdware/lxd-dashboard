@@ -132,6 +132,9 @@
                     <a class="dropdown-toggle" href="#" role="button" id="stopLink" onclick="stopInstance()" style="display: none;">
                       <i class="fas fa-stop fa-sm fa-fw"></i> Stop 
                     </a>
+                    <a class="dropdown-toggle" href="#" role="button" id="unfreezeLink" onclick="unfreezeInstance()" style="display: none;">
+                      <i class="fas fa-pause fa-sm fa-fw"></i> Unfreeze 
+                    </a>
                     <span>&nbsp; | &nbsp;</span>
                     <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <i class="fas fa-cog fa-sm fa-fw"></i> Actions 
@@ -139,7 +142,8 @@
                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                       <!--<div class="dropdown-header">Options:</div>-->
                       <a class="dropdown-item" href="#" onclick="restartInstance()" id="restartInstanceOption">Restart</a>
-                      <!--<a class="dropdown-item" href="#" data-toggle="modal" data-target="#migrateInstanceModal" id="migrateInstanceOption">Migrate</a>-->
+                      <a class="dropdown-item" href="#" onclick="forceStopInstance()" id="forceStopInstanceOption">Kill</a>
+                      <a class="dropdown-item" href="#" onclick="freezeInstance()" id="freezeInstanceOption">Freeze</a>
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameInstanceModal" id="renameInstanceOption">Rename</a>
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#copyInstanceModal" id="copyInstanceOption">Copy</a>
                       <a class="dropdown-item" href="#" onclick="initializeCreateBackup()" id="backupInstanceOption">Backup</a>
@@ -618,26 +622,42 @@
 
   function displayMenuOptions(data){
     jsonData = JSON.parse(data);
-    if (jsonData.metadata.status == "Stopped"){
-      $('#startLink').show();
-      $('#stopLink').hide();
-      $('#restartInstanceOption').hide();
-      $('#renameInstanceOption').show();
-      $('#copyInstanceOption').show();
-      $('#publishInstanceOption').show();
-      $('#deleteInstanceOption').show();
-
-      startLink
-    }
-    else {
-      $('#startLink').hide();
-      $('#stopLink').show();
-      $('#restartInstanceOption').show();
-      $('#renameInstanceOption').hide();
-      $('#copyInstanceOption').hide();
-      $('#publishInstanceOption').hide();
-      $('#deleteInstanceOption').hide();
-
+    switch (jsonData.metadata.status){
+      case "Stopped":
+        $('#startLink').show();
+        $('#stopLink').hide();
+        $('#restartInstanceOption').hide();
+        $('#forceStopInstanceOption').hide();
+        $('#freezeInstanceOption').hide();
+        $('#unfreezeLink').hide();
+        $('#renameInstanceOption').show();
+        $('#copyInstanceOption').show();
+        $('#publishInstanceOption').show();
+        $('#deleteInstanceOption').show();
+        break;
+      case "Frozen":
+        $('#startLink').hide();
+        $('#stopLink').hide();
+        $('#restartInstanceOption').hide();
+        $('#forceStopInstanceOption').hide();
+        $('#freezeInstanceOption').hide();
+        $('#unfreezeLink').show();
+        $('#renameInstanceOption').hide();
+        $('#copyInstanceOption').show();
+        $('#publishInstanceOption').hide();
+        $('#deleteInstanceOption').hide();
+        break;
+      default:
+        $('#startLink').hide();
+        $('#stopLink').show();
+        $('#restartInstanceOption').show();
+        $('#forceStopInstanceOption').show();
+        $('#freezeInstanceOption').show();
+        $('#unfreezeLink').hide();
+        $('#renameInstanceOption').hide();
+        $('#copyInstanceOption').hide();
+        $('#publishInstanceOption').hide();
+        $('#deleteInstanceOption').hide();
     }
   }
 
@@ -833,6 +853,22 @@
     });
   }
 
+  function forceStopInstance(){
+    console.log("Info: forcefully stoping instance" + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=forceStopInstance",  function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
+        operationNumbers.push(operationData.metadata.id);
+        operationStatusCheck();
+      }
+      if (operationData.metadata.status_code >= 400){
+        alert(operationData.metadata.err);
+      }
+      setTimeout(() => { operationStatusCheck(); }, 4000);
+    });
+  }
+
   function restartInstance(){
     console.log("Info: restarting instance" + instanceName);
     $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=restartInstance",  function (data) {
@@ -845,6 +881,38 @@
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
       }
+    });
+  }
+
+  function freezeInstance(){
+    console.log("Info: freezing instance" + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=freezeInstance",  function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
+        operationNumbers.push(operationData.metadata.id);
+        operationStatusCheck();
+      }
+      if (operationData.metadata.status_code >= 400){
+        alert(operationData.metadata.err);
+      }
+      setTimeout(() => { operationStatusCheck(); }, 4000);
+    });
+  }
+
+  function unfreezeInstance(){
+    console.log("Info: unfreezing instance" + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=unfreezeInstance",  function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
+        operationNumbers.push(operationData.metadata.id);
+        operationStatusCheck();
+      }
+      if (operationData.metadata.status_code >= 400){
+        alert(operationData.metadata.err);
+      }
+      setTimeout(() => { operationStatusCheck(); }, 4000);
     });
   }
 
@@ -892,24 +960,6 @@
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
         operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
-      }
-      if (operationData.metadata.status_code >= 400){
-        alert(operationData.metadata.err);
-      }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
-    });
-  }
-
-  function migrateInstance(){
-    var migrateDestination = $("#migrateDestination").val();
-    console.log("Info: migrating instance " + instanceName);
-    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&profile=default&instance_type=container&destination=" + encodeURI(migrateDestination) + "&action=migrateInstance", function (data) {
-      var operationData = JSON.parse(data);
-      console.log(operationData);
-      if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
-        operationStatusCheck();
-        //redirectURL = "instance.html?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName);
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);

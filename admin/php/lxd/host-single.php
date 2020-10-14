@@ -5,11 +5,13 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   $cert = "/var/lxdware/data/lxd/client.crt";
   $key = "/var/lxdware/data/lxd/client.key";
 
+   //Instantiate the GET variables
   if (isset($_GET['remote']))
     $remote = filter_var(urldecode($_GET['remote']), FILTER_SANITIZE_STRING);
   if (isset($_GET['project']))
     $project = filter_var(urldecode($_GET['project']), FILTER_SANITIZE_STRING);
 
+  //Determine host info from database
   $db = new SQLite3('/var/lxdware/data/sqlite/lxdware.sqlite');
   $db_statement = $db->prepare('SELECT * FROM lxd_hosts WHERE id = :id LIMIT 1;');
   $db_statement->bindValue(':id', $remote);
@@ -17,62 +19,71 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
   while($row = $db_results->fetchArray()){
 
-    //Host Resource Data
+    //Retrieve host resource data
     $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/resources?project=" . $project;
-    $resource_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
-    if ($resource_data == NULL) {
+    $resource_api_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+    if ($resource_api_data == NULL) {
       echo "<strong>Error</strong>: Unable to connect to host <br /> <br />";
       exit;
     }
-    $resource_data = json_decode($resource_data, true);
-    $resource_data = $resource_data['metadata'];
-
-
-    $system_vendor = $resource_data['system']['vendor'];
-    $system_product = $resource_data['system']['product'];
-    $architecture = $resource_data['cpu']['architecture']; //example: x86
-    $cpus = $resource_data['cpu']['total']; //total number of cpus
+    $resource_api_data = json_decode($resource_api_data, true);    
+    $resource_data = $resource_api_data['metadata'];
+    
+    $system_vendor = $resource_data['system']['vendor']?: "N/A"; //example: DigitalOcean, Dell, Etc
+    $system_product = $resource_data['system']['product']?: "N/A"; //example: Droplet, R810, Etc
+    $architecture = $resource_data['cpu']['architecture']?: "N/A"; //example: x86_64
+    $cpus = $resource_data['cpu']['total']?: "N/A"; //total number of cpus
     $sockets = $resource_data['cpu']['sockets']; //array of cpu info per socket
     $storage_disks = $resource_data['storage']['disks']; //array of storage devices
   
-    $memory_total = number_format($resource_data['memory']['total']/1024/1024/1024,2); //total amount of memory used in GB
-    $memory_used = number_format($resource_data['memory']['used']/1024/1024/1024,2); //current amount of memory used in GB
+    if ($resource_data['memory']['total'] < 1073741824) {
+      $memory_total = number_format($resource_data['memory']['total']/1024/1024,2); //total amount of memory used in MB
+      $memory_used = number_format($resource_data['memory']['used']/1024/1024,2); //current amount of memory used in MB
+      $memory_unit = "MB";
+    }
+    else {
+      $memory_total = number_format($resource_data['memory']['total']/1024/1024/1024,2); //total amount of memory used in GB
+      $memory_used = number_format($resource_data['memory']['used']/1024/1024/1024,2); //current amount of memory used in GB
+      $memory_unit = "GB";
+    }
     $memory_free = $memory_total - $memory_used;
 
-    $url1 = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/instances?project=" . $project;
-    $instance_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url1");
-    $instance_data = json_decode($instance_data, true);
-    $instance_urls = $instance_data['metadata'];
+    //Determine the number of running / total instances
     $running_instances = 0;
-    foreach ($instance_urls as $instance_url){
-      $url2 = "https://" . $row['host'] . ":" . $row['port'] . $instance_url . "?project=" . $project;
-      $instance_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url2");
-      $instance_data = json_decode($instance_data, true);
-      $instance_data = $instance_data['metadata'];
-      if ($instance_data['status'] == "Running")
+    $total_instances = 0;
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/instances?recursion=2&project=" . $project;
+    $instance_api_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+    $instance_api_data = json_decode($instance_api_data, true);
+    foreach ($instance_api_data['metadata'] as $instance_data){
+      if ($instance_data['state']['status'] == "Running"){
         $running_instances++;
+      }
+      $total_instances++;
     }
 
+    //Retrieve list of images
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/images?project=" . $project;
+    $image_api_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+    $image_api_data = json_decode($image_api_data, true);
+    $image_urls = $image_api_data['metadata'];
 
-    $url3 = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/images?project=" . $project;
-    $image_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url3");
-    $image_data = json_decode($image_data, true);
-    $image_urls = $image_data['metadata'];
+    //Retrieve list of profiles
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/profiles?project=" . $project;
+    $profile_api_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+    $profile_api_data = json_decode($profile_api_data, true);
+    $profile_urls = $profile_api_data['metadata'];
 
-    $url4 = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/profiles?project=" . $project;
-    $profile_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url4");
-    $profile_data = json_decode($profile_data, true);
-    $profile_urls = $profile_data['metadata'];
+    //Retrieve list of networks
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/networks?project=" . $project;
+    $network_api_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+    $network_api_data = json_decode($network_api_data, true);
+    $network_urls = $network_api_data['metadata'];
 
-    $url5 = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/networks?project=" . $project;
-    $network_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url5");
-    $network_data = json_decode($network_data, true);
-    $network_urls = $network_data['metadata'];
-
-    $url6 = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/storage-pools?project=" . $project;
-    $storage_pool_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url6");
-    $storage_pool_data = json_decode($storage_pool_data, true);
-    $storage_pool_urls = $storage_pool_data['metadata'];
+    //Retrieve list of storage pools
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/storage-pools?project=" . $project;
+    $storage_pool_api_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+    $storage_pool_api_data = json_decode($storage_pool_api_data, true);
+    $storage_pool_urls = $storage_pool_api_data['metadata'];
 
     echo '<div class="row">';
       echo '<div class="col-xl-5 col-lg-5">';
@@ -86,23 +97,34 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo "<li><strong>Architecture</strong>: " . htmlentities($architecture) . "</li>";
       echo "<li><strong>CPU Count</strong>: " . htmlentities($cpus) . "</li>";
       foreach($sockets as $socket){
-        echo "<li><strong>Socket " . $socket['socket'] . "</strong>: " . $socket['name'] . "</li>";
+        echo "<li><strong>Socket " . htmlentities($socket['socket']) . "</strong>: " . htmlentities($socket['name']?: "N/A") . "</li>";
       }
       echo "</ul>";
 
-      echo "<strong>Memory Total</strong>: " . htmlentities($memory_total) . " GB<br />";
-      echo "<strong>Memory Used</strong>: " . htmlentities($memory_used) . " GB<br />";
+      echo "<strong>Memory Total</strong>: " . htmlentities($memory_total) . " " . $memory_unit . "<br />";
+      echo "<strong>Memory Used</strong>: " . htmlentities($memory_used) . " " . $memory_unit . "<br />";
       echo "<br />";
 
       echo "<strong>Disk Storage Information</strong>: <br />";
       foreach($storage_disks as $disk){
         if ($disk['type'] == "cdrom")
           continue;
+
         echo "<ul>";
-        echo "<li><strong>Disk ID</strong>: " . $disk['id'] . "</li>";
-        echo "<li><strong>Disk model</strong>: " . $disk['model'] . "</li>";
-        echo "<li><strong>Disk type</strong>: " . $disk['type'] . "</li>";
-        echo "<li><strong>Disk size</strong>: " . number_format($disk['size']/1024/1024/1024,2) . " GB</li>";
+        echo "<li><strong>Disk ID</strong>: " . htmlentities($disk['id']?: "N/A") . "</li>";
+        echo "<li><strong>Disk model</strong>: " . htmlentities($disk['model']?: "N/A") . "</li>";
+        echo "<li><strong>Disk type</strong>: " . htmlentities($disk['type']?: "N/A") . "</li>";
+
+        if ($disk['size'] < 1099511627776) {
+          $disk_total = number_format($disk['size']/1024/1024/1024,2); //disk size in GB
+          $disk_unit = "GB";
+        }
+        else {
+          $disk_total = number_format($disk['size']/1024/1024/1024/1024,2); //disk size in TB
+          $disk_unit = "TB";
+        }
+
+        echo "<li><strong>Disk size</strong>: " . $disk_total . " " . $disk_unit . "</li>";
         echo "</ul>";
       }   
 
@@ -118,7 +140,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     echo '<i class="mr-3 mb-5 fas fa-cube fa-2x fa-fw" style="color:#cccccc"></i>';
     echo '<div class="media-body">';
     echo '<h6 class="mt-0 mb-1"><strong><a href="instances.html?remote='.$remote.'&project='.$project.'">Instances</a>:</strong></h6>';
-    echo $running_instances . " out of " . count($instance_urls) . " running"  ; 
+    echo $running_instances . " out of " . $total_instances . " running"  ; 
     echo '</div>';
     echo '</li>';
 
@@ -137,7 +159,10 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     echo '<i class="mr-3 mb-5 fas fa-address-card fa-2x fa-fw" style="color:#cccccc"></i>';
     echo '<div class="media-body">';
     echo '<h6 class="mt-0 mb-1"><strong><a href="profiles.html?remote='.$remote.'&project='.$project.'">Profiles</a>:</strong></h6>';
-    echo count($profile_urls) . " profiles created"; 
+    if (count($profile_urls) != 1)
+      echo count($profile_urls) . " profiles created";
+    else
+      echo count($profile_urls) . " profile created";
     echo '</div>';
     echo '</li>';
 
@@ -193,7 +218,7 @@ var ctx = document.getElementById("memoryDoughnutChart");
 var myPieChart = new Chart(ctx, {
   type: 'doughnut',
   data: {
-    labels: ["Used Memory (GB)", "Available Memory (GB)"],
+    labels: ["Used Memory (<?php echo $memory_unit;?>)", "Available Memory (<?php echo $memory_unit;?>)"],
     datasets: [{
       data: [<?php echo $memory_used;?>, <?php echo $memory_free;?>],
       backgroundColor: ['#4e73df', '#1cc88a'],
