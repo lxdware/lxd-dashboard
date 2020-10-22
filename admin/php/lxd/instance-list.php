@@ -16,19 +16,16 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   $db_results = $db_statement->execute();
 
   while($row = $db_results->fetchArray()){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/instances?project=" . $project;
-    $remote_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
-    $remote_data = json_decode($remote_data, true);
-    $instance_urls = $remote_data['metadata'];
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/instances?recursion=2&project=" . $project;
+    $instance_api_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+    $instance_api_data = json_decode($instance_api_data, true);
+    $instance_api_data = $instance_api_data['metadata'];
 
     $i = 0;
     echo '{ "data": [';
 
-    foreach ($instance_urls as $instance_url){
-      $url = "https://" . $row['host'] . ":" . $row['port'] . $instance_url . "?project=" . $project;
-      $instance_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
-      $instance_data = json_decode($instance_data, true);
-      $instance_data = $instance_data['metadata'];
+    foreach ($instance_api_data as $instance_data){
+
       if ($instance_data['name'] == "")
         continue;
 
@@ -59,7 +56,34 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     
       echo '"' . $instance_data['config']['image.description'] . '",';
       echo '"' . $instance_data['type'] . '",';
-      echo '"' . $instance_data['architecture'] . '",';
+
+      //Convert the memory usage to an appropriate unit
+      if ($instance_data['state']['memory']['usage'] < 1073741824){
+        $memory = number_format($instance_data['state']['memory']['usage']/1024/1024, 2);
+        $memory_unit = "MB";
+      }
+      else {
+        $memory = number_format($instance_data['state']['memory']['usage']/1024/1024/1024, 2);
+        $memory_unit = "GB";
+      }
+
+      echo '"' . $memory . " " . $memory_unit . '",';
+
+      //Convert the storage usage to an approprate unit
+      if ($instance_data['state']['disk']['root']['usage']  < 1073741824){
+        $disk_total = number_format($instance_data['state']['disk']['root']['usage']/1024/1024,2);
+        $disk_unit = "MB";
+      }
+      if ($instance_data['state']['disk']['root']['usage']  >= 1073741824 && $instance_data['state']['disk']['root']['usage'] < 1099511627776) {
+        $disk_total = number_format($instance_data['state']['disk']['root']['usage']/1024/1024/1024,2);
+        $disk_unit = "GB";
+      }
+      if ($instance_data['state']['disk']['root']['usage'] >= 1099511627776){
+        $disk_total = number_format($instance_data['state']['disk']['root']['usage']/1024/1024/1024/1024,2);
+        $disk_unit = "TB";
+      }
+
+      echo '"' . $disk_total . " " . $disk_unit . '",';
       echo '"' . $instance_data['status'] . '",';
 
       if ($instance_data['status'] == "Running"){
