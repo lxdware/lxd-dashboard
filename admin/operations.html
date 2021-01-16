@@ -88,7 +88,7 @@
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span>
+                <span class="mr-2 d-none d-lg-inline text-gray-600">Admin</span>
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -226,6 +226,36 @@
     window.location.replace("../index.html");
   }
 
+  function operationStatusCheck(){
+    //check to see if there are any running operations
+    $.get("./php/lxd/operation-status.php?remote=" + encodeURI(remoteName), function (data) {
+      //Check to see if we have running operations
+      if (data){
+        //Display spinner and notification area if there are running tasks
+        $('#spinner').show();
+        $('#notificationArea').show();
+        $('#notification').text(data);
+        //Set the page to check operations again in 1 second
+        setTimeout(() => { operationStatusCheck(); }, 1000);
+      }
+      else {
+        //Hide spinner and notification area if no running tasks
+        $('#spinner').hide();
+        $('#notificationArea').hide();
+        $('#notification').text("");
+        //Set the page to check operations again in 3 seconds
+        setTimeout(() => { operationStatusCheck(); }, 3000);
+      }
+    });
+  }
+
+  function reloadPageContent(){
+    $('#operationListTable').DataTable().ajax.reload();
+
+    //Set the page content to reload again in 3 more seconds
+    setTimeout(() => { reloadPageContent(); }, 3000);
+  }
+
   function loadPageContent(){
 
     //Check Authorization
@@ -252,10 +282,12 @@
         { targets: 0, orderable: false, width: "25px" }
       ]
     });
-  }
 
-  function reloadPageContent(){
-    $('#operationListTable').DataTable().ajax.reload();
+    //Check for any running operations
+    operationStatusCheck();
+
+    //Set the page content to reload once in 3 seconds
+    setTimeout(() => { reloadPageContent(); }, 3000);
   }
 
   //Called by Edit action, loads JSON data of project
@@ -282,7 +314,7 @@
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }
-      setTimeout(() => { reloadPageContent(); }, 1000); 
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -299,15 +331,11 @@
     //Load the card contents
     loadPageContent();
 
-    //Set page reload every 3 seconds
-    setInterval(function(){reloadPageContent()},  3000);
-
     $("#remoteListNav").load("./php/lxd/remote-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
     $("#projectListNav").load("./php/lxd/project-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
 
   });
 
-  
 </script>
 
 </html>

@@ -87,7 +87,7 @@
 
             <li class="nav-item">
               <a class="nav-link" href="#" data-toggle="modal" data-target="#clientCertModal">
-                <span class="mr-2 d-none d-lg-inline small text-primary">
+                <span class="mr-2 d-none d-lg-inline text-primary">
                   Client Certificate
                 </span>
               </a> 
@@ -95,7 +95,7 @@
 
             <li class="nav-item">
               <a class="nav-link" href="#" data-toggle="modal" data-target="#addLxdModal">
-                <span class="mr-2 d-none d-lg-inline small text-primary">
+                <span class="mr-2 d-none d-lg-inline text-primary">
                   Add Remote Host
                 </span>
               </a> 
@@ -106,7 +106,7 @@
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span>
+                <span class="mr-2 d-none d-lg-inline text-gray-600">Admin</span>
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -323,6 +323,13 @@
     window.location.replace("../index.html");
   }
 
+  function reloadPageContent() {
+    $('#lxdListTable').DataTable().ajax.reload();
+
+    //Set the page content to reload again in 5 more seconds
+    setTimeout(() => { reloadPageContent(); }, 5000);
+  }
+
   function loadPageContent(){
     
     //Check Authorization
@@ -352,10 +359,9 @@
     $.get("./php/lxd/lxc-cert.php", function (data) {
       $("#clientCert").html(data);
     });
-  }
 
-  function reloadPageContent() {
-    $('#lxdListTable').DataTable().ajax.reload();
+    //Set the page content to reload once in 5 seconds
+    setTimeout(() => { reloadPageContent(); }, 5000);
   }
 
   function addRemote(){
@@ -388,8 +394,6 @@
     //Load the card contents
     loadPageContent();
 
-    //Set page reload every 15 seconds
-    setInterval(function(){reloadPageContent()}, 15000);
   });
 
 </script>

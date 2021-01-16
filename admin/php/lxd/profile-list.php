@@ -16,21 +16,17 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   $db_results = $db_statement->execute();
 
   while($row = $db_results->fetchArray()){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/profiles?project=" . $project;
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/profiles?recursion=1&project=" . $project;
     $remote_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $remote_data = json_decode($remote_data, true);
-    $profile_urls = $remote_data['metadata'];
+    $profiles = $remote_data['metadata'];
 
     $i = 0;
     echo '{ "data": [';
 
-    foreach ($profile_urls as $profile_url){
-      $url = "https://" . $row['host'] . ":" . $row['port'] . $profile_url . "?project=" . $project;
-      $profile_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
-      $profile_data = json_decode($profile_data, true);
-      $profile_data = $profile_data['metadata'];
+    foreach ($profiles as $profile){
 
-      if ($profile_data['name'] == "")
+      if ($profile['name'] == "")
       continue;
     
       if ($i > 0){
@@ -42,12 +38,12 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo '"';
       echo "<i class='fas fa-address-card fa-lg' style='color:#4e73df'></i>";
       echo '",';
-      echo '"' . htmlentities($profile_data['name']) . '",';
-      echo '"' . htmlentities($profile_data['description']) . '",';
+      echo '"' . htmlentities($profile['name']) . '",';
+      echo '"' . htmlentities($profile['description']) . '",';
 
       echo '"';
         $ii = 0;
-        foreach($profile_data['devices'] as $device=>$value){
+        foreach($profile['devices'] as $device=>$value){
           if ($ii > 0)
             echo ", ";
           echo $device;
@@ -56,16 +52,9 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo '",';
 
       echo '"';
-        echo "<div class='dropdown no-arrow'>";
-        echo "<a class='dropdown-toggle' href='#' role='button' id='dropdownMenuLink' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>";
-        echo "<i class='fas fa-ellipsis-v fa-sm fa-fw text-gray-400'></i>";
-        echo "</a>";
-        echo "<div class='dropdown-menu dropdown-menu-right shadow animated--fade-in' aria-labelledby='dropdownMenuLink'>";
-        echo "<div class='dropdown-header'>Options:</div>";
-        echo "<a class='dropdown-item' href='#' onclick=loadProfileJson('".$profile_data['name']."')>Edit</a>";
-        echo "<a class='dropdown-item' href='#' onclick=deleteProfile('".$profile_data['name']."')>Delete</a>";
-        echo "</div>";
-        echo "</div>";
+        echo "<a href='#' onclick=loadProfileJson('".$profile['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd'></i></a>";
+        echo " &nbsp ";
+        echo "<a href='#' onclick=deleteProfile('".$profile['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd'></i></a>";
       echo '"';
 
       echo " ]";

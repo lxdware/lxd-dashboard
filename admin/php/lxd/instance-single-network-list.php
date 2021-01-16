@@ -21,7 +21,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     echo "<th>IPv4 Address</th>";
     echo "<th>IPv6 Address</th>";
     echo "<th>State</th>";
-    echo "<th style='width:75px'></th>";
+    echo "<th style='width:150px'></th>";
     echo "</tr>";
     echo "</thead>";
 
@@ -35,19 +35,19 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   $db_results = $db_statement->execute();
 
   while($row = $db_results->fetchArray()){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/instances/" . $instance . "/state?project=" . $project;
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/instances/" . $instance . "/state?recursion=1&project=" . $project;
     $remote_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $remote_data = json_decode($remote_data, true);
-    $network_names = $remote_data['metadata']['network'];
-    foreach ($network_names as $network_name => $network_data){
+    $networks = $remote_data['metadata']['network'];
 
+    foreach ($networks as $network => $network_data){
 
       echo "<tr>";
       if ($network_data['state'] == "up")
         echo "<td> <i class='fas fa-network-wired fa-lg' style='color:#4e73df'></i> </td>";
       else
         echo "<td> <i class='fas fa-network-wired fa-lg' style='color:#ddd'></i> </td>";
-      echo "<td>" . htmlentities($network_name) . "</td>";
+      echo "<td>" . htmlentities($network) . "</td>";
       echo "<td>" . htmlentities($network_data['hwaddr']) . "</td>";
 
       echo "<td>";
@@ -77,15 +77,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo "<td>" . htmlentities($network_data['state']) . "</td>";
 
       echo "<td>";
-        echo '<div class="dropdown no-arrow">';
-        echo '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
-        echo '<i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>';
-        echo '</a>';
-        echo '<div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">';
-        echo '<div class="dropdown-header">Options:</div>';
-        //echo '<a class="dropdown-item" href="#" onclick="detachProfile(' . escapeshellarg($network_name) . ')">Detach</a>';
-        echo '</div>';
-        echo '</div>';
+        //echo '<a href="#" onclick="detachProfile('.escapeshellarg($network).')"><i class="fas fa-trash-alt fa-lg" style="color:#ddd"></i></a>';
       echo "</td>";
       
       echo "</tr>";

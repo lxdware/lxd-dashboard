@@ -18,21 +18,17 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   $db_results = $db_statement->execute();
 
   while($row = $db_results->fetchArray()){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/storage-pools/" . $pool . "/volumes?project=" . $project;
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/storage-pools/" . $pool . "/volumes?recursion=1&project=" . $project;
     $remote_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $remote_data = json_decode($remote_data, true);
-    $storage_volume_urls = $remote_data['metadata'];
+    $storage_volumes = $remote_data['metadata'];
 
     $i = 0;
     echo '{ "data": [';
 
-    foreach ($storage_volume_urls as $storage_volume_url){
-      $url = "https://" . $row['host'] . ":" . $row['port'] . $storage_volume_url . "?project=" . $project;
-      $storage_volume_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
-      $storage_volume_data = json_decode($storage_volume_data, true);
-      $storage_volume_data = $storage_volume_data['metadata'];
+    foreach ($storage_volumes as $storage_volume){
       
-      if ($storage_volume_data['name'] == "")
+      if ($storage_volume['name'] == "")
       continue;
 
       if ($i > 0){
@@ -44,12 +40,12 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo '"';
       echo "<i class='fas fa-hdd fa-lg' style='color:#4e73df'></i>";
       echo '",';
-      echo '"' . htmlentities($storage_volume_data['name']) . '",';
-      echo '"' . htmlentities($storage_volume_data['type']) . '",';
+      echo '"' . htmlentities($storage_volume['name']) . '",';
+      echo '"' . htmlentities($storage_volume['type']) . '",';
 
       echo '"';
       $ii = 0;
-      foreach ($storage_volume_data['used_by'] as $item){
+      foreach ($storage_volume['used_by'] as $item){
         if ($ii >= 1)
           echo ", ";
         $ii++;
@@ -58,16 +54,9 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo '",';
 
       echo '"';
-        echo "<div class='dropdown no-arrow'>";
-        echo "<a class='dropdown-toggle' href='#' role='button' id='dropdownMenuLink' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>";
-        echo "<i class='fas fa-ellipsis-v fa-sm fa-fw text-gray-400'></i>";
-        echo "</a>";
-        echo "<div class='dropdown-menu dropdown-menu-right shadow animated--fade-in' aria-labelledby='dropdownMenuLink'>";
-        echo "<div class='dropdown-header'>Options:</div>";
-        echo "<a class='dropdown-item' href='#' onclick=loadStorageVolumeJson('".$storage_volume_url."')>Edit</a>";
-        echo "<a class='dropdown-item' href='#' onclick=deleteStorageVolume('".$storage_volume_url."')>Delete</a>";
-        echo "</div>";
-        echo "</div>";
+        //echo "<a href='#' onclick=loadStorageVolumeJson('".$storage_volume."')><i class='fas fa-edit fa-lg' style='color:#ddd'></i></a>";
+        //echo " &nbsp ";
+        //echo "<a href='#' onclick=deleteStorageVolume('".$storage_volume."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd'></i></a>";
       echo '"';
 
       echo " ]";

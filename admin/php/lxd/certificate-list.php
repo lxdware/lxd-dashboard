@@ -16,49 +16,36 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   $db_results = $db_statement->execute();
 
   while($row = $db_results->fetchArray()){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/certificates?project=" . $project;
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/certificates?recursion=1&project=" . $project;
     $remote_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $remote_data = json_decode($remote_data, true);
-    $certificate_urls = $remote_data['metadata'];
+    $certificates = $remote_data['metadata'];
 
     $i = 0;
     echo '{ "data": [';
 
-    foreach ($certificate_urls as $certificate_url){
-      $url = "https://" . $row['host'] . ":" . $row['port'] . $certificate_url . "?project=" . $project;
-      $certificate_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
-      $certificate_data = json_decode($certificate_data, true);
-      $certificate_data = $certificate_data['metadata'];
+    foreach ($certificates as $certificate){
       
-  if ($i > 0){
+      if ($i > 0){
         echo ",";
       }
       $i++;
 
       echo "[ ";
       echo '"';
-      echo "<a href='#' onclick=loadCertificateJson('".$certificate_data['fingerprint']."')> <i class='fas fa-wallet fa-lg' style='color:#4e73df'></i> </a>";    
+      echo "<a href='#' onclick=loadCertificateJson('".$certificate['fingerprint']."')> <i class='fas fa-wallet fa-lg' style='color:#4e73df'></i> </a>";    
       echo '",';
 
       echo '"';
-      echo "<a href='#' onclick=loadCertificateJson('".$certificate_data['fingerprint']."')>".htmlentities($certificate_data['name'])."</a>";
+      echo "<a href='#' onclick=loadCertificateJson('".$certificate['fingerprint']."')>".htmlentities($certificate['name'])."</a>";
       echo '",';
 
 
-      echo '"' . htmlentities($certificate_data['type']) . '",';
-      echo '"' . htmlentities($certificate_data['fingerprint']) . '",';
-
+      echo '"' . htmlentities($certificate['type']) . '",';
+      echo '"' . htmlentities($certificate['fingerprint']) . '",';
 
       echo '"';
-        echo "<div class='dropdown no-arrow'>";
-        echo "<a class='dropdown-toggle' href='#' role='button' id='dropdownMenuLink' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>";
-        echo "<i class='fas fa-ellipsis-v fa-lg fa-fw text-gray-400'></i>";
-        echo "</a>";
-        echo "<div class='dropdown-menu dropdown-menu-right shadow animated--fade-in' aria-labelledby='dropdownMenuLink'>";
-        echo "<div class='dropdown-header'>Options:</div>";
-        echo "<a class='dropdown-item' href='#' onclick=deleteCertificate('".$certificate_data['fingerprint']."')>Delete</a>";
-        echo "</div>";
-        echo "</div>";
+        echo "<a href='#' onclick=deleteCertificate('".$certificate['fingerprint']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd'></i></a>";
       echo '"';
 
       echo " ]";

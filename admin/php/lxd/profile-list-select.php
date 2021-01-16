@@ -17,20 +17,17 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   $db_results = $db_statement->execute();
 
   while($row = $db_results->fetchArray()){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/profiles?project=" . $project;
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/profiles?recursion=1&project=" . $project;
     $remote_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $remote_data = json_decode($remote_data, true);
-    $profile_urls = $remote_data['metadata'];
-    foreach ($profile_urls as $profile_url){
-      $url = "https://" . $row['host'] . ":" . $row['port'] . $profile_url . "?project=" . $project;
-      $profile_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
-      $profile_data = json_decode($profile_data, true);
-      $profile_data = $profile_data['metadata'];
+    $profiles = $remote_data['metadata'];
+
+    foreach ($profiles as $profile){
       
-      if ($profile_data['name'] == "")
+      if ($profile['name'] == "")
       continue;
     
-      echo '<option value="' . $profile_data['name'] . '">' . htmlentities($profile_data['name']) . '</option>';
+      echo '<option value="' . $profile['name'] . '">' . htmlentities($profile['name']) . '</option>';
     }
   }
 }

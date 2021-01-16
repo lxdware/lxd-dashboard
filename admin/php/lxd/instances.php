@@ -96,8 +96,20 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
         $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
         break;
       case "copyInstance":
-        $url = $url . "/1.0/instances?project=" . $project;
+        //Copying on clustered hosts requires target location. Determine location of instance being copied.
+        $instance_url = $url . "/1.0/instances/$instance?project=" . $project;
+        $instance_api_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $instance_url");
+        $instance_api_data = json_decode($instance_api_data, true);
+        $instance_data = $instance_api_data['metadata'];
+        $location = $instance_data['location']; //Returns "none" for instances on non-clusted hosts
+        //Copy instance on host to same host
+        $url = $url . "/1.0/instances?target=".$location."&project=" . $project;
         $data = escapeshellarg('{"name": "'. $name . '", "source":{"type":"copy","source": "'. $instance . '"}}');
+        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
+        break;
+      case "migrateInstance":
+        $url = $url . "/1.0/instances/" . $instance . "?target=" . $destination . "&project=";
+        $data = escapeshellarg('{"name": "'. $instance . '", "migration": true, "live": false}');
         $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
         break;
       case "attachProfile":

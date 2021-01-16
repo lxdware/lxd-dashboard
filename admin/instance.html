@@ -85,7 +85,7 @@
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span>
+                <span class="mr-2 d-none d-lg-inline text-gray-600">Admin</span>
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -146,6 +146,7 @@
                       <a class="dropdown-item" href="#" onclick="freezeInstance()" id="freezeInstanceOption">Freeze</a>
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameInstanceModal" id="renameInstanceOption">Rename</a>
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#copyInstanceModal" id="copyInstanceOption">Copy</a>
+                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#migrateInstanceModal" id="migrateInstanceOption">Migrate</a>
                       <a class="dropdown-item" href="#" onclick="initializeCreateBackup()" id="backupInstanceOption">Backup</a>
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#publishInstanceModal" id="publishInstanceOption">Publish</a>
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#deleteInstanceModal" id="deleteInstanceOption">Delete</a>
@@ -366,10 +367,11 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <label class="col-4 col-form-label text-right">Destination:</label>
+              <label class="col-4 col-form-label text-right">Cluster Member:</label>
               <div class="col-8">
                 <div class="form-group">
-                  <input type="text" id="migrateDestination" class="form-control" placeholder="Destination Host">
+                  <select id="selectClusterInput" class="form-control" name="cluster">
+                  </select>
                 </div>
               </div>
             </div>
@@ -585,7 +587,6 @@
     </div>
   </div>
 
-
   <!-- Bootstrap core JavaScript-->
   <script src="theme/vendor/jquery/jquery.min.js"></script>
   <script src="theme/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -604,14 +605,12 @@
   const remoteName = urlParams.get('remote');
   const instanceName = urlParams.get('instance');
   const projectName = urlParams.get('project');
-  var operationNumbers = [];
   var instanceDetails = "";
   var snapshotDetails = "";
   var networkDeviceDetails = "";
   var diskDeviceDetails = "";
   var proxyDeviceDetails = "";
   var profileDetails = "";
-  var redirectURL = "";
 
   function logout(){
     var http = new XMLHttpRequest();
@@ -632,6 +631,7 @@
         $('#unfreezeLink').hide();
         $('#renameInstanceOption').show();
         $('#copyInstanceOption').show();
+        $('#migrateInstanceOption').show();
         $('#publishInstanceOption').show();
         $('#deleteInstanceOption').show();
         break;
@@ -644,6 +644,7 @@
         $('#unfreezeLink').show();
         $('#renameInstanceOption').hide();
         $('#copyInstanceOption').show();
+        $('#migrateInstanceOption').hide();
         $('#publishInstanceOption').hide();
         $('#deleteInstanceOption').hide();
         break;
@@ -656,57 +657,91 @@
         $('#unfreezeLink').hide();
         $('#renameInstanceOption').hide();
         $('#copyInstanceOption').hide();
+        $('#migrateInstanceOption').hide();
         $('#publishInstanceOption').hide();
         $('#deleteInstanceOption').hide();
     }
   }
 
   function operationStatusCheck(){
-    operationNumbers = operationNumbers.filter(function(e){return e}); 
-    var numberOfOperations = operationNumbers.length;
-    if (numberOfOperations > 0){
-      $('#spinner').show();
-      for (i = 0; i < numberOfOperations; i++){
-        var elementNumber = i;
-        $.get("./php/lxd/operation-status.php?remote=" + encodeURI(remoteName) + "&id=" + encodeURI(operationNumbers[elementNumber]) , function (data) {
-          var operationData = JSON.parse(data);
-          console.log(operationData);
-          if (operationData.error_code == 404) { 
-            operationNumbers[elementNumber] = undefined;
-            if (redirectURL != ""){
-              window.location.replace(redirectURL);
-            }
-            reloadPageContent();
-          }
-          if (operationData.status_code == 200) {
-            if (operationData.metadata.status_code == 103){
-              $('#notificationArea').show();
-              $('#notification').text(operationData.metadata.description);
-            }
-            if (operationData.metadata.status_code == 200){
-              operationNumbers[elementNumber] = undefined;
-              if (redirectURL != ""){
-                window.location.replace(redirectURL);
-              }
-              reloadPageContent();
-            }
-            if (operationData.metadata.status_code >= 400){
-              operationNumbers[elementNumber] = undefined;
-              alert(operationData.metadata.err);
-              reloadPageContent();
-            }
-          } 
-        });
+    //check to see if there are any running operations
+    $.get("./php/lxd/operation-status.php?remote=" + encodeURI(remoteName), function (data) {
+      //Check to see if we have running operations
+      if (data){
+        //Display spinner and notification area if there are running tasks
+        $('#spinner').show();
+        $('#notificationArea').show();
+        $('#notification').text(data);
+        //Set the page to check operations again in 1 second
+        setTimeout(() => { operationStatusCheck(); }, 1000);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
-    }
-    else {
-      $('#spinner').hide();
-      $('#notificationArea').hide();
-      $('#notification').text("");
-    }
+      else {
+        //Hide spinner and notification area if no running tasks
+        $('#spinner').hide();
+        $('#notificationArea').hide();
+        $('#notification').text("");
+        //Set the page to check operations again in 3 seconds
+        setTimeout(() => { operationStatusCheck(); }, 3000);
+      }
+    });
   }
   
+  function reloadPageContent(){
+     //Display instance menu options based on state
+     $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=status", displayMenuOptions)
+    
+    //Load the basic info for the instance card if changed
+    $.get("./php/lxd/instance-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
+      if (instanceDetails != data){  
+        $("#instanceInfo").html(data);
+        instanceDetails = data;
+      }
+    });
+    
+    //Load the snapshot info for the snapshot card if changed
+    $.get("./php/lxd/instance-single-snapshot-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
+      if (snapshotDetails != data){  
+        $("#snapshotTableList").html(data);
+        snapshotDetails = data;
+      }  
+    });
+
+    //Load the network info for the network interfaces card if changed
+    $.get("./php/lxd/instance-single-network-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
+      if (networkDeviceDetails != data){  
+        $("#networkDeviceTableList").html(data);
+        networkDeviceDetails = data;
+      }  
+    });
+
+    //Load the disk info for the disk devices card if changed
+    $.get("./php/lxd/instance-single-disk-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
+      if (diskDeviceDetails != data){  
+        $("#diskDeviceTableList").html(data);
+        diskDeviceDetails = data;
+      }  
+    });
+
+    //Load the proxy info for the proxy devices card if changed
+    $.get("./php/lxd/instance-single-proxy-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
+      if (proxyDeviceDetails != data){  
+        $("#proxyDeviceTableList").html(data);
+        proxyDeviceDetails = data;
+      }  
+    });
+    
+    //Load the profile info for the profile card if changed
+    $.get("./php/lxd/instance-single-profile-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
+      if (profileDetails != data){  
+        $("#profileTableList").html(data);
+        profileDetails = data;
+      }  
+    });
+
+    //Set the page content to reload again in 3 more seconds
+    setTimeout(() => { reloadPageContent(); }, 3000);
+  }
+
   function loadPageContent(){
 
     //Check Authorization
@@ -766,59 +801,12 @@
         profileDetails = data;
       }  
     });
-  }
 
-  function reloadPageContent(){
-     //Display instance menu options based on state
-     $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=status", displayMenuOptions)
-    
-    //Load the basic info for the instance card if changed
-    $.get("./php/lxd/instance-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
-      if (instanceDetails != data){  
-        $("#instanceInfo").html(data);
-        instanceDetails = data;
-      }
-    });
-    
-    //Load the snapshot info for the snapshot card if changed
-    $.get("./php/lxd/instance-single-snapshot-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
-      if (snapshotDetails != data){  
-        $("#snapshotTableList").html(data);
-        snapshotDetails = data;
-      }  
-    });
+    //Check for any running operations
+    operationStatusCheck();
 
-    //Load the network info for the network interfaces card if changed
-    $.get("./php/lxd/instance-single-network-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
-      if (networkDeviceDetails != data){  
-        $("#networkDeviceTableList").html(data);
-        networkDeviceDetails = data;
-      }  
-    });
-
-    //Load the disk info for the disk devices card if changed
-    $.get("./php/lxd/instance-single-disk-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
-      if (diskDeviceDetails != data){  
-        $("#diskDeviceTableList").html(data);
-        diskDeviceDetails = data;
-      }  
-    });
-
-    //Load the proxy info for the proxy devices card if changed
-    $.get("./php/lxd/instance-single-proxy-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
-      if (proxyDeviceDetails != data){  
-        $("#proxyDeviceTableList").html(data);
-        proxyDeviceDetails = data;
-      }  
-    });
-    
-    //Load the profile info for the profile card if changed
-    $.get("./php/lxd/instance-single-profile-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
-      if (profileDetails != data){  
-        $("#profileTableList").html(data);
-        profileDetails = data;
-      }  
-    });
+    //Set the page content to reload once in 3 seconds
+    setTimeout(() => { reloadPageContent(); }, 3000);
   }
 
   function startInstance(){
@@ -827,13 +815,12 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -843,13 +830,12 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -859,13 +845,12 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -875,12 +860,12 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
       }
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -890,13 +875,12 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -906,13 +890,12 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -923,13 +906,12 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -940,14 +922,14 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
         redirectURL = "instance.html?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(newInstanceName);
+        window.location.replace(redirectURL);
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -958,13 +940,27 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+    });
+  }
+
+  function migrateInstance(){
+    var clusterInput = $("#selectClusterInput").val();
+    console.log("Info: migrating instance " + instanceName + " to " + clusterInput);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&destination=" + encodeURI(clusterInput) + "&action=migrateInstance", function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
+        operationStatusCheck();
+      }
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -974,14 +970,14 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
         redirectURL = "instances.html?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName)
+        window.location.replace(redirectURL);
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err)
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -994,7 +990,7 @@
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -1006,7 +1002,7 @@
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -1016,13 +1012,12 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
       }
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -1032,13 +1027,12 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
       }
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
   
@@ -1050,13 +1044,12 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -1108,13 +1101,12 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -1135,13 +1127,12 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -1159,7 +1150,6 @@
     });
   }
 
-
   $(document).ready(function(){
     
     //Load in the sidebar
@@ -1176,11 +1166,8 @@
     loadPageContent();
 
     //Populate the select options fields used in modals
-    //$("#selectRemoteInput").load("./php/lxd/remote-list-select.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
     $("#selectProfileInput").load("./php/lxd/profile-list-select.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
-    
-    //Set page reload every 15 seconds
-    setInterval(function(){reloadPageContent()}, 15000);
+    $("#selectClusterInput").load("./php/lxd/cluster-list-select.php?remote=" + encodeURI(remoteName));
 
     $("#remoteListNav").load("./php/lxd/remote-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
     $("#projectListNav").load("./php/lxd/project-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));

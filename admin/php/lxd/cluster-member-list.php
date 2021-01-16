@@ -23,21 +23,17 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo '{ "data": [';
     }
     else {
-      $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/cluster/members";
+      $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/cluster/members?recursion=1";
       $remote_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
       $remote_data = json_decode($remote_data, true);
-      $member_urls = $remote_data['metadata'];
+      $members = $remote_data['metadata'];
     
       $i = 0;
       echo '{ "data": [';
     
-      foreach ($member_urls as $member_url){
-        $url = "https://" . $row['host'] . ":" . $row['port'] . $member_url;
-        $member_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
-        $member_data = json_decode($member_data, true);
-        $member_data = $member_data['metadata'];
+      foreach ($members as $member){
     
-        $database_status = ($member_data['database'])?"true":"false";
+        $database_status = ($member['database'])?"true":"false";
     
         if ($i > 0){
           echo ",";
@@ -46,13 +42,13 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     
         echo "[ ";
         echo '"';
-        echo "<i class='fas fa-address-card fa-lg' style='color:#4e73df'></i>";
+        echo "<i class='fas fa-project-diagram  fa-lg' style='color:#4e73df'></i>";
         echo '",';
-        echo '"' . htmlentities($member_data['server_name']) . '",';
-        echo '"' . htmlentities($member_data['url']) . '",';
+        echo '"' . htmlentities($member['server_name']) . '",';
+        echo '"' . htmlentities($member['url']) . '",';
         echo '"' . htmlentities($database_status) . '",';
-        echo '"' . htmlentities($member_data['status']) . '",';
-        echo '"' . htmlentities($member_data['message']) . '",';
+        echo '"' . htmlentities($member['status']) . '",';
+        echo '"' . htmlentities($member['message']) . '",';
     
     
         echo '"';

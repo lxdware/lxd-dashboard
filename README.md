@@ -5,6 +5,7 @@ This LXD dashboard by LXDWARE is a full-featured web interface that makes it eas
 - Starting, stopping, renaming, and deleting LXD instances
 - Cloning/Copying instances
 - Creating, restoring and deleting snapshots of instances
+- Migrating instances between hosts on a cluster
 - Downloading LXD container and virtual machine images to your host
 - Creating, editing, and applying LXD profiles
 - Creating and editing networks, storage pools, and projects

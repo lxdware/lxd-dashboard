@@ -76,7 +76,7 @@
 
             <li class="nav-item dropdown no-arrow" id="notificationArea" style="display: none;">
               <div class="nav-link dropdown-toggle">
-                <span id="notification" class="mr-2 d-none d-lg-inline text-gray-600 small">Notification</span>
+                <span id="notification" class="mr-2 d-none d-lg-inline text-gray-600">Notification</span>
               </div>
             </li>
 
@@ -86,7 +86,7 @@
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span>
+                <span class="mr-2 d-none d-lg-inline text-gray-600">Admin</span>
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -119,27 +119,161 @@
           <div class="row">
 
             <div class="col-12">
-              <!-- LXD Host Details  -->
+              <!-- Host Details  -->
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">LXD Host Details</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">Host Details</h6>
                 </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                  <div id="hostCard">
+
+                <div class="row">
+                  <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12">
+                    <!-- Instance Details  -->
+                    <div class="card mb-4 border-0">
+                      <!-- Card Body -->
+                      <div class="card-body text-center">
+                        <div id="instanceCard">
+                          <!-- Instance Card -->
+                          <i class="mb-2 fas fa-cube fa-5x fa-fw" style="color:#cccccc"></i>
+                          <div class="media-body">
+                            <h5 class="mt-0 mb-1"><strong>Instances:</strong></h5>
+                            0 out of 0 running
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Instance Details -->
                   </div>
+
+                  <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12">
+                    <!-- Image Details  -->
+                    <div class="card mb-4 border-0">
+                      <!-- Card Body -->
+                      <div class="card-body text-center">
+                        <div id="imageCard">
+                          <!-- Image Card -->
+                          <i class="mb-2 fas fa-box-open fa-5x fa-fw" style="color:#cccccc"></i>
+                          <div class="media-body">
+                            <h5 class="mt-0 mb-1"><strong>Images:</strong></h5>
+                            0 images available
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Image Details -->
+                  </div>
+
+                  <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12">
+                    <!-- Cluster Details  -->
+                    <div class="card mb-4 border-0">
+                      <!-- Card Body -->
+                      <div class="card-body text-center">
+                        <div id="clusterCard">
+                          <!-- Cluster Card -->
+                          <i class="mb-2 fas fa-project-diagram fa-5x fa-fw" style="color:#cccccc"></i>
+                          <div class="media-body">
+                            <h5 class="mt-0 mb-1"><strong>Cluster:</strong></h5>
+                            0 out of 0 online
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Cluster Details -->
+                  </div>
+                  <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12">
+                    <!-- Project Details  -->
+                    <div class="card mb-4 border-0">
+                      <!-- Card Body -->
+                      <div class="card-body text-center">
+                        <div id="projectCard">
+                          <!-- Project Card -->
+                          <i class="mb-2 fas fa-chart-bar fa-5x fa-fw" style="color:#cccccc"></i>
+                          <div class="media-body">
+                            <h5 class="mt-0 mb-1"><strong>Projects:</strong></h5>
+                            0 project environments
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Project Details -->
+                  </div>
+
+                  <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12">
+                    <!-- Network Details  -->
+                    <div class="card mb-4 border-0">
+                      <!-- Card Body -->
+                      <div class="card-body text-center">
+                        <div id="networkCard">
+                          <!-- Network Card -->
+                          <i class="mb-2 fas fa-network-wired fa-5x fa-fw" style="color:#cccccc"></i>
+                          <div class="media-body">
+                            <h5 class="mt-0 mb-1"><strong>Networks:</strong></h5>
+                            0 network interfaces
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Network Details -->
+                  </div>
+
+                  <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12">
+                    <!-- Storage Details  -->
+                    <div class="card mb-4 border-0">
+                      <!-- Card Body -->
+                      <div class="card-body text-center">
+                        <div id="storageCard">
+                          <!-- Storage Card -->
+                          <i class="mb-2 fas fa-hdd fa-5x fa-fw" style="color:#cccccc"></i>
+                          <div class="media-body">
+                            <h5 class="mt-0 mb-1"><strong>Storage Pools:</strong></h5>
+                            0 dedicated storage pools
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Storage Details -->
+                  </div>
+
+                  <div class="col-sm-12 col-md-6">
+                    <!-- LXD Information  -->
+                    <div class="card mb-4 border-0">
+                      <!-- Card Header - Dropdown -->
+                      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">LXD Information</h6>
+                      </div>
+                      <!-- Card Body -->
+                      <div class="card-body">
+                        <div id="lxdCard">
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End LXD Information -->
+                  </div>
+
+                  <div class="col-sm-12 col-md-6">
+                    <!-- Resource Information -->
+                    <div class="card mb-4 border-0">
+                      <!-- Card Header - Dropdown -->
+                      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Resource Information</h6>
+                      </div>
+                      <!-- Card Body -->
+                      <div class="card-body">
+                        <div id="sysCard">
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Resource Information -->
+                  </div>
+
                 </div>
               </div>
-              <!-- End LXD Host Details -->
+              <!-- End Host Details -->
             </div>
 
-
           </div>
-
         </div>
         <!-- /.container-fluid -->
-
       </div>
       <!-- End of Main Content -->
 
@@ -163,8 +297,6 @@
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
-
-
 
   <!-- Bootstrap core JavaScript-->
   <script src="theme/vendor/jquery/jquery.min.js"></script>
@@ -194,6 +326,72 @@
     window.location.replace("../index.html");
   }
 
+  function operationStatusCheck(){
+    //check to see if there are any running operations
+    $.get("./php/lxd/operation-status.php?remote=" + encodeURI(remoteName), function (data) {
+      //Check to see if we have running operations
+      if (data){
+        //Display spinner and notification area if there are running tasks
+        $('#spinner').show();
+        $('#notificationArea').show();
+        $('#notification').text(data);
+        //Set the page to check operations again in 1 second
+        setTimeout(() => { operationStatusCheck(); }, 1000);
+      }
+      else {
+        //Hide spinner and notification area if no running tasks
+        $('#spinner').hide();
+        $('#notificationArea').hide();
+        $('#notification').text("");
+        //Set the page to check operations again in 3 seconds
+        setTimeout(() => { operationStatusCheck(); }, 3000);
+      }
+    });
+  }
+
+  function reloadPageContent() {
+    $("#instanceCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=instanceInfo");
+    $("#imageCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=imageInfo");
+    $("#networkCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=networkInfo");
+    $("#storageCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=storageInfo");
+    $("#sysCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=sysInfo");
+    $("#projectCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=projectInfo");
+    $("#clusterCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=clusterInfo");
+    $("#lxdCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=lxdInfo");
+
+    $("#remoteListNav").load("./php/lxd/remote-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
+    $("#projectListNav").load("./php/lxd/project-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
+    
+
+    //Set the page content to reload again in 5 more seconds
+    setTimeout(() => { reloadPageContent(); }, 5000);
+  }
+
+  function loadPageContent(){
+
+    $("#sidebarLinks").load("./sidebar.html");
+    
+    $('#remoteBreadCrumb').load("./php/lxd/remote-breadcrumb.php?remote=" + encodeURI(remoteName));
+
+    $("#instanceCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=instanceInfo");
+    $("#imageCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=imageInfo");
+    $("#networkCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=networkInfo");
+    $("#storageCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=storageInfo");
+    $("#sysCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=sysInfo");
+    $("#projectCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=projectInfo");
+    $("#clusterCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=clusterInfo");
+    $("#lxdCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=lxdInfo");
+
+    $("#remoteListNav").load("./php/lxd/remote-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
+    $("#projectListNav").load("./php/lxd/project-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
+
+    //Check for any running operations
+    operationStatusCheck();
+
+    //Set the page content to reload once in 5 seconds
+    setTimeout(() => { reloadPageContent(); }, 5000);
+  }
+
   $(document).ready(function(){
     
     //Check Authorization
@@ -203,19 +401,11 @@
       }
     });
 
-    $("#sidebarLinks").load("./sidebar.html");
-    
-    $('#remoteBreadCrumb').load("./php/lxd/remote-breadcrumb.php?remote=" + encodeURI(remoteName));
+    //Load Page Content
+    loadPageContent();
 
-    $("#hostCard").load("./php/lxd/host-single.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
-
-    $("#remoteListNav").load("./php/lxd/remote-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
-    $("#projectListNav").load("./php/lxd/project-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
   });
 
-
-
 </script>
-
 
 </html>

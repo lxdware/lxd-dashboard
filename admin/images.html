@@ -88,7 +88,7 @@
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span>
+                <span class="mr-2 d-none d-lg-inline text-gray-600">Admin</span>
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -253,7 +253,6 @@
     </div>
   </div>
 
-
   <!-- Bootstrap core JavaScript-->
   <script src="theme/vendor/jquery/jquery.min.js"></script>
   <script src="theme/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -276,7 +275,6 @@
   const remoteName = urlParams.get('remote'); 
   const projectName = urlParams.get('project');
   var selectList = "";
-  var operationNumbers = [];
   var imageToUpdate = "";
 
   function logout(){
@@ -287,45 +285,43 @@
   }
 
   function operationStatusCheck(){
-    operationNumbers = operationNumbers.filter(function(e){return e}); 
-    var numberOfOperations = operationNumbers.length;
-    if (numberOfOperations > 0){
-      $('#spinner').show();
-      for (i = 0; i < numberOfOperations; i++){
-        var elementNumber = i;
-        $.get("./php/lxd/operation-status.php?remote=" + encodeURI(remoteName) + "&id=" + encodeURI(operationNumbers[elementNumber]) , function (data) {
-          var operationData = JSON.parse(data);
-          console.log(operationData);
-          if (operationData.error_code == 404) { 
-            operationNumbers[elementNumber] = undefined;
-            reloadPageContent();
-          }
-          if (operationData.status_code == 200) {
-            if (operationData.metadata.status_code == 103){
-              $('#notificationArea').show();
-              $('#notification').text(operationData.metadata.description);
-            }
-            if (operationData.metadata.status_code == 200){
-              operationNumbers[elementNumber] = undefined;
-              reloadPageContent();
-            }
-            if (operationData.metadata.status_code >= 400){
-              operationNumbers[elementNumber] = undefined;
-              alert(operationData.metadata.err);
-              reloadPageContent();
-            }
-          } 
-        });
+    //check to see if there are any running operations
+    $.get("./php/lxd/operation-status.php?remote=" + encodeURI(remoteName), function (data) {
+      //Check to see if we have running operations
+      if (data){
+        //Display spinner and notification area if there are running tasks
+        $('#spinner').show();
+        $('#notificationArea').show();
+        $('#notification').text(data);
+        //Set the page to check operations again in 1 second
+        setTimeout(() => { operationStatusCheck(); }, 1000);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
-    }
-    else {
-      $('#spinner').hide();
-      $('#notificationArea').hide();
-      $('#notification').text("");
-    }
+      else {
+        //Hide spinner and notification area if no running tasks
+        $('#spinner').hide();
+        $('#notificationArea').hide();
+        $('#notification').text("");
+        //Set the page to check operations again in 3 seconds
+        setTimeout(() => { operationStatusCheck(); }, 3000);
+      }
+    });
   }
 
+  function reloadPageContent() {
+    $('#imageListTable').DataTable().ajax.reload();
+
+    //Load the select List for Download Image Modal
+    $.get("./php/lxd/simplestreams-list-select.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
+      if (selectList != data){  
+        $("#selectRepoInput").html(data);
+        selectList = data;
+      }
+    });
+
+    //Set the page content to reload again in 3 more seconds
+    setTimeout(() => { reloadPageContent(); }, 3000);
+  }
+  
   function loadPageContent(){
     //Check Authorization
     $.get("./php/auth/auth-check.php", function (data) {
@@ -357,20 +353,14 @@
         selectList = data;
       }
     });
+
+    //Check for any running operations
+    operationStatusCheck();
+
+    //Set the page content to reload once in 3 seconds
+    setTimeout(() => { reloadPageContent(); }, 3000);
   }
     
-  function reloadPageContent() {
-    $('#imageListTable').DataTable().ajax.reload();
-
-    //Load the select List for Download Image Modal
-    $.get("./php/lxd/simplestreams-list-select.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
-      if (selectList != data){  
-        $("#selectRepoInput").html(data);
-        selectList = data;
-      }
-    });
-  }
-
   //API uses async
   function refreshImage(imageFingerprint){
     console.log("Info: refreshing image " + imageFingerprint);
@@ -378,13 +368,12 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -395,13 +384,12 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -415,13 +403,12 @@
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
-        operationNumbers.push(operationData.metadata.id);
         operationStatusCheck();
       }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -450,7 +437,7 @@
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }
-      setTimeout(() => { operationStatusCheck(); }, 4000);
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -467,15 +454,11 @@
     //Load the card contents
     loadPageContent();
 
-    //Set page reload every 15 seconds
-    setInterval(function(){reloadPageContent()}, 15000);
-
     $("#remoteListNav").load("./php/lxd/remote-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
     $("#projectListNav").load("./php/lxd/project-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
 
   });
 
-  
 </script>
 
 </html>

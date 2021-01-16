@@ -55,6 +55,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       }
     
       echo '"' . $instance_data['config']['image.description'] . '",';
+      echo '"' . $instance_data['location'] . '",';
       echo '"' . $instance_data['type'] . '",';
 
       //Convert the memory usage to an appropriate unit

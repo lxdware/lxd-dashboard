@@ -20,7 +20,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   echo '    <th>Stateful/Stateless</th>';
   echo '    <th>Size</th>';
   echo '    <th>Created At</th>';
-  echo "    <th style='width:75px'></th>";
+  echo "    <th style='width:150px'></th>";
   echo '  </tr>';
   echo '</thead>';
   echo '<tbody>';
@@ -32,19 +32,17 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   $db_results = $db_statement->execute();
 
   while($row = $db_results->fetchArray()){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/instances/" . $instance . "/snapshots?project=" . $project;
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/instances/" . $instance . "/snapshots?recursion=1&project=" . $project;
     $remote_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $remote_data = json_decode($remote_data, true);
-    $snapshot_urls = $remote_data['metadata'];
-    foreach ($snapshot_urls as $snapshot_url){
-      $url = "https://" . $row['host'] . ":" . $row['port'] . $snapshot_url . "?project=" . $project;
-      $snapshot_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
-      $snapshot_data = json_decode($snapshot_data, true);
-      $snapshot_data = $snapshot_data['metadata'];
-      if ($snapshot_data['name'] == "")
+    $snapshots = $remote_data['metadata'];
+
+    foreach ($snapshots as $snapshot){
+
+      if ($snapshot['name'] == "")
       continue;
 
-      if ($snapshot_data['stateful'])
+      if ($snapshot['stateful'])
         $state = "stateful";
       else
         $state = "stateless";
@@ -52,22 +50,15 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo "<tr>";
 
       echo "<td> <i class='fas fa-clone fa-lg' style='color:#4e73df'></i> </td>";
-      echo "<td>" . htmlentities($snapshot_data['name']) . "</td>";
+      echo "<td>" . htmlentities($snapshot['name']) . "</td>";
       echo "<td>" . htmlentities($state) . "</td>";
-      echo "<td>" . htmlentities(number_format($snapshot_data['size']/1024/1024,2)) . "MB</td>";
-      echo "<td>" . htmlentities($snapshot_data['created_at']) . "</td>";
+      echo "<td>" . htmlentities(number_format($snapshot['size']/1024/1024,2)) . "MB</td>";
+      echo "<td>" . htmlentities($snapshot['created_at']) . "</td>";
 
       echo "<td>";
-        echo '<div class="dropdown no-arrow">';
-        echo '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
-        echo '<i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>';
-        echo '</a>';
-        echo '<div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">';
-        echo '<div class="dropdown-header">Options:</div>';
-        echo '<a class="dropdown-item" href="#" onclick="restoreSnapshot(' . escapeshellarg($snapshot_data['name']) . ')">Restore</a>';
-        echo '<a class="dropdown-item" href="#" onclick="deleteSnapshot(' . escapeshellarg($snapshot_data['name']) . ')">Delete</a>';
-        echo '</div>';
-        echo '</div>';
+        echo '<a href="#" onclick="restoreSnapshot('.escapeshellarg($snapshot['name']).')"><i class="fas fa-window-restore fa-lg" style="color:#ddd"></i></a>';
+        echo ' &nbsp ';
+        echo '<a href="#" onclick="deleteSnapshot('.escapeshellarg($snapshot['name']).')"><i class="fas fa-trash-alt fa-lg" style="color:#ddd"></i></a>';
       echo "</td>";
       
       echo "</tr>";

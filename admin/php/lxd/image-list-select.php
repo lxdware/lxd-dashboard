@@ -19,21 +19,16 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   $db_results = $db_statement->execute();
 
   while($row = $db_results->fetchArray()){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/images?project=" . $project;
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/images?recursion=1&project=" . $project;
     $remote_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $remote_data = json_decode($remote_data, true);
-    $image_urls = $remote_data['metadata'];
-    foreach ($image_urls as $image_url){
-      $url = "https://" . $row['host'] . ":" . $row['port'] . $image_url . "?project=" . $project;
-      $image_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
-      $image_data = json_decode($image_data, true);
-      $image_data = $image_data['metadata'];
+    $images = $remote_data['metadata'];
+    foreach ($images as $image){
 
-      if ($image_data['fingerprint'] == "" || $image_data['type'] != $image_type)
+      if ($image['fingerprint'] == "" || $image['type'] != $image_type)
       continue;
 
-      echo '<option value="' . $image_data['fingerprint'] . '">' . htmlentities($image_data['properties']['description']) . '</option>';
-
+      echo '<option value="' . $image['fingerprint'] . '">' . htmlentities($image['properties']['description']) . '</option>';
 
     }
   }

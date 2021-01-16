@@ -16,19 +16,15 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   $db_results = $db_statement->execute();
 
   while($row = $db_results->fetchArray()){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/projects";
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/projects?recursion=1";
     $remote_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $remote_data = json_decode($remote_data, true);
-    $project_urls = $remote_data['metadata'];
+    $projects = $remote_data['metadata'];
 
     $i = 0;
     echo '{ "data": [';
 
-    foreach ($project_urls as $project_url){
-      $url = "https://" . $row['host'] . ":" . $row['port'] . $project_url;
-      $project_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
-      $project_data = json_decode($project_data, true);
-      $project_data = $project_data['metadata'];
+    foreach ($projects as $project_data){
 
       if ($i > 0){
         echo ",";
@@ -37,7 +33,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
       echo "[ ";
       echo '"';
-      echo "<a href='host.html?remote=".$remote."&project=".$project_data['name'] ."'><i class='fas fa-project-diagram fa-lg' style='color:#4e73df'></i> </a>";
+      echo "<a href='host.html?remote=".$remote."&project=".$project_data['name'] ."'><i class='fas fa-chart-bar fa-lg' style='color:#4e73df'></i> </a>";
       echo '",';
 
       echo '"';
@@ -49,18 +45,10 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo '"' . htmlentities($project_data['config']['features.profiles']) . '",';
       echo '"' . htmlentities($project_data['config']['features.storage.volumes']) . '",';
 
-
       echo '"';
-        echo "<div class='dropdown no-arrow'>";
-        echo "<a class='dropdown-toggle' href='#' role='button' id='dropdownMenuLink' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>";
-        echo "<i class='fas fa-ellipsis-v fa-sm fa-fw text-gray-400'></i>";
-        echo "</a>";
-        echo "<div class='dropdown-menu dropdown-menu-right shadow animated--fade-in' aria-labelledby='dropdownMenuLink'>";
-        echo "<div class='dropdown-header'>Options:</div>";
-        echo "<a class='dropdown-item' href='#' onclick=loadProjectJson('".$project_data['name']."')>Edit</a>";
-        echo "<a class='dropdown-item' href='#' onclick=deleteProject('".$project_data['name']."')>Delete</a>";
-        echo "</div>";
-        echo "</div>";
+        echo "<a href='#' onclick=loadProjectJson('".$project_data['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd'></i></a>";
+        echo " &nbsp ";
+        echo "<a href='#' onclick=deleteProject('".$project_data['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd'></i></a>";
       echo '"';
 
       echo " ]";

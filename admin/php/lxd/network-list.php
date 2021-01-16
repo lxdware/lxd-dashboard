@@ -16,24 +16,20 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   $db_results = $db_statement->execute();
 
   while($row = $db_results->fetchArray()){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/networks?project=" . $project;
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/networks?recursion=1&project=" . $project;
     $remote_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $remote_data = json_decode($remote_data, true);
-    $network_urls = $remote_data['metadata'];
+    $networks = $remote_data['metadata'];
 
     $i = 0;
     echo '{ "data": [';
 
-    foreach ($network_urls as $network_url){
-      $url = "https://" . $row['host'] . ":" . $row['port'] . $network_url . "?project=" . $project;
-      $network_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
-      $network_data = json_decode($network_data, true);
-      $network_data = $network_data['metadata'];
+    foreach ($networks as $network){
       
-      if ($network_data['name'] == "")
+      if ($network['name'] == "")
       continue;
 
-      $network_data_managed = ($network_data['managed'])?"true":"false";
+      $network_data_managed = ($network['managed'])?"true":"false";
 
       if ($i > 0){
         echo ",";
@@ -42,29 +38,21 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
       echo "[ ";
       echo '"';
-      if ($network_data['managed'] == "true")
+      if ($network['managed'] == "true")
         echo "<i class='fas fa-network-wired fa-lg' style='color:#4e73df'></i>";
       else
         echo "<i class='fas fa-network-wired fa-lg' style='color:#ddd'></i>";
       echo '",';
-      echo '"' . htmlentities($network_data['name']) . '",';
-      echo '"' . htmlentities($network_data['description']) . '",';
-      echo '"' . htmlentities($network_data['type']) . '",';
+      echo '"' . htmlentities($network['name']) . '",';
+      echo '"' . htmlentities($network['description']) . '",';
+      echo '"' . htmlentities($network['type']) . '",';
       echo '"' . htmlentities($network_data_managed) . '",';
 
-
       echo '"';
-      if ($network_data['managed'] == "true"){
-        echo "<div class='dropdown no-arrow'>";
-        echo "<a class='dropdown-toggle' href='#' role='button' id='dropdownMenuLink' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>";
-        echo "<i class='fas fa-ellipsis-v fa-sm fa-fw text-gray-400'></i>";
-        echo "</a>";
-        echo "<div class='dropdown-menu dropdown-menu-right shadow animated--fade-in' aria-labelledby='dropdownMenuLink'>";
-        echo "<div class='dropdown-header'>Options:</div>";
-        echo "<a class='dropdown-item' href='#' onclick=loadNetworkJson('".$network_data['name']."')>Edit</a>";
-        echo "<a class='dropdown-item' href='#' onclick=deleteNetwork('".$network_data['name']."')>Delete</a>";
-        echo "</div>";
-        echo "</div>";
+      if ($network['managed'] == "true"){
+        echo "<a href='#' onclick=loadNetworkJson('".$network['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd'></i></a>";
+        echo " &nbsp ";
+        echo "<a href='#' onclick=deleteNetwork('".$network['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd'></i></a>";
       }
       echo '"';
 

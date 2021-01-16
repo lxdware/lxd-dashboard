@@ -17,15 +17,30 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   $db_results = $db_statement->execute();
 
   while($row = $db_results->fetchArray()){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/operations/" . $id;
-    $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/operations?recursion=1";
+    $operations_api_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+    $operations_api_data= json_decode($operations_api_data, true);
+    $operations_data = $operations_api_data['metadata'];
+    
+    if (empty($operations_data)){
+      $results = "";
+    }
+    else {
+      if (empty($operations_data['running'])){
+        $results =  "";
+      }
+      else {
+        foreach ($operations_data['running'] as $task){
+          $results =  $task['description'];
+          if ($task['description'] == "Downloading image"){
+            $results .= " " . $task['metadata']['download_progress'];
+          }
+        }
+      }
+
+    }    
   }
-
   echo $results;
-
-}
-else {
-  echo '{"error": "not authenticated", "error_code": "401", "metadata": {"err": "not authenticated", "status_code": "401"}}';
 }
 
 ?>

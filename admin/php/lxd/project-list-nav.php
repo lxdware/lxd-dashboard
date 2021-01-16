@@ -19,33 +19,28 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   $db_results = $db_statement->execute();
 
   while($row = $db_results->fetchArray()){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/projects";
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/projects?recursion=1";
     $project_results = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $project_results = json_decode($project_results, true);
-    $project_urls = $project_results['metadata'];
+    $projects = $project_results['metadata'];
 
 
     //echo '<li class="nav-item dropdown no-arrow">';
     echo '<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
-    echo '<span class="mr-2 d-none d-lg-inline text-gray-600 small">Project: <strong>'. htmlentities($project) . '</strong></span>';
+    echo '<span class="mr-2 d-none d-lg-inline text-gray-600">Project: <strong>'. htmlentities($project) . '</strong></span>';
     echo '</a>';
     echo '<!-- Dropdown - User Information -->';
     echo '<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">';
 
-    foreach ($project_urls as $project_url){
-      $url = "https://" . $row['host'] . ":" . $row['port'] . $project_url;
-      $project_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
-      $project_data = json_decode($project_data, true);
-      $project_data = $project_data['metadata']; 
-
+    foreach ($projects as $project_data){
     
       if ($project_data['name'] == $project)
-        echo '<a class="dropdown-item"  href="'.$return_url.'?remote=' . $remote . '&project=' . $project_data['name'] . '"><i class="fas fa-project-diagram fa-sm fa-fw mr-2 text-gray-400"></i><strong>' . htmlentities($project_data['name']) . '</strong></a>';
+        echo '<a class="dropdown-item"  href="'.$return_url.'?remote=' . $remote . '&project=' . $project_data['name'] . '"><i class="fas fa-chart-bar fa-sm fa-fw mr-2 text-gray-400"></i><strong>' . htmlentities($project_data['name']) . '</strong></a>';
       else {
         if (basename($return_url) == "instance.html")
-          echo '<a class="dropdown-item"  href="instances.html?remote=' . $remote . '&project=' . $project_data['name'] . '"><i class="fas fa-project-diagram fa-sm fa-fw mr-2 text-gray-400"></i>' . htmlentities($project_data['name']) . '</a>';
+          echo '<a class="dropdown-item"  href="instances.html?remote=' . $remote . '&project=' . $project_data['name'] . '"><i class="fas fa-chart-bar fa-sm fa-fw mr-2 text-gray-400"></i>' . htmlentities($project_data['name']) . '</a>';
         else
-          echo '<a class="dropdown-item"  href="'.$return_url.'?remote=' . $remote . '&project=' . $project_data['name'] . '"><i class="fas fa-project-diagram fa-sm fa-fw mr-2 text-gray-400"></i>' . htmlentities($project_data['name']) . '</a>';
+          echo '<a class="dropdown-item"  href="'.$return_url.'?remote=' . $remote . '&project=' . $project_data['name'] . '"><i class="fas fa-chart-bar fa-sm fa-fw mr-2 text-gray-400"></i>' . htmlentities($project_data['name']) . '</a>';
       }
     }
 

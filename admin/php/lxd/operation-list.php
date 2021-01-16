@@ -16,7 +16,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   $db_results = $db_statement->execute();
 
   while($row = $db_results->fetchArray()){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/operations";
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/operations?recursion=1";
     $remote_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $remote_data = json_decode($remote_data, true);
     $operations_dict = $remote_data['metadata'];
@@ -24,14 +24,10 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     $i = 0;
     echo '{ "data": [';
 
-    foreach ($operations_dict as $operations_url){
+    foreach ($operations_dict as $operations){
 
 
-      foreach ($operations_url as $operation_url){
-        $url = "https://" . $row['host'] . ":" . $row['port'] . $operation_url;
-        $operation_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
-        $operation_data = json_decode($operation_data, true);
-        $operation_data = $operation_data['metadata'];
+      foreach ($operations as $operation){
 
         if ($i > 0){
           echo ",";
@@ -40,24 +36,24 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     
         echo "[ ";
         echo '"';
-        echo "<a href='#' onclick=loadOperationJson('".$operation_data['id']."')> <i class='fas fa-exchange-alt fa-lg' style='color:#4e73df'></i> </a>";    
+        echo "<a href='#' onclick=loadOperationJson('".$operation['id']."')> <i class='fas fa-exchange-alt fa-lg' style='color:#4e73df'></i> </a>";    
         echo '",';
 
         echo '"';
-        echo "<a href='#' onclick=loadOperationJson('".$operation_data['id']."')>".htmlentities($operation_data['id'])."</a>";
+        echo "<a href='#' onclick=loadOperationJson('".$operation['id']."')>".htmlentities($operation['id'])."</a>";
         echo '",';
 
-        echo '"' . htmlentities($operation_data['class']) . '",';
-        echo '"' . htmlentities($operation_data['description']) . '",';
-        echo '"' . htmlentities($operation_data['status']) . '",';
-        echo '"' . htmlentities($operation_data['created_at']) . '",';
+        echo '"' . htmlentities($operation['class']) . '",';
+        echo '"' . htmlentities($operation['description']) . '",';
+        echo '"' . htmlentities($operation['status']) . '",';
+        echo '"' . htmlentities($operation['created_at']) . '",';
 
-        if($operation_data['may_cancel']){
+        if($operation['may_cancel']){
           $may_cancel = "true";
           echo '"' . htmlentities($may_cancel) . '",';
 
           echo '"';
-          echo "<a href='#' onclick=deleteOperation('".$operation_data['id']."')> <i class='fas fa-stop fa-lg' style='color:#ddd'></i> </a>";
+          echo "<a href='#' onclick=deleteOperation('".$operation['id']."')> <i class='fas fa-trash-alt fa-lg' style='color:#ddd'></i> </a>";
           echo '"';
         }
           
