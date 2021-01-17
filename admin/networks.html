@@ -61,6 +61,25 @@
           </button>
 
 
+          <!-- Topbar Notification -->
+          <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+            <ul class="navbar-nav ml-auto"> 
+
+              <li>
+                <div class="nav-item spinner-border m-3" role="status" style="display:none;" id="spinner">
+                  <span class="nav-item sr-only">Loading...</span>
+                </div>
+              </li>
+  
+              <li class="nav-item dropdown no-arrow" id="notificationArea" style="display: none;">
+                <div class="nav-link dropdown-toggle">
+                  <span id="notification" class="mr-2 d-none d-lg-inline text-gray-600">Notification</span>
+                </div>
+              </li>
+              
+            </ul>
+          </div>
+
 
          <!-- Topbar Navbar -->
          <ul class="navbar-nav ml-auto"> 
@@ -69,18 +88,6 @@
           </li>
 
           <li class="nav-item dropdown" id="projectListNav">
-          </li>
-
-          <li>
-            <div class="nav-item spinner-grow text-primary m-3" role="status" style="display:none;" id="spinner">
-              <span class="nav-item sr-only">Loading...</span>
-            </div>
-          </li>
-
-          <li class="nav-item dropdown no-arrow" id="notificationArea" style="display: none;">
-            <div class="nav-link dropdown-toggle">
-              <span id="notification" class="mr-2 d-none d-lg-inline text-gray-600 small">Notification</span>
-            </div>
           </li>
 
           <div class="topbar-divider d-none d-sm-block"></div>

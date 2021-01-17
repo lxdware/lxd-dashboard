@@ -45,7 +45,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo '"' . htmlentities($certificate['fingerprint']) . '",';
 
       echo '"';
-        echo "<a href='#' onclick=deleteCertificate('".$certificate['fingerprint']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd'></i></a>";
+        echo "<a href='#' onclick=deleteCertificate('".$certificate['fingerprint']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
       echo '"';
 
       echo " ]";

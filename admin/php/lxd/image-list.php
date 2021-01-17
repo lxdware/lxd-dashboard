@@ -44,11 +44,11 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo '"' . htmlentities(number_format($image['size'] / 1048576, 2)) . ' MB",';
 
       echo '"';
-        echo "<a href='#' onclick=refreshImage('".$image['fingerprint']."')><i class='fas fa-sync-alt fa-lg' style='color:#ddd'></i></a>";
+        echo "<a href='#' onclick=refreshImage('".$image['fingerprint']."')><i class='fas fa-sync-alt fa-lg' style='color:#ddd' title='Refresh' aria-hidden='true'></i></a>";
         echo " &nbsp ";
-        echo "<a href='#' onclick=loadImageJson('".$image['fingerprint']."')><i class='fas fa-edit fa-lg' style='color:#ddd'></i></a>";
+        echo "<a href='#' onclick=loadImageJson('".$image['fingerprint']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
         echo " &nbsp ";
-        echo "<a href='#' onclick=deleteImage('".$image['fingerprint']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd'></i></a>";
+        echo "<a href='#' onclick=deleteImage('".$image['fingerprint']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
       echo '"';
 
       echo " ]";

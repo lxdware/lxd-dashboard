@@ -89,12 +89,12 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
       if ($instance_data['status'] == "Running"){
         echo '"';
-        echo "<a href='#' onclick=stopInstance('".$instance_data['name']."')> <i class='fas fa-stop fa-lg' style='color:#ddd'></i> </a>";
+        echo "<a href='#' onclick=stopInstance('".$instance_data['name']."')> <i class='fas fa-stop fa-lg' style='color:#ddd' title='Stop' aria-hidden='true'></i> </a>";
         echo '"';
       }
       else{
         echo '"';
-        echo "<a href='#' onclick=startInstance('".$instance_data['name']."')> <i class='fas fa-play fa-lg' style='color:#ddd'></i> </a>";
+        echo "<a href='#' onclick=startInstance('".$instance_data['name']."')> <i class='fas fa-play fa-lg' style='color:#ddd' title='Start' aria-hidden='true'></i> </a>";
         echo '"';
       }
       

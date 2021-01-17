@@ -41,12 +41,44 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     //Run the matching action
     switch ($action) {
       case "createStoragePoolForm":
-        $url = $url . "/1.0/storage-pools?project=" . $project;
-        if ($driver == "dir" || $driver == "ceph")
-          $data = escapeshellarg('{"driver": "'.$driver.'","name": "'.$name.'","description": "'.$description.'"}');
-        else
-          $data = escapeshellarg('{"config": {"size": "'.$size.'GB"},"driver": "'.$driver.'","name": "'.$name.'","description": "'.$description.'"}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
+        //Check to see if host is part of a cluster. Clusted hosts need storage pool created first on each of the hosts
+        $enabled_url = $url . "/1.0/cluster";
+        $remote_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $enabled_url");
+        $remote_data = json_decode($remote_data, true);
+        $cluster_status = $remote_data['metadata'];
+        if ($cluster_status['enabled'] = true){
+          //Now setup storage pool on each cluster member, putting them in pending status
+          $cluster_url = $url . "/1.0/cluster/members?recursion=1";
+          $cluster_api_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $cluster_url");
+          $cluster_api_data = json_decode($cluster_api_data, true);
+          $cluster_api_data = $cluster_api_data['metadata'];
+          foreach ($cluster_api_data as $cluster_data){
+            if ($cluster_data['status'] == "Online"){
+              $member_url = $url . "/1.0/storage-pools?target=".$cluster_data['server_name']."&project=" . $project;
+              if ($driver == "dir" || $driver == "ceph")
+                $data = escapeshellarg('{"driver": "'.$driver.'","name": "'.$name.'","description": "'.$description.'"}');
+              else
+                $data = escapeshellarg('{"config": {"size": "'.$size.'GB"},"driver": "'.$driver.'","name": "'.$name.'","description": "'.$description.'"}');
+              $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $member_url");
+            }
+          }
+          //Now lets create the storage pool without config, moving the pending status to created
+          $url = $url . "/1.0/storage-pools?project=" . $project;
+          if ($driver == "dir" || $driver == "ceph")
+            $data = escapeshellarg('{"driver": "'.$driver.'","name": "'.$name.'","description": "'.$description.'"}');
+          else
+            $data = escapeshellarg('{"config": {},"driver": "'.$driver.'","name": "'.$name.'","description": "'.$description.'"}');
+          $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
+        }
+        else {
+          //This is process of creating storage pool on a non-clustered host
+          $url = $url . "/1.0/storage-pools?project=" . $project;
+          if ($driver == "dir" || $driver == "ceph")
+            $data = escapeshellarg('{"driver": "'.$driver.'","name": "'.$name.'","description": "'.$description.'"}');
+          else
+            $data = escapeshellarg('{"config": {"size": "'.$size.'GB"},"driver": "'.$driver.'","name": "'.$name.'","description": "'.$description.'"}');
+          $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
+        }
         break;
       case "createStoragePoolJson":
         $url = $url . "/1.0/storage-pools?project=" . $project;

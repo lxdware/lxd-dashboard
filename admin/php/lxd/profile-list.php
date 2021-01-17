@@ -52,9 +52,9 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo '",';
 
       echo '"';
-        echo "<a href='#' onclick=loadProfileJson('".$profile['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd'></i></a>";
+        echo "<a href='#' onclick=loadProfileJson('".$profile['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
         echo " &nbsp ";
-        echo "<a href='#' onclick=deleteProfile('".$profile['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd'></i></a>";
+        echo "<a href='#' onclick=deleteProfile('".$profile['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
       echo '"';
 
       echo " ]";

@@ -51,7 +51,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo "<td>" . htmlentities($profile_data['description']) . "</td>";
 
       echo "<td>";
-        echo '<a href="#" onclick="detachProfile('.escapeshellarg($profile_data['name']).')"><i class="fas fa-trash-alt fa-lg" style="color:#ddd"></i></a>';
+        echo '<a href="#" onclick="detachProfile('.escapeshellarg($profile_data['name']).')"><i class="fas fa-trash-alt fa-lg" style="color:#ddd" title="Detach" aria-hidden="true"></i></a>';
       echo "</td>";
       
       echo "</tr>";

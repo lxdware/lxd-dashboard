@@ -21,24 +21,28 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     $operations_api_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
     $operations_api_data= json_decode($operations_api_data, true);
     $operations_data = $operations_api_data['metadata'];
-    
-    if (empty($operations_data)){
-      $results = "";
-    }
-    else {
-      if (empty($operations_data['running'])){
-        $results =  "";
-      }
-      else {
-        foreach ($operations_data['running'] as $task){
-          $results =  $task['description'];
-          if ($task['description'] == "Downloading image"){
-            $results .= " " . $task['metadata']['download_progress'];
+
+    $results = "";
+
+    if (!empty($operations_data)){
+
+      if (!empty($operations_data['running'])){
+        foreach ($operations_data['running'] as $running_task){
+          $results .=  $running_task['description'];
+          if ($running_task['description'] == "Downloading image"){
+            $results .= " " . $running_task['metadata']['download_progress'];
           }
         }
       }
 
-    }    
+      if (!empty($operations_data['failure'])){
+        foreach ($operations_data['failure'] as $failed_task){
+          $results .=  $failed_task['description'] . " Error: " . $failed_task['err'];
+        }
+      }
+    
+    }
+  
   }
   echo $results;
 }

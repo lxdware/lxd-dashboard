@@ -37,7 +37,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo '"' . htmlentities($row['protocol']) . '",';
 
       echo '"';
-        echo "<a href='#' onclick=removeRemote('".$row['id']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd'></i></a>";
+        echo "<a href='#' onclick=removeRemote('".$row['id']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
       echo '"';
 
       echo " ]";

@@ -45,13 +45,14 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
       echo '"' . htmlentities($storage_pool['description']) . '",';
       echo '"' . htmlentities($storage_pool['driver']) . '",';
+      echo '"' . htmlentities($storage_pool['status']) . '",';
       echo '"' . htmlentities($storage_pool['config']['source']) . '",';
       echo '"' . htmlentities($storage_pool['config']['size']) . '",';
 
       echo '"';
-        echo "<a href='#' onclick=loadStoragePoolJson('".$storage_pool['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd'></i></a>";
+        echo "<a href='#' onclick=loadStoragePoolJson('".$storage_pool['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
         echo " &nbsp ";
-        echo "<a href='#' onclick=deleteStoragePool('".$storage_pool['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd'></i></a>";
+        echo "<a href='#' onclick=deleteStoragePool('".$storage_pool['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
       echo '"';
 
       echo " ]";
