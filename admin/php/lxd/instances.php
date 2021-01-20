@@ -154,13 +154,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
         $url = $url . $path . "?project=" . $project;
         $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
         break;
-      case "downloadBackup":
-        mkdir('../../downloads');
-        $url = $url . $path . "/export?project=" . $project;
-        $results = shell_exec("sudo curl -k -L --output ../../downloads/".basename($path).".tar.gz --cert $cert --key $key -X GET $url");
-        $results = "downloads/".basename($path).".tar.gz";
-        break;
-      case "deleteBackup":
+      case "deleteLog":
         $url = $url . $path . "?project=" . $project;
         $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X DELETE $url");
         break;
@@ -169,11 +163,17 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
         $data = escapeshellarg('{"name": "'. $name . '"}');
         $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
         break;
-      case "loadBackup":
-        $url = $url . $path . "?project=" . $project;
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+      case "downloadBackup":
+        mkdir('../../downloads');
+        $url = $url . "/1.0/instances/" . $instance . "/backups/" . $name . "/export?project=" . $project;
+        $results = shell_exec("sudo curl -k -L --output ../../downloads/".$name.".tar.gz --cert $cert --key $key -X GET $url");
+        $results = "downloads/".$name.".tar.gz";
         break;
-      
+      case "deleteBackup":
+        $url = $url . "/1.0/instances/" . $instance . "/backups/" . $name . "?project=" . $project;
+        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X DELETE $url");
+        break;
+    
     }
   }
 

@@ -151,6 +151,8 @@
                       <a class="dropdown-item" href="#" onclick="restartInstance()" id="restartInstanceOption">Restart</a>
                       <a class="dropdown-item" href="#" onclick="forceStopInstance()" id="forceStopInstanceOption">Force Stop</a>
                       <a class="dropdown-item" href="#" onclick="freezeInstance()" id="freezeInstanceOption">Freeze</a>
+                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#snapshotInstanceModal" id="snapshotInstanceOption">Snapshot</a>
+                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#attachProfileModal" id="attachProfileOption">Add Profile</a>
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameInstanceModal" id="renameInstanceOption">Rename</a>
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#copyInstanceModal" id="copyInstanceOption">Copy</a>
                       <a class="dropdown-item" href="#" data-toggle="modal" data-target="#migrateInstanceModal" id="migrateInstanceOption">Migrate</a>
@@ -162,118 +164,137 @@
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                  <div id="instanceInfo"></div>
+
+                  <div class="row">
+                    <div class="col-xl-4 col-lg-4 mb-4">
+                      <div id="instanceInfo"></div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 mb-4">
+                      <div id="instanceStateInfo"></div>
+                    </div>
+                  </div>
+
+                  <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                      <a class="nav-link active" id="snapshots-tab" data-toggle="tab" href="#snapshots" role="tab" aria-controls="snapshots" aria-selected="true">Snapshots</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="profiles-tab" data-toggle="tab" href="#profiles" role="tab" aria-controls="profiles" aria-selected="false">Profiles</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="network-devices-tab" data-toggle="tab" href="#network-devices" role="tab" aria-controls="network-devices" aria-selected="false">Network Devices</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="disk-devices-tab" data-toggle="tab" href="#disk-devices" role="tab" aria-controls="disk-devices" aria-selected="false">Disk Devices</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="proxy-devices-tab" data-toggle="tab" href="#proxy-devices" role="tab" aria-controls="proxy-devices" aria-selected="false">Proxy Devices</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="backups-tab" data-toggle="tab" href="#backups" role="tab" aria-controls="backups" aria-selected="false">Backups</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="logs-tab" data-toggle="tab" href="#logs" role="tab" aria-controls="logs" aria-selected="false">Logs</a>
+                    </li>
+                  </ul>
+                  <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="snapshots" role="tabpanel" aria-labelledby="snapshots-tab">
+                      <!-- Snapshot List -->
+                      <div class="card mb-4 border-0">
+                        <!-- Card Body -->
+                        <div class="card-body">
+                          <div class="table-responsive">
+                            <table class="table" id="snapshotTableList" width="100%" cellspacing="0">
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- End Snapshot List -->
+                    </div>
+                    <div class="tab-pane fade" id="profiles" role="tabpanel" aria-labelledby="profiles-tab">
+                      <!-- Profile List -->
+                      <div class="card mb-4 border-0">
+                        <!-- Card Body -->
+                        <div class="card-body">
+                          <div class="table-responsive">
+                            <table class="table" id="profileTableList" width="100%" cellspacing="0">
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- End Profile List -->
+                    </div>
+                    <div class="tab-pane fade" id="network-devices" role="tabpanel" aria-labelledby="network-devices-tab">
+                      <!-- Network Devices List -->
+                      <div class="card mb-4 border-0">
+                        <!-- Card Body -->
+                        <div class="card-body">
+                          <div class="table-responsive">
+                            <table class="table" id="networkDeviceTableList" width="100%" cellspacing="0">
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- End Network Devices List -->
+                    </div>
+                    <div class="tab-pane fade" id="disk-devices" role="tabpanel" aria-labelledby="disk-devices-tab">
+                      <!-- Disk Device List -->
+                      <div class="card mb-4 border-0">
+                        <!-- Card Body -->
+                        <div class="card-body">
+                          <div class="table-responsive">
+                            <table class="table" id="diskDeviceTableList" width="100%" cellspacing="0">
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- End Disk Device List -->
+                    </div>
+                    <div class="tab-pane fade" id="proxy-devices" role="tabpanel" aria-labelledby="proxy-devices-tab">
+                      <!-- Proxy Device List -->
+                      <div class="card mb-4 border-0">
+                        <!-- Card Body -->
+                        <div class="card-body">
+                          <div class="table-responsive">
+                            <table class="table" id="proxyDeviceTableList" width="100%" cellspacing="0">
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- End Proxy Device List -->
+                    </div>
+                    <div class="tab-pane fade" id="backups" role="tabpanel" aria-labelledby="backups-tab">
+                      <!-- Backups List -->
+                      <div class="card mb-4 border-0">
+                        <!-- Card Body -->
+                        <div class="card-body">
+                          <div class="table-responsive">
+                            <table class="table" id="backupTableList" width="100%" cellspacing="0">
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- End Backups List -->
+                    </div>
+                    <div class="tab-pane fade" id="logs" role="tabpanel" aria-labelledby="logs-tab">
+                      <!-- Logs List -->
+                      <div class="card mb-4 border-0">
+                        <!-- Card Body -->
+                        <div class="card-body">
+                          <div class="table-responsive">
+                            <table class="table" id="logTableList" width="100%" cellspacing="0">
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- End Logs List -->
+                    </div>
+
+                  </div>
+
                 </div>
               </div>
               <!-- End Instance Details -->
-            </div>
-
-
-            <div class="col-12">
-              <a id="snapshots"></a>
-              <!-- Snapshot List -->
-              <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Snapshots</h6>
-                  <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" data-toggle="modal" data-target="#snapshotInstanceModal">
-                      <i class="fas fa-plus fa-sm fa-fw"></i>
-                      New Snapshot 
-                    </a>
-                  </div>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                  <div class="table-responsive">
-                    <table class="table" id="snapshotTableList" width="100%" cellspacing="0">
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <!-- End Snapshot List -->
-            </div>
-
-            <div class="col-12">
-              <a id="profiles"></a>
-              <!-- Profile List -->
-              <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Profiles</h6>
-                  <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" data-toggle="modal" data-target="#attachProfileModal">
-                      <i class="fas fa-plus fa-sm fa-fw"></i>
-                      Attach Profile
-                    </a>
-                  </div>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                  <div class="table-responsive">
-                    <table class="table" id="profileTableList" width="100%" cellspacing="0">
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <!-- End Profile List -->
-            </div>
-            
-            <div class="col-12">
-              <a id="networkDevices"></a>
-              <!-- Network Devices List -->
-              <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Network Devices</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                  <div class="table-responsive">
-                    <table class="table" id="networkDeviceTableList" width="100%" cellspacing="0">
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <!-- End Network Devices ist -->
-            </div>
-
-            <div class="col-12">
-              <a id="diskDevices"></a>
-              <!-- Disk Device List -->
-              <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Disk Devices</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                  <div class="table-responsive">
-                    <table class="table" id="diskDeviceTableList" width="100%" cellspacing="0">
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <!-- End Disk Device ist -->
-            </div>
-
-            <div class="col-12">
-              <a id="proxyDevices"></a>
-              <!-- Proxy Device List -->
-              <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Proxy Devices</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                  <div class="table-responsive">
-                    <table class="table" id="proxyDeviceTableList" width="100%" cellspacing="0">
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <!-- End Proxy Device ist -->
             </div>
 
           </div>
@@ -288,7 +309,7 @@
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Copyright &copy; lxdware.com 2020</span>
+            <span>Copyright &copy; lxdware.com 2021</span>
           </div>
         </div>
       </footer>
@@ -563,37 +584,6 @@
     </div>
   </div>
 
-  <!-- Load Backup Modal-->
-  <div class="modal fade" id="loadBackupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Backup Contents</h5>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <label class="col-12 col-form-label" id="backupNameInput"></label>
-              <div class="col-12">
-                <div class="form-group text-right">
-                  <pre>
-                    <textarea name="backup_data" class="form-control" id="backupDataInput" rows="16" ></textarea>
-                  </pre>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-            <button class="btn btn-warning" onclick="deleteBackup()" type="button" data-dismiss="modal">Delete</button>
-            <button class="btn btn-primary" onclick="downloadBackup()" type="button" data-dismiss="modal">Download</button>
-          </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Bootstrap core JavaScript-->
   <script src="theme/vendor/jquery/jquery.min.js"></script>
   <script src="theme/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -613,11 +603,14 @@
   const instanceName = urlParams.get('instance');
   const projectName = urlParams.get('project');
   var instanceDetails = "";
+  var instanceStateDetails = "";
   var snapshotDetails = "";
   var networkDeviceDetails = "";
   var diskDeviceDetails = "";
   var proxyDeviceDetails = "";
   var profileDetails = "";
+  var backupDetails = "";
+  var logDetails = "";
 
   function logout(){
     var http = new XMLHttpRequest();
@@ -636,6 +629,8 @@
         $('#forceStopInstanceOption').hide();
         $('#freezeInstanceOption').hide();
         $('#unfreezeLink').hide();
+        $('#snapshotInstanceOption').show();
+        $('#attachProfileOption').show();
         $('#renameInstanceOption').show();
         $('#copyInstanceOption').show();
         $('#migrateInstanceOption').show();
@@ -649,6 +644,8 @@
         $('#forceStopInstanceOption').hide();
         $('#freezeInstanceOption').hide();
         $('#unfreezeLink').show();
+        $('#snapshotInstanceOption').show();
+        $('#attachProfileOption').hide();
         $('#renameInstanceOption').hide();
         $('#copyInstanceOption').show();
         $('#migrateInstanceOption').hide();
@@ -662,6 +659,8 @@
         $('#forceStopInstanceOption').show();
         $('#freezeInstanceOption').show();
         $('#unfreezeLink').hide();
+        $('#snapshotInstanceOption').show();
+        $('#attachProfileOption').show();
         $('#renameInstanceOption').hide();
         $('#copyInstanceOption').hide();
         $('#migrateInstanceOption').hide();
@@ -705,6 +704,14 @@
       }
     });
     
+    //Load the state info for the instance card if changed
+    $.get("./php/lxd/instance-single-state.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
+      if (instanceStateDetails != data){  
+        $("#instanceStateInfo").html(data);
+        instanceStateDetails = data;
+      }
+    });
+
     //Load the snapshot info for the snapshot card if changed
     $.get("./php/lxd/instance-single-snapshot-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
       if (snapshotDetails != data){  
@@ -745,8 +752,24 @@
       }  
     });
 
-    //Set the page content to reload again in 3 more seconds
-    setTimeout(() => { reloadPageContent(); }, 3000);
+    //Load the backup info for the backup card if changed
+    $.get("./php/lxd/instance-single-backup-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
+      if (backupDetails != data){  
+        $("#backupTableList").html(data);
+        backupDetails = data;
+      }  
+    });
+
+    //Load the logs for the log card if changed
+    $.get("./php/lxd/instance-single-log-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
+      if (logDetails != data){  
+        $("#logTableList").html(data);
+        logDetails = data;
+      }  
+    });
+
+    //Set the page content to reload again in 5 more seconds
+    setTimeout(() => { reloadPageContent(); }, 5000);
   }
 
   function loadPageContent(){
@@ -769,6 +792,14 @@
       }
     });
     
+    //Load the state info for the instance card if changed
+    $.get("./php/lxd/instance-single-state.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
+      if (instanceStateDetails != data){  
+        $("#instanceStateInfo").html(data);
+        instanceStateDetails = data;
+      }
+    });
+
     //Load the snapshot info for the snapshot card if changed
     $.get("./php/lxd/instance-single-snapshot-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
       if (snapshotDetails != data){  
@@ -809,11 +840,27 @@
       }  
     });
 
+    //Load the backup info for the backup card if changed
+    $.get("./php/lxd/instance-single-backup-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
+      if (backupDetails != data){  
+        $("#backupTableList").html(data);
+        backupDetails = data;
+      }  
+    });
+
+    //Load the logs for the log card if changed
+    $.get("./php/lxd/instance-single-log-list.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
+      if (logDetails != data){  
+        $("#logTableList").html(data);
+        logDetails = data;
+      }  
+    });
+
     //Check for any running operations
     operationStatusCheck();
 
-    //Set the page content to reload once in 3 seconds
-    setTimeout(() => { reloadPageContent(); }, 3000);
+    //Set the page content to reload once in 5 seconds
+    setTimeout(() => { reloadPageContent(); }, 5000);
   }
 
   function startInstance(){
@@ -1063,14 +1110,15 @@
   function loadLog(logPath){
     console.log("Info: loading log " + logPath);
     $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&path=" + encodeURI(logPath) + "&action=loadLog", function (data) {
-      //var operationData = JSON.parse(data);
-      //console.log(operationData);
-      //if (operationData.error_code >= 400){
-        //alert(operationData.error);
-      //}
       $("#logNameInput").text(logPath);
       $("#logDataInput").val(data);
       $("#loadLogModal").modal('show');
+    });
+  }
+
+  function deleteLog(logPath){
+    console.log("Info: deleting log " + logPath);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&path=" + encodeURI(logPath) + "&action=deleteLog", function (data) {
     });
   }
 
@@ -1117,43 +1165,26 @@
     });
   }
 
-  function downloadBackup(){
-    backupPath = $("#backupNameInput").text();
-    console.log("Info: downloading backup " + backupPath);
-    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&path=" + encodeURI(backupPath) + "&action=downloadBackup", function (data) {
-      //var operationData = JSON.parse(data);
-    console.log(data);
-    window.location.href = data;
+  function downloadBackup(backupName){
+    console.log("Info: downloading backup " + backupName + " from instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(backupName) + "&action=downloadBackup", function (data) {
+      console.log(data);
+      window.location.href = data;
     });
   }
 
-  function deleteBackup(){
-    backupPath = $("#backupNameInput").text();
-    console.log("Info: deleting backup " + backupPath);
-    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&path=" + encodeURI(backupPath) + "&action=deleteBackup", function (data) {
+  function deleteBackup(backupName){
+    console.log("Info: deleting backup " + backupName + " from instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(backupName) + "&action=deleteBackup", function (data) {
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
         operationStatusCheck();
       }
-      if (operationData.metadata.status_code >= 400){
-        alert(operationData.metadata.err);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
       }
       setTimeout(() => { reloadPageContent(); }, 1000);
-    });
-  }
-
-  function loadBackup(backupPath){
-    console.log("Info: loading backup " + backupPath);
-    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&path=" + encodeURI(backupPath) + "&action=loadBackup", function (data) {
-      var operationData = JSON.parse(data);
-      console.log(operationData);
-      //if (operationData.error_code >= 400){
-        //alert(operationData.error);
-      //}
-      $("#backupNameInput").text(backupPath);
-      $("#backupDataInput").val(JSON.stringify(operationData.metadata, null, 2));
-      $("#loadBackupModal").modal('show');
     });
   }
 

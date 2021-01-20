@@ -12,20 +12,20 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   if (isset($_GET['instance']))
     $instance = filter_var(urldecode($_GET['instance']), FILTER_SANITIZE_STRING);
 
+  echo "<thead>";
+  echo "<tr>";
+  echo "<th style='width:75px'></th>";
+  echo "<th>Name</th>";
+  echo "<th>Stateful/Stateless</th>";
+  echo "<th>Size</th>";
+  echo "<th>Created At</th>";
+  echo "<th style='width:150px'>Actions</th>";
+  echo "</tr>";
+  echo "</thead>";
 
-  echo '<thead>';
-  echo '  <tr>';
-  echo "    <th style='width:75px'></th>";
-  echo '    <th>Name</th>';
-  echo '    <th>Stateful/Stateless</th>';
-  echo '    <th>Size</th>';
-  echo '    <th>Created At</th>';
-  echo "    <th style='width:150px'></th>";
-  echo '  </tr>';
-  echo '</thead>';
-  echo '<tbody>';
+  echo "<tbody>";
 
-
+  //Determine host info from database
   $db = new SQLite3('/var/lxdware/data/sqlite/lxdware.sqlite');
   $db_statement = $db->prepare('SELECT * FROM lxd_hosts WHERE id = :id LIMIT 1;');
   $db_statement->bindValue(':id', $remote);

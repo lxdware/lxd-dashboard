@@ -164,7 +164,7 @@
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Copyright &copy; lxdware.com 2020</span>
+            <span>Copyright &copy; lxdware.com 2021</span>
           </div>
         </div>
       </footer>
@@ -295,8 +295,8 @@
   function reloadPageContent(){
     $('#certificateListTable').DataTable().ajax.reload();
 
-    //Set the page content to reload again in 3 more seconds
-    setTimeout(() => { reloadPageContent(); }, 3000);
+    //Set the page content to reload again in 5 more seconds
+    setTimeout(() => { reloadPageContent(); }, 5000);
   }
   
   function loadPageContent(){
@@ -325,8 +325,8 @@
     //Check for any running operations
     operationStatusCheck();
 
-    //Set the page content to reload once in 3 seconds
-    setTimeout(() => { reloadPageContent(); }, 3000);
+    //Set the page content to reload once in 5 seconds
+    setTimeout(() => { reloadPageContent(); }, 5000);
   }
 
   //API uses sync
