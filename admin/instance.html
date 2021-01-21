@@ -196,6 +196,9 @@
                     <li class="nav-item">
                       <a class="nav-link" id="logs-tab" data-toggle="tab" href="#logs" role="tab" aria-controls="logs" aria-selected="false">Logs</a>
                     </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="exec-tab" data-toggle="tab" href="#exec" role="tab" aria-controls="exec" aria-selected="false">Exec</a>
+                    </li>
                   </ul>
                   <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade show active" id="snapshots" role="tabpanel" aria-labelledby="snapshots-tab">
@@ -288,6 +291,28 @@
                         </div>
                       </div>
                       <!-- End Logs List -->
+                    </div>
+                    <div class="tab-pane fade" id="exec" role="tabpanel" aria-labelledby="exec-tab">
+                      <!-- Exec Tab -->
+                      <div class="card mb-4 border-0">
+                        <!-- Card Body -->
+                        <div class="card-body">
+                          <div class="form-group">
+                            <label for="exampleFormControlTextarea1">Execute a non-interactive shell command on the instance. Example: <strong>ls -lah</strong></label>
+                            <pre><textarea readonly="readonly" class="form-control" id="execOutput" rows="12"></textarea></pre>
+                            <div class="input-group mb-3">
+                              <div class="input-group-prepend">
+                                <div class="input-group-text font-weight-bold text-monospace" id="execPS1">root@localhost:/#</div>
+                              </div>
+                              <input type="text" class="form-control text-monospace" id="execCommand" placeholder="" aria-label="Exec Command">
+                              <div class="input-group-append">
+                                <button class="btn btn-outline-primary" type="button" onclick="submitCommand()">Execute</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- End Exec Tab -->
                     </div>
 
                   </div>
@@ -1119,6 +1144,7 @@
   function deleteLog(logPath){
     console.log("Info: deleting log " + logPath);
     $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&path=" + encodeURI(logPath) + "&action=deleteLog", function (data) {
+      setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
 
@@ -1188,6 +1214,19 @@
     });
   }
 
+  function submitCommand(){
+    //get the command from execCommand textbox
+    var command = $("#execCommand").val();
+    $("#execOutput").text('Executing "' + command + '"...');
+    console.log("sending command: " + command)
+    //send the command off to instance-exec.php
+    $.get("./php/lxd/instance-exec.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&command=" + encodeURI(command), function (data) {
+      //get the results back and populate execOutput textarea
+      $("#execOutput").text(data);
+    });
+  }
+
+
   $(document).ready(function(){
     
     //Load in the sidebar
@@ -1209,6 +1248,16 @@
     //Populate the select options fields used in modals
     $("#selectProfileInput").load("./php/lxd/profile-list-select.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
     $("#selectClusterInput").load("./php/lxd/cluster-list-select.php?remote=" + encodeURI(remoteName));
+
+    //Allow user to submit exec command with enter key
+    $('#execCommand').keydown(function (event) {
+      let keyPressed = event.keyCode || event.which;
+      //Enter key has value of 13
+      if (keyPressed === 13) {
+        submitCommand();
+      }
+    });
+
 
   });
 

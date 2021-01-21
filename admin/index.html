@@ -167,8 +167,8 @@
                       copy the client <a href="#" data-toggle="modal" data-target="#clientCertModal">certificate</a> 
                       information and paste it into a new file on your remote server such as <strong><em>lxdware.crt</em></strong>.  
                       Then import the certificate on your remote LXD server by running the command: <code>lxc config trust add lxdware.crt</code>.</p>
-                      <p>The remote server must also be listening for remote connections. If this was not setup during the initial setup, 
-                      use <code>lxc config set core.https_address [::]</code> on the remote server to allow connections.</p>
+                      <p>For LXD hosts that are not part of a cluster, use the <code>lxc config set core.https_address [::]</code> command 
+                      to listen for incoming connections.</p>
                     </div>
                   </div>
                 </div>

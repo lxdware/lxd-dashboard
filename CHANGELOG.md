@@ -1,9 +1,12 @@
+# v.1.1.7
+- added exec option to instances, allowing users to send non-interactive shell commands to the instance
+
 # v.1.1.6
 - added tabs to the instance page, allowing for better organization
 - improved instance log and backup functions and moved them to a navigation tab
 - modified auto refresh time on pages to 5 seconds
 - backfilled the changelog file
-- updating copyright year to 2021
+- updated copyright year to 2021
 
 # v1.1.5
 - added CHANGELOG.md file
