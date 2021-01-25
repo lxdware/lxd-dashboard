@@ -28,8 +28,8 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     $public = filter_var(urldecode($_GET['public']), FILTER_SANITIZE_STRING);
   if (isset($_GET['path']))
     $path = filter_var(urldecode($_GET['path']), FILTER_SANITIZE_STRING);
-  if (isset($_GET['destination']))
-    $destination = filter_var(urldecode($_GET['destination']), FILTER_SANITIZE_STRING);
+  if (isset($_GET['location']))
+    $location = filter_var(urldecode($_GET['location']), FILTER_SANITIZE_STRING);
 
   //Determine host info from database
   $db = new SQLite3('/var/lxdware/data/sqlite/lxdware.sqlite');
@@ -43,87 +43,94 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     //Run the matching action
     switch ($action) {
       case "createInstance":
-        $url = $url . "/1.0/instances?project=" . $project;
-        $data = escapeshellarg('{"name":"' . $name . '", "profiles": ["'. $profile . '"], "type": "' . $instance_type . '",  "source": {"type": "image", "fingerprint": "' . $fingerprint . '"} }');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
+        if ($location == "none"){
+          $url = $url . "/1.0/instances?project=" . $project; 
+          $data = escapeshellarg('{"name":"' . $name . '", "profiles": ["'. $profile . '"], "type": "' . $instance_type . '",  "source": {"type": "image", "fingerprint": "' . $fingerprint . '"} }');
+          $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
+        }
+        else {
+          $url = $url . "/1.0/instances?target=" . $location . "&project=" . $project; 
+          $data = escapeshellarg('{"name":"' . $name . '", "profiles": ["'. $profile . '"], "type": "' . $instance_type . '",  "source": {"type": "image", "fingerprint": "' . $fingerprint . '"} }');
+          $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
+        }
         break;
       case "status":
         $url = $url . "/1.0/instances/" . $instance . "/state?project=" . $project;
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
         break;
       case "stopInstance":
         $url = $url . "/1.0/instances/" . $instance . "/state?project=" . $project;
         $data = escapeshellarg('{"action": "stop"}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X PUT -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PUT -d $data $url");
         break;
       case "forceStopInstance":
         $url = $url . "/1.0/instances/" . $instance . "/state?project=" . $project;
         $data = escapeshellarg('{"action": "stop","force":true}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X PUT -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PUT -d $data $url");
         break;
       case "startInstance":
         $url = $url . "/1.0/instances/" . $instance . "/state?project=" . $project;
         $data = escapeshellarg('{"action": "start"}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X PUT -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PUT -d $data $url");
         break;
       case "restartInstance":
         $url = $url . "/1.0/instances/" . $instance . "/state?project=" . $project;
         $data = escapeshellarg('{"action": "restart"}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X PUT -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PUT -d $data $url");
         break;
       case "freezeInstance":
         $url = $url . "/1.0/instances/" . $instance . "/state?project=" . $project;
         $data = escapeshellarg('{"action": "freeze"}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X PUT -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PUT -d $data $url");
         break;
       case "unfreezeInstance":
         $url = $url . "/1.0/instances/" . $instance . "/state?project=" . $project;
         $data = escapeshellarg('{"action": "unfreeze"}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X PUT -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PUT -d $data $url");
         break;
       case "deleteInstance":
         $url = $url . "/1.0/instances/" . $instance . "?project=" . $project;
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X DELETE $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE $url");
         break;
       case "snapshotInstance":
         $url = $url . "/1.0/instances/" . $instance . "/snapshots?project=" . $project;
         $data = escapeshellarg('{"name": "'. $name . '"}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
         break;
       case "renameInstance":
         $url = $url . "/1.0/instances/" . $instance . "?project=" . $project;
         $data = escapeshellarg('{"name": "'. $name . '"}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
         break;
       case "copyInstance":
         //Copying on clustered hosts requires target location. Determine location of instance being copied.
         $instance_url = $url . "/1.0/instances/$instance?project=" . $project;
-        $instance_api_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $instance_url");
+        $instance_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $instance_url");
         $instance_api_data = json_decode($instance_api_data, true);
         $instance_data = $instance_api_data['metadata'];
         $location = $instance_data['location']; //Returns "none" for instances on non-clusted hosts
         //Copy instance on host to same host
         $url = $url . "/1.0/instances?target=".$location."&project=" . $project;
         $data = escapeshellarg('{"name": "'. $name . '", "source":{"type":"copy","source": "'. $instance . '"}}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
         break;
       case "migrateInstance":
-        $url = $url . "/1.0/instances/" . $instance . "?target=" . $destination . "&project=";
+        $url = $url . "/1.0/instances/" . $instance . "?target=" . $location . "&project=" . $project;
         $data = escapeshellarg('{"name": "'. $instance . '", "migration": true, "live": false}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
         break;
       case "attachProfile":
         $url = $url . "/1.0/instances/" . $instance . "?project=" . $project;
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
         $data = json_decode($results, true);
         $data = $data['metadata']['profiles'];
         array_push($data, $name);
         $data = escapeshellarg('{"profiles":' . json_encode($data) . '}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X PATCH -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PATCH -d $data $url");
         break;
       case "detachProfile":
         $url = $url . "/1.0/instances/" . $instance . "?project=" . $project;
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
         $data = json_decode($results, true);
         $data = $data['metadata']['profiles'];
         $i = 0;
@@ -134,44 +141,44 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
           $i++;
         }
         $data = escapeshellarg('{"profiles":' . json_encode($data) . '}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X PATCH -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PATCH -d $data $url");
         break;
       case "restoreSnapshot":
         $url = $url . "/1.0/instances/" . $instance . "?project=" . $project;
         $data = escapeshellarg('{"restore":"' . $name . '"}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X PUT -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PUT -d $data $url");
         break;
       case "deleteSnapshot":
         $url = $url . "/1.0/instances/" . $instance . "/snapshots/" . $name . "?project=" . $project;
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X DELETE $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE $url");
         break;
       case "publishInstance":
         $url = $url . "/1.0/images?project=" . $project;
         $data = escapeshellarg('{"properties":{"description": "'. $description . '"}, "public": '. $public . ', "source":{"type": "instance", "name": "'. $instance . '"}}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
         break;
       case "loadLog":
         $url = $url . $path . "?project=" . $project;
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
         break;
       case "deleteLog":
         $url = $url . $path . "?project=" . $project;
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X DELETE $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE $url");
         break;
       case "createBackup":
         $url = $url . "/1.0/instances/" . $instance . "/backups?project=" . $project;
         $data = escapeshellarg('{"name": "'. $name . '"}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
         break;
       case "downloadBackup":
         mkdir('../../downloads');
         $url = $url . "/1.0/instances/" . $instance . "/backups/" . $name . "/export?project=" . $project;
-        $results = shell_exec("sudo curl -k -L --output ../../downloads/".$name.".tar.gz --cert $cert --key $key -X GET $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --output ../../downloads/".$name.".tar.gz --cert $cert --key $key -X GET $url");
         $results = "downloads/".$name.".tar.gz";
         break;
       case "deleteBackup":
         $url = $url . "/1.0/instances/" . $instance . "/backups/" . $name . "?project=" . $project;
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X DELETE $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE $url");
         break;
     
     }

@@ -1,7 +1,17 @@
-# v.1.1.7
+# v1.1.8
+- changed display name to LXDWARE
+- improvements to the notification of running operations
+- added an about page displaying the version, license, and source link
+- added icons to Host and Project navigation links in the top bar, improving design for smaller screen displays
+- changed port input field to number in the "Add LXD Remote Host" Modal of index.html
+- changed remote host table in index.html to full width, moving instructions to top
+- set a 3 second connection timeout for curl requests, preventing pages from locking up when host is down
+- added location option for creating hosts allowing instances to be created on a specfic cluster member
+
+# v1.1.7
 - added exec option to instances, allowing users to send non-interactive shell commands to the instance
 
-# v.1.1.6
+# v1.1.6
 - added tabs to the instance page, allowing for better organization
 - improved instance log and backup functions and moved them to a navigation tab
 - modified auto refresh time on pages to 5 seconds

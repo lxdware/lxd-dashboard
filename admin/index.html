@@ -42,7 +42,7 @@
           <img src="theme/images/logo_dark.png" style="width: 2rem;"></img>
           <!-- <i class="fas fa-cube" style="width: 2rem;"></i> -->
         </div>
-        <div class="sidebar-brand-text mx-3">Dashboard</div>
+        <div class="sidebar-brand-text mx-3">LXDWARE</div>
       </a>
 
       <!-- Divider -->
@@ -114,6 +114,10 @@
                   <i class="fas fa-server fa-sm fa-fw mr-2 text-gray-400"></i>
                   Hosts
                 </a>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#aboutModal">
+                  <i class="fas fa-info-circle fa-sm fa-fw mr-2 text-gray-400"></i>
+                  About
+                </a>
                 <a class="dropdown-item" href="#" onclick="logout()">
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                   Logout
@@ -138,6 +142,13 @@
           <div class="row">
             <div class="col-12">
               <!-- LXD Host List -->
+             
+              <p><i class="fas fa-question-circle fa-fw"></i> Before adding a remote host, first copy the client <a href="#" data-toggle="modal" data-target="#clientCertModal">certificate</a> 
+              information and paste it into a new file on your remote LXD server such as <strong><em>lxdware.crt</em></strong>.  
+              Then import the certificate on your remote LXD server by running the command: <code>lxc config trust add lxdware.crt</code>.
+              For LXD hosts that are not part of a cluster, use the <code>lxc config set core.https_address [::]</code> command 
+              to listen for incoming connections.</p>
+
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -156,19 +167,11 @@
                 <!-- Card Body -->
                 <div class="card-body">
                   <div class="row">
-                    <div class="col-8">
+                    <div class="col-12">
                       <div class="table-responsive">
                         <table class="table" id="lxdListTable" width="100%" cellspacing="0">
                         </table>
                       </div>
-                    </div>
-                    <div class="col-4">
-                      <p>Before adding a remote host, first 
-                      copy the client <a href="#" data-toggle="modal" data-target="#clientCertModal">certificate</a> 
-                      information and paste it into a new file on your remote server such as <strong><em>lxdware.crt</em></strong>.  
-                      Then import the certificate on your remote LXD server by running the command: <code>lxc config trust add lxdware.crt</code>.</p>
-                      <p>For LXD hosts that are not part of a cluster, use the <code>lxc config set core.https_address [::]</code> command 
-                      to listen for incoming connections.</p>
                     </div>
                   </div>
                 </div>
@@ -255,7 +258,7 @@
             <label class="col-3 col-form-label text-right">Port: </label>
             <div class="col-7">
               <div class="form-group">
-                <input type="text" class="form-control"  id="portInput" required="required" placeholder="8443" value="8443" name="port">
+                <input type="number" class="form-control"  id="portInput" required="required" placeholder="8443" value="8443" name="port">
               </div>
             </div>
           </div>
@@ -292,6 +295,30 @@
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
           <a class="btn btn-primary" href="#" onclick="removeRemote()" data-dismiss="modal">Yes</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Modal-->
+  <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">About LXDWARE Dashboard</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+              <div id="about"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Dismiss</button>
         </div>
       </div>
     </div>
@@ -393,6 +420,11 @@
 
     //Load the card contents
     loadPageContent();
+
+    //Load the about info for the about modal
+    $.get("./about.html", function (data) {
+      $("#about").html(data);
+    });
 
   });
 

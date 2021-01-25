@@ -100,6 +100,10 @@
                   <i class="fas fa-server fa-sm fa-fw mr-2 text-gray-400"></i>
                   Hosts
                 </a>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#aboutModal">
+                  <i class="fas fa-info-circle fa-sm fa-fw mr-2 text-gray-400"></i>
+                  About
+                </a>
                 <a class="dropdown-item" href="#" onclick="logout()">
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                   Logout
@@ -609,6 +613,30 @@
     </div>
   </div>
 
+  <!-- About Modal-->
+  <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">About LXDWARE Dashboard</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+              <div id="about"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Dismiss</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Bootstrap core JavaScript-->
   <script src="theme/vendor/jquery/jquery.min.js"></script>
   <script src="theme/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -1030,7 +1058,7 @@
   function migrateInstance(){
     var clusterInput = $("#selectClusterInput").val();
     console.log("Info: migrating instance " + instanceName + " to " + clusterInput);
-    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&destination=" + encodeURI(clusterInput) + "&action=migrateInstance", function (data) {
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&location=" + encodeURI(clusterInput) + "&action=migrateInstance", function (data) {
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
@@ -1249,6 +1277,11 @@
     $("#selectProfileInput").load("./php/lxd/profile-list-select.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
     $("#selectClusterInput").load("./php/lxd/cluster-list-select.php?remote=" + encodeURI(remoteName));
 
+    //Load the about info for the about modal
+    $.get("./about.html", function (data) {
+      $("#about").html(data);
+    });
+
     //Allow user to submit exec command with enter key
     $('#execCommand').keydown(function (event) {
       let keyPressed = event.keyCode || event.which;
@@ -1257,7 +1290,6 @@
         submitCommand();
       }
     });
-
 
   });
 

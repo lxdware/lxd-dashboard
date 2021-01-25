@@ -18,7 +18,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
   while($row = $db_results->fetchArray()){
     $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/operations?recursion=1";
-    $operations_api_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+    $operations_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
     $operations_api_data= json_decode($operations_api_data, true);
     $operations_data = $operations_api_data['metadata'];
 
@@ -28,7 +28,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
       if (!empty($operations_data['running'])){
         foreach ($operations_data['running'] as $running_task){
-          $results .=  $running_task['description'];
+          $results =  $running_task['description'];
           if ($running_task['description'] == "Downloading image"){
             $results .= " " . $running_task['metadata']['download_progress'];
           }
@@ -37,7 +37,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
       if (!empty($operations_data['failure'])){
         foreach ($operations_data['failure'] as $failed_task){
-          $results .=  $failed_task['description'] . " Error: " . $failed_task['err'];
+          $results =  $failed_task['description'] . " Error: " . $failed_task['err'];
         }
       }
     

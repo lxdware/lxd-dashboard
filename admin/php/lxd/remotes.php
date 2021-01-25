@@ -32,7 +32,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
       if ($valid_domain && $valid_port){
         $url = "https://" . $host . ":" . $port . "/1.0";
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
         $data = json_decode($results, true);
 
         if ($data['metadata']['auth'] == "trusted"){

@@ -38,26 +38,26 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       case "refreshImage":
         $url = $url . "/1.0/images/" . $fingerprint . "/refresh?project=" . $project;
         $data = escapeshellarg('{}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
         break;
       case "deleteImage":
         $url = $url . "/1.0/images/" . $fingerprint . "?project=" . $project;
         $data = escapeshellarg('{}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X DELETE -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE -d $data $url");
       break;
       case "downloadImage":
         $url = $url . "/1.0/images?project=" . $project;
         $data = escapeshellarg('{"source": {"type": "image", "protocol": "simplestreams", "server": "' . $repo . '", "alias": "' . $image . '","image_type": "' . $image_type . '"}}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
       break;
       case "updateImage":
         $url = $url . "/1.0/images/" . $fingerprint . "?project=" . $project;
         $data = escapeshellarg($json);
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X PUT -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PUT -d $data $url");
       break;
       case "loadImage":
         $url = $url . "/1.0/images/" . $fingerprint . "?project=" . $project;
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
       break;
     }
   }

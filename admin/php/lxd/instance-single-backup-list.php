@@ -39,7 +39,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
     //Instance Backups
     $url = $url . "/1.0/instances/" . $instance . "/backups?recursion=1&project=" . $project;
-    $instance_api_backups = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+    $instance_api_backups = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
     $instance_api_backups = json_decode($instance_api_backups, true);
     $instance_backups = $instance_api_backups['metadata'];
 

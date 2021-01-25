@@ -17,7 +17,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
   while($row = $db_results->fetchArray()){
     $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/instances?recursion=2&project=" . $project;
-    $instance_api_data = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+    $instance_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
     $instance_api_data = json_decode($instance_api_data, true);
     $instance_api_data = $instance_api_data['metadata'];
 

@@ -40,21 +40,21 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       case "createStorageVolume":
         $url = $url . "/1.0/storage-pools?project=" . $project;
         $data = escapeshellarg($json);
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X POST -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
         break;
       case "deleteStorageVolume":
         $url = $url . $storage_volume_url . "?project=" . $project;
         $data = escapeshellarg('{}');
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X DELETE -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE -d $data $url");
       break;
       case "updateStorageVolume":
         $url = $url . $storage_volume_url . "?project=" . $project;
         $data = escapeshellarg($json);
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X PUT -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PUT -d $data $url");
       break;
       case "loadStorageVolume":
         $url = $url . $storage_volume_url . "?project=" . $project;
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
       break;
     }
   }

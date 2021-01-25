@@ -31,11 +31,11 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     switch ($action) {
       case "deleteOperation":
         $url = $url . "/1.0/operations/" . $operation;
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X DELETE $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE $url");
         break;
       case "loadOperation":
         $url = $url . "/1.0/operations/" . $operation;
-        $results = shell_exec("sudo curl -k -L --cert $cert --key $key -X GET $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
       break;
     }
   }

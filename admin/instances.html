@@ -103,6 +103,10 @@
                   <i class="fas fa-server fa-sm fa-fw mr-2 text-gray-400"></i>
                   Hosts
                 </a>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#aboutModal">
+                  <i class="fas fa-info-circle fa-sm fa-fw mr-2 text-gray-400"></i>
+                  About
+                </a>
                 <a class="dropdown-item" href="#" onclick="logout()">
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                   Logout
@@ -233,11 +237,46 @@
                 </div>
               </div>
             </div>
+
+            <div class="row">
+              <label class="col-2 col-form-label text-right">Location: </label>
+              <div class="col-9">
+                <div class="form-group">
+                  <select id="selectLocationInput" class="form-control" name="location">
+                  </select>
+                </div>
+              </div>
+            </div>
+
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
             <a class="btn btn-primary" href="#" onclick="createInstance()" data-dismiss="modal">Ok</a>
           </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Modal-->
+  <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">About LXDWARE Dashboard</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+              <div id="about"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Dismiss</button>
+        </div>
       </div>
     </div>
   </div>
@@ -342,8 +381,9 @@
     var profileName = $("#selectProfileInput").val();
     var fingerprint = $("#selectImageInput").val();
     var instanceType = $("#selectTypeInput").val();
-    console.log("Info: creating instance " + instanceName + " with profile " + profileName + " and fingerprint " + fingerprint);
-    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&name=" + encodeURI(instanceName) + "&profile=" + encodeURI(profileName) + "&fingerprint=" + encodeURI(fingerprint)+ "&instance_type=" + encodeURI(instanceType) + "&action=createInstance",  function (data) {
+    var location = $("#selectLocationInput").val();
+    console.log("Info: creating instance " + instanceName + " with profile " + profileName + ", fingerprint " + fingerprint + ", and location " + location);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&name=" + encodeURI(instanceName) + "&profile=" + encodeURI(profileName) + "&fingerprint=" + encodeURI(fingerprint) + "&instance_type=" + encodeURI(instanceType) + "&location=" + encodeURI(location) + "&action=createInstance",  function (data) {
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
@@ -411,8 +451,14 @@
     $("#remoteListNav").load("./php/lxd/remote-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
     $("#projectListNav").load("./php/lxd/project-list-nav.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
 
+    //Load the about info for the about modal
+    $.get("./about.html", function (data) {
+      $("#about").html(data);
+    });
+
     //Populate the select options fields used in modals
     $("#selectProfileInput").load("./php/lxd/profile-list-select.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName));
+    $("#selectLocationInput").load("./php/lxd/cluster-list-select.php?remote=" + encodeURI(remoteName) + "&include_none=true");
 
     //Populate initial list of images available for container
     changeImageInput();
