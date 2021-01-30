@@ -179,6 +179,36 @@
     <i class="fas fa-angle-up"></i>
   </a>
 
+  <!-- Delete Cluster Member Modal-->
+  <div class="modal fade" id="deleteClusterMemberModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Delete Cluster Member</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-2" id="deleteQuestionText">
+            Are you sure you want to delete this cluster member?
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="force" id="forceDeleteCheck">
+            <label class="form-check-label" for="forceDeleteCheck">
+              Force Delete
+            </label>
+          </div>
+          <input type="hidden" id="clusterMember" class="form-control" name="clusterMember">
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="#" onclick="deleteClusterMember()" data-dismiss="modal">Yes</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- About Modal-->
   <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -294,10 +324,22 @@
     setTimeout(() => { reloadPageContent(); }, 5000);
   }
 
-  //API uses sync
-  function deleteClusterMember(memberToDelete){
+
+  function loadDeleteClusterMemberModal(clusterMember){
+    $("#deleteQuestionText").text("Are you sure you want to delete " + clusterMember + " from the cluster?");
+    $("#clusterMember").val(clusterMember);
+    $("#deleteClusterMemberModal").modal('show');
+  }
+
+
+  function deleteClusterMember(){
+    var memberToDelete = $("#clusterMember").val();
+    var forceDeleteCheck = "false";
+    if ($('#forceDeleteCheck').is(':checked')) {
+      forceDeleteCheck = "true";
+    }
     console.log("Info: deleting cluster member " + memberToDelete);
-    $.get("./php/lxd/cluster.php?remote=" + encodeURI(remoteName) + "&name=" + encodeURI(memberToDelete) + "&action=deleteClusterMember", function (data) {
+    $.get("./php/lxd/cluster.php?remote=" + encodeURI(remoteName) + "&name=" + encodeURI(memberToDelete) + "&force=" + encodeURI(forceDeleteCheck) + "&action=deleteClusterMember", function (data) {
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.error_code >= 400){

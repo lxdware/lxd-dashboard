@@ -67,7 +67,8 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
    
     if ($operation_data['status_code'] < 200){
       if ($operation_data['status_code'] == 103){
-        echo "The operating is still running. This may mean that the status check has timed out. The timeout is currently set to 30 seconds";
+        echo "The operating is still running and has taken longer than 30 seconds. \n";
+        echo "You should see the status of you command when complete in the instance logs.";
       }
       else {
         echo "Interestingly, the status of your command is unknown";

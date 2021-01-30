@@ -1,3 +1,8 @@
+# v1.1.9
+- added the option to delete cluster members as well as forcefully delete them
+- modified default simplestreams to match lxc remote list names: images, ubuntu, and ubuntu-daily
+- added instance names to many of the notifactions, helping to identifiy operations
+
 # v1.1.8
 - changed display name to LXDWARE
 - improvements to the notification of running operations
@@ -6,7 +11,7 @@
 - changed port input field to number in the "Add LXD Remote Host" Modal of index.html
 - changed remote host table in index.html to full width, moving instructions to top
 - set a 3 second connection timeout for curl requests, preventing pages from locking up when host is down
-- added location option for creating hosts allowing instances to be created on a specfic cluster member
+- added location option for creating hosts allowing instances to be created on a specific cluster member
 
 # v1.1.7
 - added exec option to instances, allowing users to send non-interactive shell commands to the instance

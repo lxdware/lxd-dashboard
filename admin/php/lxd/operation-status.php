@@ -29,8 +29,40 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       if (!empty($operations_data['running'])){
         foreach ($operations_data['running'] as $running_task){
           $results =  $running_task['description'];
+          $instance = basename($running_task['resources']['instances'][0]);
+
           if ($running_task['description'] == "Downloading image"){
             $results .= " " . $running_task['metadata']['download_progress'];
+          }
+          if ($running_task['description'] == "Executing command"){
+            $results = "Executing " . htmlentities($running_task['metadata']['command'][0]) . " command on " . htmlentities($instance);
+          }
+          if ($running_task['description'] == "Stopping instance"){
+            $results .= " " . $instance; 
+          }
+          if ($running_task['description'] == "Starting instance"){
+            $results .= " " . $instance; 
+          }
+          if ($running_task['description'] == "Backing up container"){
+            $results .= " " . $instance; 
+          }
+          if ($running_task['description'] == "Restoring backup"){
+            $results .= " to instance " . $instance; 
+          }
+          if ($running_task['description'] == "Creating instance"){
+            $results .= " " . $instance; 
+          }
+          if ($running_task['description'] == "Creating container"){
+            $results .= " " . $instance; 
+          }
+          if ($running_task['description'] == "Migrating container"){
+            $results .= " " . $instance; 
+          }
+          if ($running_task['description'] == "Deleting container"){
+            $results .= " " . $instance; 
+          }
+          if ($running_task['description'] == "Deleting instance"){
+            $results .= " " . $instance; 
           }
         }
       }

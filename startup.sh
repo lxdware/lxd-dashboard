@@ -40,11 +40,11 @@ then
   #Create and populate lxd_simplestreams table
   cmd="CREATE TABLE IF NOT EXISTS lxd_simplestreams (id INTEGER PRIMARY KEY AUTOINCREMENT, host TEXT NOT NULL, alias TEXT, protocol TEXT);"
   sqlite3 /var/lxdware/data/sqlite/lxdware.sqlite "$cmd"
-  cmd="INSERT INTO lxd_simplestreams (host, alias, protocol) VALUES ('https://images.linuxcontainers.org', 'Linux Containers', 'simplestreams');"
+  cmd="INSERT INTO lxd_simplestreams (host, alias, protocol) VALUES ('https://images.linuxcontainers.org', 'images', 'simplestreams');"
   sqlite3 /var/lxdware/data/sqlite/lxdware.sqlite "$cmd"
-  cmd="INSERT INTO lxd_simplestreams (host, alias, protocol) VALUES ('https://cloud-images.ubuntu.com/releases', 'Ubuntu Releases', 'simplestreams');"
+  cmd="INSERT INTO lxd_simplestreams (host, alias, protocol) VALUES ('https://cloud-images.ubuntu.com/releases', 'ubuntu', 'simplestreams');"
   sqlite3 /var/lxdware/data/sqlite/lxdware.sqlite "$cmd"
-  cmd="INSERT INTO lxd_simplestreams (host, alias, protocol) VALUES ('https://cloud-images.ubuntu.com/daily', 'Ubuntu Daily', 'simplestreams');"
+  cmd="INSERT INTO lxd_simplestreams (host, alias, protocol) VALUES ('https://cloud-images.ubuntu.com/daily', 'ubuntu-daily', 'simplestreams');"
   sqlite3 /var/lxdware/data/sqlite/lxdware.sqlite "$cmd"
 fi
 

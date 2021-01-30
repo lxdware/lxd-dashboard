@@ -50,9 +50,10 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
         echo '"' . htmlentities($member['status']) . '",';
         echo '"' . htmlentities($member['message']) . '",';
     
-    
         echo '"';
+        echo "<a href='#' onclick=loadDeleteClusterMemberModal('".$member['server_name']."')> <i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i> </a>";
         echo '"';
+
     
         echo " ]";
     
