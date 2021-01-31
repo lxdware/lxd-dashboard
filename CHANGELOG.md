@@ -1,7 +1,11 @@
+# v1.2.0
+- removed the adding certificates option temporarily due to it causing an error
+- added the option to create instances from snapshots
+
 # v1.1.9
 - added the option to delete cluster members as well as forcefully delete them
 - modified default simplestreams to match lxc remote list names: images, ubuntu, and ubuntu-daily
-- added instance names to many of the notifactions, helping to identifiy operations
+- added instance names to many of the notifications, helping to identify operations
 
 # v1.1.8
 - changed display name to LXDWARE
@@ -30,7 +34,7 @@
 - changed notification spinner to bootstrap border spinner from grow spinner, making it less obtrusive
 - relocated notification area to the left side of top nav bar to help with various notification lengths
 - added support for creating storage pools on hosts that belong to a cluster
-- added Status to the table on the  storage pools page
+- added Status column to the table on the storage pools page
 
 # v1.1.4
 - added dropdown arrows to host and project dropdowns in the top nav bar
@@ -86,7 +90,7 @@
 - added support to view instance proxy devices
 
 # v1.0.1
-- updates to the way projects are handled using the rest api.
+- updates to the way projects are handled using the REST API.
 
 # v1.0.0
 - initial release of the LXD dashboard

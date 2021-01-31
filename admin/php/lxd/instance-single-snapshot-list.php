@@ -56,7 +56,9 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo "<td>" . htmlentities($snapshot['created_at']) . "</td>";
 
       echo "<td>";
-        echo '<a href="#" onclick="restoreSnapshot('.escapeshellarg($snapshot['name']).')"><i class="fas fa-window-restore fa-lg" style="color:#ddd" title="Restore" aria-hidden="true"></i></a>';
+        echo '<a href="#" onclick="restoreSnapshot('.escapeshellarg($snapshot['name']).')"><i class="fas fa-window-restore fa-lg" style="color:#ddd" title="Restore Snapshot" aria-hidden="true"></i></a>';
+        echo ' &nbsp ';
+        echo '<a href="#" onclick="loadCreateInstanceFromSnapshotModal('.escapeshellarg($snapshot['name']).')"><i class="fas fa-cube fa-lg" style="color:#ddd" title="Create Instance" aria-hidden="true"></i></a>';
         echo ' &nbsp ';
         echo '<a href="#" onclick="deleteSnapshot('.escapeshellarg($snapshot['name']).')"><i class="fas fa-trash-alt fa-lg" style="color:#ddd" title="Delete" aria-hidden="true"></i></a>';
       echo "</td>";
