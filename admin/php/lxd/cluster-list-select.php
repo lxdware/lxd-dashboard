@@ -5,6 +5,8 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   $cert = "/var/lxdware/data/lxd/client.crt";
   $key = "/var/lxdware/data/lxd/client.key";
 
+  $include_none = false;
+
   if (isset($_GET['remote']))
     $remote = filter_var(urldecode($_GET['remote']), FILTER_SANITIZE_STRING);
   if (isset($_GET['include_none']))

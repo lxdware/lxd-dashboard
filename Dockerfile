@@ -31,7 +31,7 @@ COPY lxc /usr/bin/
 EXPOSE 80
 
 #Set the no password option for running lxc commands
-RUN echo "www-data ALL=(ALL) NOPASSWD: /usr/bin/lxc, /usr/bin/curl" >> /etc/sudoers
+RUN echo "www-data ALL=(ALL) NOPASSWD: /usr/bin/curl" >> /etc/sudoers
 
 #Setup web directory and files
 COPY default /etc/nginx/sites-available/

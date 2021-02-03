@@ -134,6 +134,8 @@
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Host Details</h6>
+                  <div class="dropdown no-arrow">
+                  </div>
                 </div>
 
                 <div class="row">
@@ -384,6 +386,7 @@
   }
 
   function reloadPageContent() {
+    
     $("#instanceCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=instanceInfo");
     $("#imageCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=imageInfo");
     $("#networkCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=networkInfo");
@@ -394,9 +397,6 @@
     
     //On some servers the Driver/Driver Version field keep alternating. No need to refresh this data
     //$("#lxdCard").load("./php/lxd/hosts.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=lxdInfo");
-    
-    //Set the page content to reload again in 5 more seconds
-    setTimeout(() => { reloadPageContent(); }, 5000);
   }
 
   function loadPageContent(){
@@ -417,8 +417,8 @@
     //Check for any running operations
     operationStatusCheck();
 
-    //Set the page content to reload once in 5 seconds
-    setTimeout(() => { reloadPageContent(); }, 5000);
+    //Set the page content to reload in 5 seconds
+    setInterval(() => { reloadPageContent(); }, 5000);
   }
 
   $(document).ready(function(){

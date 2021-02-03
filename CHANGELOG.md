@@ -1,3 +1,10 @@
+# v1.2.1
+- improvements to the UI on the index.html page
+- set default value for possible undeclared variable in cluster-list-select.php
+- fixed DataTables reloading first page of results after table refresh
+- removed lxc executable privileges in docker builds
+- allowed for empty instances to be created with an image selection of none
+
 # v1.2.0
 - removed the adding certificates option temporarily due to it causing an error
 - added the option to create instances from snapshots

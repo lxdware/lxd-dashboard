@@ -85,22 +85,6 @@
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
 
-            <li class="nav-item">
-              <a class="nav-link" href="#" data-toggle="modal" data-target="#clientCertModal">
-                <span class="mr-2 d-none d-lg-inline text-primary">
-                  Client Certificate
-                </span>
-              </a> 
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" href="#" data-toggle="modal" data-target="#addLxdModal">
-                <span class="mr-2 d-none d-lg-inline text-primary">
-                  Add Remote Host
-                </span>
-              </a> 
-            </li>
-
             <div class="topbar-divider d-none d-sm-block"></div>
 
             <!-- Nav Item - User Information -->
@@ -135,33 +119,25 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Remote Host Configuration</h1>
+            <h1 class="h3 mb-0 text-gray-800">Remote LXD Hosts</h1>
           </div>
 
 
           <div class="row">
             <div class="col-12">
               <!-- LXD Host List -->
-             
-              <p><i class="fas fa-question-circle fa-fw"></i> Before adding a remote host, first copy the client <a href="#" data-toggle="modal" data-target="#clientCertModal">certificate</a> 
-              information and paste it into a new file on your remote LXD server such as <strong><em>lxdware.crt</em></strong>.  
-              Then import the certificate on your remote LXD server by running the command: <code>lxc config trust add lxdware.crt</code>.
-              For LXD hosts that are not part of a cluster, use the <code>lxc config set core.https_address [::]</code> command 
-              to listen for incoming connections.</p>
 
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">LXD Remote Hosts</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">LXD Hosts</h6>
                   <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                      <div class="dropdown-header">Options:</div>
-                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#clientCertModal">Client Certificate</a>
-                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addLxdModal">Add Remote Host</a>
-                    </div>
+                    <a class="dropdown-toggle mr-3" href="#" data-toggle="modal" data-target="#clientCertModal">
+                      View Certificate</a>
+                    <a class="dropdown-toggle mr-3" href="#" data-toggle="modal" data-target="#addLxdModal">
+                      Add Host</a>
+                    <a class="dropdown-toggle mr-2" href="#" data-toggle="modal" data-target="#helpModal" title="Help" aria-hidden="true">
+                      <i class="fas fa-question-circle fa-sm fa-fw"></i></a>
                   </div>
                 </div>
                 <!-- Card Body -->
@@ -209,12 +185,40 @@
     <i class="fas fa-angle-up"></i>
   </a>
 
+  <!-- Help Modal-->
+  <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Instructions</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+              <p>Before adding a remote host, first copy the client <a href="#" data-toggle="modal" data-target="#clientCertModal">certificate</a> 
+                and paste it into a new file on your remote LXD server such as <strong><em>lxdware.crt</em></strong>.</p> 
+              <p>Import the certificate on your remote LXD server by running the command: <code>lxc config trust add lxdware.crt</code></p>
+              <p>For LXD hosts that are not part of a cluster, use the <code>lxc config set core.https_address [::]</code> 
+                 command to listen for incoming connections.</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Dismiss</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Client Cert Modal-->
   <div class="modal fade" id="clientCertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">LXD Client Cert</h5>
+          <h5 class="modal-title" id="exampleModalLabel">LXD Client Certificate</h5>
           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
           </button>
@@ -351,10 +355,7 @@
   }
 
   function reloadPageContent() {
-    $('#lxdListTable').DataTable().ajax.reload();
-
-    //Set the page content to reload again in 5 more seconds
-    setTimeout(() => { reloadPageContent(); }, 5000);
+    $('#lxdListTable').DataTable().ajax.reload(null, false);
   }
 
   function loadPageContent(){
@@ -387,8 +388,9 @@
       $("#clientCert").html(data);
     });
 
-    //Set the page content to reload once in 5 seconds
-    setTimeout(() => { reloadPageContent(); }, 5000);
+    //Set the page content to reload in 5 seconds
+    setInterval(() => { reloadPageContent(); }, 5000);
+
   }
 
   function addRemote(){

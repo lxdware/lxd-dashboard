@@ -43,16 +43,22 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     //Run the matching action
     switch ($action) {
       case "createInstance":
+        
         if ($location == "none"){
           $url = $url . "/1.0/instances?project=" . $project; 
-          $data = escapeshellarg('{"name":"' . $name . '", "profiles": ["'. $profile . '"], "type": "' . $instance_type . '",  "source": {"type": "image", "fingerprint": "' . $fingerprint . '"} }');
-          $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
         }
         else {
-          $url = $url . "/1.0/instances?target=" . $location . "&project=" . $project; 
-          $data = escapeshellarg('{"name":"' . $name . '", "profiles": ["'. $profile . '"], "type": "' . $instance_type . '",  "source": {"type": "image", "fingerprint": "' . $fingerprint . '"} }');
-          $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
+          $url = $url . "/1.0/instances?target=" . $location . "&project=" . $project;
         }
+        
+        if ($fingerprint == "none") {
+          $data = escapeshellarg('{"name":"' . $name . '", "profiles": ["'. $profile . '"], "type": "' . $instance_type . '",  "source": {"type": "none"} }');
+        }
+        else {
+          $data = escapeshellarg('{"name":"' . $name . '", "profiles": ["'. $profile . '"], "type": "' . $instance_type . '",  "source": {"type": "image", "fingerprint": "' . $fingerprint . '"} }');
+        }
+
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
         break;
       case "status":
         $url = $url . "/1.0/instances/" . $instance . "/state?project=" . $project;

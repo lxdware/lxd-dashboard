@@ -139,10 +139,8 @@
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Storage Pools</h6>
                   <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" data-toggle="modal" data-target="#createStoragePoolModal">
-                      <i class="fas fa-plus fa-sm fa-fw"></i>
-                      New Storage Pool
-                    </a>
+                    <a class="dropdown-toggle mr-2" href="#" data-toggle="modal" data-target="#createStoragePoolModal" title="New Storage Pool" aria-hidden="true">
+                      <i class="fas fa-plus fa-sm fa-fw"></i> Storage Pool</a>
                   </div>
                 </div>
                 <!-- Card Body -->
@@ -380,10 +378,7 @@
   }
 
   function reloadPageContent() {
-    $('#storagePoolListTable').DataTable().ajax.reload();
-
-    //Set the page content to reload again in 3 more seconds
-    setTimeout(() => { reloadPageContent(); }, 3000);
+    $('#storagePoolListTable').DataTable().ajax.reload(null, false);
   }
 
   function loadPageContent(){
@@ -416,8 +411,8 @@
     //Check for any running operations
     operationStatusCheck();
 
-    //Set the page content to reload once in 5 seconds
-    setTimeout(() => { reloadPageContent(); }, 5000);
+    //Set the page content to reload in 5 seconds
+    setInterval(() => { reloadPageContent(); }, 5000);
   }
 
   //API uses sync

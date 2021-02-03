@@ -64,6 +64,9 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
           if ($running_task['description'] == "Deleting instance"){
             $results .= " " . $instance; 
           }
+          if ($running_task['description'] == "Showing console"){
+            $results = "Showing console of " . $instance; 
+          }
         }
       }
 

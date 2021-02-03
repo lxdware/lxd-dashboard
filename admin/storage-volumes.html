@@ -139,6 +139,8 @@
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Storage Volumes</h6>
+                  <div class="dropdown no-arrow">
+                  </div>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -318,10 +320,7 @@
   }
 
   function reloadPageContent(){
-    $('#storageVolumeListTable').DataTable().ajax.reload();
-
-    //Set the page content to reload again in 5 more seconds
-    setTimeout(() => { reloadPageContent(); }, 5000);
+    $('#storageVolumeListTable').DataTable().ajax.reload(null, false);
   }
   
   function loadPageContent(){
@@ -351,8 +350,8 @@
     //Check for any running operations
     operationStatusCheck();
 
-    //Set the page content to reload once in 5 seconds
-    setTimeout(() => { reloadPageContent(); }, 5000);
+    //Set the page content to reload in 5 seconds
+    setInterval(() => { reloadPageContent(); }, 5000);
   }
 
   //API uses sync, NOT YET SETUP

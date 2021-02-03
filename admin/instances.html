@@ -139,10 +139,8 @@
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Instances</h6>
                   <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" data-toggle="modal" data-target="#launchInstanceModal">
-                      <i class="fas fa-plus fa-sm fa-fw"></i>
-                      New Instance
-                    </a>
+                    <a class="dropdown-toggle mr-2" href="#" data-toggle="modal" data-target="#launchInstanceModal" title="New Instance" aria-hidden="true">
+                      <i class="fas fa-plus fa-sm fa-fw"></i> Instance</a>
                   </div>
                 </div>
                 <!-- Card Body -->
@@ -334,10 +332,7 @@
   }
 
   function reloadPageContent(){
-    $('#instanceListTable').DataTable().ajax.reload();
-    
-    //Set the page content to reload again in 5 more seconds
-    setTimeout(() => { reloadPageContent(); }, 5000);
+    $('#instanceListTable').DataTable().ajax.reload(null, false);
   }
   
   function loadPageContent(){
@@ -371,9 +366,8 @@
     //Check for any running operations
     operationStatusCheck();
 
-    //Set the page content to reload once in 5 seconds
-    setTimeout(() => { reloadPageContent(); }, 5000);
-
+    //Set the page content to reload in 5 seconds
+    setInterval(() => { reloadPageContent(); }, 5000);
   }
 
   function createInstance(){

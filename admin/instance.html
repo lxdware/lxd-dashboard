@@ -135,21 +135,16 @@
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Details</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">Instance Details</h6>
                   <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="startLink" onclick="startInstance()" style="display: none;">
-                      <i class="fas fa-play fa-sm fa-fw"></i> Start 
-                    </a>
-                    <a class="dropdown-toggle" href="#" role="button" id="stopLink" onclick="stopInstance()" style="display: none;">
-                      <i class="fas fa-stop fa-sm fa-fw"></i> Stop 
-                    </a>
-                    <a class="dropdown-toggle" href="#" role="button" id="unfreezeLink" onclick="unfreezeInstance()" style="display: none;">
-                      <i class="fas fa-pause fa-sm fa-fw"></i> Unfreeze 
-                    </a>
-                    <span>&nbsp; | &nbsp;</span>
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fas fa-cog fa-sm fa-fw"></i> Actions 
-                    </a>
+                    <a class="dropdown-toggle mr-2" href="#" role="button" id="startLink" onclick="startInstance()" style="display: none;" Title="Start">
+                      <i class="fas fa-play fa-sm fa-fw"></i></a>
+                    <a class="dropdown-toggle mr-2" href="#" role="button" id="stopLink" onclick="stopInstance()" style="display: none;" title="Stop">
+                      <i class="fas fa-stop fa-sm fa-fw"></i></a>
+                    <a class="dropdown-toggle mr-2" href="#" role="button" id="unfreezeLink" onclick="unfreezeInstance()" style="display: none;" title="UnFreeze">
+                      <i class="fas fa-pause fa-sm fa-fw"></i></a>
+                    <a class="dropdown-toggle mr-2" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Actions">
+                      <i class="fas fa-bars fa-sm fa-fw"></i></a>
                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                       <!--<div class="dropdown-header">Options:</div>-->
                       <a class="dropdown-item" href="#" onclick="restartInstance()" id="restartInstanceOption">Restart</a>
@@ -849,9 +844,6 @@
         logDetails = data;
       }  
     });
-
-    //Set the page content to reload again in 5 more seconds
-    setTimeout(() => { reloadPageContent(); }, 5000);
   }
 
   function loadPageContent(){
@@ -941,8 +933,8 @@
     //Check for any running operations
     operationStatusCheck();
 
-    //Set the page content to reload once in 5 seconds
-    setTimeout(() => { reloadPageContent(); }, 5000);
+    //Set the page content to reload in 5 seconds
+    setInterval(() => { reloadPageContent(); }, 5000);
   }
 
   function startInstance(){
