@@ -261,7 +261,7 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <label class="col-4 col-form-label" id="networkNameEditInput"></label>
+              <label class="col-12 col-form-label" id="networkNameEditInput"></label>
               <div class="col-12">
                 <div class="form-group text-right">
                   <pre>
@@ -274,6 +274,35 @@
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
             <a class="btn btn-primary" href="#" onclick="updateNetwork()" data-dismiss="modal">Submit</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Network Modal-->
+  <div class="modal fade" id="viewNetworkModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">View Network</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-12 col-form-label" id="networkNameViewInput"></label>
+              <div class="col-12">
+                <div class="form-group text-right">
+                  <pre>
+                    <textarea name="json" class="form-control" id="jsonViewInput" rows="16" ></textarea>
+                  </pre>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Dismiss</button>
           </div>
       </div>
     </div>
@@ -403,6 +432,8 @@
         {},
         { title: "Name" },
         { title: "Description" },
+        { title: "IPv4" },
+        { title: "IPv6" },
         { title: "Type" },
         { title: "Managed" },
         { title: "Action" }
@@ -449,7 +480,7 @@
     });
   }
 
-  //Called by Edit action, loads JSON data of project
+  //Called by Edit action, loads JSON data of network
   function loadNetworkJson(networkToLoad){
     console.log("Info: loading network " + networkToLoad);
     networkToUpdate = networkToLoad;
@@ -462,6 +493,21 @@
       $("#networkNameEditInput").text("Name: " + networkToLoad);
       $("#jsonEditInput").val(JSON.stringify(operationData.metadata, null, 2));
       $("#editNetworkModal").modal('show');
+    });
+  }
+
+  //Called by clicking on network name, loads JSON data of network
+  function viewNetworkJson(networkToLoad){
+    console.log("Info: viewing network " + networkToLoad);
+    $.get("./php/lxd/networks.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&network=" + encodeURI(networkToLoad) + "&action=loadNetwork", function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      $("#networkNameViewInput").text("Name: " + networkToLoad);
+      $("#jsonViewInput").val(JSON.stringify(operationData.metadata, null, 2));
+      $("#viewNetworkModal").modal('show');
     });
   }
 

@@ -1,11 +1,12 @@
 # lxd-dashboard
-This LXD dashboard by LXDWARE is a full-featured web-based user interface that makes it easy to manage the containers and virtual machines on your LXD servers. Some of the features include:
+This LXD dashboard by LXDWARE is a web-based user interface that makes it easy to manage the containers and virtual machines on your LXD servers. Some of the features include:
 
 - Creating/launching new LXD container and virtual machine instances
 - Starting, stopping, renaming, and deleting LXD instances
-- Cloning/Copying instances
+- Copying instances to create new instances 
 - Creating, restoring and deleting snapshots of instances
-- Migrating instances between hosts on a cluster
+- Creating instances from snaphots
+- Migrating instances between hosts on an LXD cluster
 - Downloading LXD container and virtual machine images to your host
 - Creating, editing and applying LXD profiles
 - Creating and editing networks, storage pools, and projects
@@ -13,10 +14,6 @@ This LXD dashboard by LXDWARE is a full-featured web-based user interface that m
 - Sending shell commands to instances using exec
 - Creating and downloading backups of your LXD instance to your local computer
 
-This project is an HTML5 web based dashboard used to control the LXD/LXC containers of remote servers. The software runs within a Docker container and is built using Ubuntu, NGINX, and PHP.
+You can deploy the LXD dashboard on either an LXC or Docker container. The software is built primarly using Ubuntu, NGINX, and PHP.
 
-To get started using this web dashboard first install docker on your computer. Then for a persistent container run:
-
-docker run -d --name dashboard -p 80:80 -e ADMIN_PASS="lxdware" -v ~/lxdware/data:/var/lxdware/data --restart=always lxdware/dashboard
-
-For more information visit https://lxdware.com or view the docker information at https://hub.docker.com/r/lxdware/dashboard
+Installation instructions can be found on the LXDWARE web site located at https://lxdware.com/installation

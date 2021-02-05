@@ -1,3 +1,14 @@
+# v1.2.2
+- added more customized notifications
+- added icons to the action in the instance page
+- improved modals on the instance and operations page
+- clicking on profile names will now display JSON data of profile
+- clicking on image descriptions will now display JSON data of image
+- clicking on managed network descriptions will now display JSON data of network
+- clicking on instance name on instance page will now display JSON data
+- added IPv4 and IPv6 to network table
+- added the option to create stateful snapshots
+
 # v1.2.1
 - improvements to the UI on the index.html page
 - set default value for possible undeclared variable in cluster-list-select.php

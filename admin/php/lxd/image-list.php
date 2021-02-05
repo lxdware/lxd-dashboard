@@ -35,10 +35,9 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       $i++;
 
       echo "[ ";
-      echo '"';
-      echo "<i class='fas fa-box-open fa-lg' style='color:#4e73df'></i>";
-      echo '",';
-      echo '"' . htmlentities($image['properties']['description']) . '",';
+      
+      echo '"' . "<a href='#' onclick=viewImageJson('".$image['fingerprint']."')><i class='fas fa-box-open fa-lg' style='color:#4e73df'></i></a>" . '",';
+      echo '"' . "<a href='#' onclick=viewImageJson('".$image['fingerprint']."')>".htmlentities($image['properties']['description'])."</a>" . '",';
       echo '"' . htmlentities($image['fingerprint']) . '",';
       echo '"' . htmlentities($image['type']) . '",';
       echo '"' . htmlentities(number_format($image['size'] / 1048576, 2)) . ' MB",';

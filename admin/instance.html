@@ -147,17 +147,17 @@
                       <i class="fas fa-bars fa-sm fa-fw"></i></a>
                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                       <!--<div class="dropdown-header">Options:</div>-->
-                      <a class="dropdown-item" href="#" onclick="restartInstance()" id="restartInstanceOption">Restart</a>
-                      <a class="dropdown-item" href="#" onclick="forceStopInstance()" id="forceStopInstanceOption">Force Stop</a>
-                      <a class="dropdown-item" href="#" onclick="freezeInstance()" id="freezeInstanceOption">Freeze</a>
-                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#snapshotInstanceModal" id="snapshotInstanceOption">Snapshot</a>
-                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#attachProfileModal" id="attachProfileOption">Add Profile</a>
-                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameInstanceModal" id="renameInstanceOption">Rename</a>
-                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#copyInstanceModal" id="copyInstanceOption">Copy</a>
-                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#migrateInstanceModal" id="migrateInstanceOption">Migrate</a>
-                      <a class="dropdown-item" href="#" onclick="initializeCreateBackup()" id="backupInstanceOption">Backup</a>
-                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#publishInstanceModal" id="publishInstanceOption">Publish</a>
-                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#deleteInstanceModal" id="deleteInstanceOption">Delete</a>
+                      <a class="dropdown-item text-primary" href="#" onclick="restartInstance()" id="restartInstanceOption"><i class="fas fa-redo fa-sm fa-fw mr-2"></i>Restart</a>
+                      <a class="dropdown-item text-primary" href="#" onclick="forceStopInstance()" id="forceStopInstanceOption"><i class="fas fa-plug fa-sm fa-fw mr-2"></i>Force Stop</a>
+                      <a class="dropdown-item text-primary" href="#" onclick="freezeInstance()" id="freezeInstanceOption"><i class="fas fa-pause fa-sm fa-fw mr-2"></i>Freeze</a>
+                      <a class="dropdown-item text-primary" href="#" data-toggle="modal" data-target="#snapshotInstanceModal" id="snapshotInstanceOption"><i class="fas fa-clone fa-sm fa-fw mr-2"></i>Snapshot</a>
+                      <a class="dropdown-item text-primary" href="#" data-toggle="modal" data-target="#attachProfileModal" id="attachProfileOption"><i class="fas fa-address-card fa-sm fa-fw mr-2"></i>Attach Profile</a>
+                      <a class="dropdown-item text-primary" href="#" data-toggle="modal" data-target="#renameInstanceModal" id="renameInstanceOption"><i class="fas fa-edit fa-sm fa-fw mr-2"></i>Rename</a>
+                      <a class="dropdown-item text-primary" href="#" data-toggle="modal" data-target="#copyInstanceModal" id="copyInstanceOption"><i class="fas fa-copy fa-sm fa-fw mr-2"></i>Copy</a>
+                      <a class="dropdown-item text-primary" href="#" data-toggle="modal" data-target="#migrateInstanceModal" id="migrateInstanceOption"><i class="fas fa-suitcase fa-sm fa-fw mr-2"></i>Migrate</a>
+                      <a class="dropdown-item text-primary" href="#" onclick="initializeCreateBackup()" id="backupInstanceOption"><i class="fas fa-save fa-sm fa-fw mr-2"></i>Backup</a>
+                      <a class="dropdown-item text-primary" href="#" data-toggle="modal" data-target="#publishInstanceModal" id="publishInstanceOption"><i class="fas fa-box-open fa-sm fa-fw mr-2"></i>Publish</a>
+                      <a class="dropdown-item text-primary" href="#" data-toggle="modal" data-target="#deleteInstanceModal" id="deleteInstanceOption"><i class="fas fa-trash-alt fa-sm fa-fw mr-2"></i>Delete</a>
                     </div>
                   </div>
                 </div>
@@ -363,10 +363,21 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <label class="col-4 col-form-label text-right">Name: </label>
-              <div class="col-8">
+              <label class="col-2 col-form-label text-right">Name: </label>
+              <div class="col-9">
                 <div class="form-group">
-                  <input type="text" id="snapshotName" class="form-control" placeholder="Snapshot Name" name="snapshot">
+                  <input type="text" id="snapshotName" class="form-control" placeholder="Enter a name for the snapshot" name="snapshot">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-2 col-form-label text-right">Stateful:</label>
+              <div class="col-9 text-right">
+                <div class="form-group">
+                  <select id="snapshotStateful" class="form-control" name="snapshotStateful">
+                    <option value="false" selected>false</option>
+                    <option value="true">true</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -391,10 +402,10 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <label class="col-4 col-form-label text-right">Name:</label>
-              <div class="col-8">
+              <label class="col-2 col-form-label text-right">Name:</label>
+              <div class="col-9">
                 <div class="form-group">
-                  <input type="text" id="newInstanceName" class="form-control" placeholder="Instance name">
+                  <input type="text" id="newInstanceName" class="form-control" placeholder="Enter a new name">
                 </div>
               </div>
             </div>
@@ -419,8 +430,8 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <label class="col-4 col-form-label text-right">Cluster Member:</label>
-              <div class="col-8">
+              <label class="col-2 col-form-label text-right">Host:</label>
+              <div class="col-9">
                 <div class="form-group">
                   <select id="selectClusterInput" class="form-control" name="cluster">
                   </select>
@@ -448,10 +459,10 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <label class="col-3 col-form-label text-right">Name:</label>
+              <label class="col-2 col-form-label text-right">Name:</label>
               <div class="col-9">
                 <div class="form-group">
-                  <input type="text" id="copyName" class="form-control" placeholder="Instance name" name="copy">
+                  <input type="text" id="copyName" class="form-control" placeholder="Enter a name for the new instance" name="copy">
                 </div>
               </div>
             </div>
@@ -476,10 +487,10 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <label class="col-3 col-form-label text-right">Name:</label>
+              <label class="col-2 col-form-label text-right">Name:</label>
               <div class="col-9">
                 <div class="form-group">
-                  <input type="text" id="instanceNameForSnapshotCreate" class="form-control" placeholder="Instance name" name="copy">
+                  <input type="text" id="instanceNameForSnapshotCreate" class="form-control" placeholder="Enter a name for the new instance" name="copysnap">
                   <input type="hidden" id="snapNameForSnapshotCreate">
                 </div>
               </div>
@@ -505,10 +516,10 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <label class="col-3 col-form-label text-right">Name:</label>
+              <label class="col-2 col-form-label text-right">Name:</label>
               <div class="col-9">
                 <div class="form-group">
-                  <input type="text" id="backupName" class="form-control" placeholder="Backup name" name="copy">
+                  <input type="text" id="backupName" class="form-control" placeholder="Enter a name for the backup" name="copy">
                 </div>
               </div>
             </div>
@@ -582,15 +593,15 @@
           <div class="modal-body">
             <div class="row">
               <label class="col-3 col-form-label text-right">Description: </label>
-              <div class="col-9">
+              <div class="col-8">
                 <div class="form-group">
-                  <input type="text" id="publishInstanceDescriptionInput" class="form-control" placeholder="Enter Description" name="description">
+                  <input type="text" id="publishInstanceDescriptionInput" class="form-control" placeholder="Enter a description for the image" name="description">
                 </div>
               </div>
             </div>
             <div class="row">
               <label class="col-3 col-form-label text-right">Public:</label>
-              <div class="col-9">
+              <div class="col-8">
                 <div class="form-group">
                   <select id="publishInstancePublicInput" class="form-control" name="public">
                     <option value="false" selected>false</option>
@@ -632,6 +643,35 @@
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Instance Modal-->
+  <div class="modal fade" id="viewInstanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">View Instance</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-12 col-form-label" id="instanceNameViewInput"></label>
+              <div class="col-12">
+                <div class="form-group text-right">
+                  <pre>
+                    <textarea name="json" class="form-control" id="jsonViewInput" rows="16" ></textarea>
+                  </pre>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Dismiss</button>
           </div>
       </div>
     </div>
@@ -1029,8 +1069,9 @@
 
   function snapshotInstance(){
     var snapshotName = $("#snapshotName").val();
+    var snapshotStateful = $("#snapshotStateful").val();
     console.log("Info: creating snapshot " + snapshotName);
-    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(snapshotName) + "&action=snapshotInstance", function (data) {
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(snapshotName) + "&stateful=" + encodeURI(snapshotStateful) + "&action=snapshotInstance", function (data) {
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
@@ -1294,6 +1335,21 @@
     $.get("./php/lxd/instance-exec.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&command=" + encodeURI(command), function (data) {
       //get the results back and populate execOutput textarea
       $("#execOutput").text(data);
+    });
+  }
+
+  //Called by clicking on instance name, loads JSON data of instance
+  function viewInstanceJson(instanceToLoad){
+    console.log("Info: viewing instance " + instanceToLoad);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&name=" + encodeURI(instanceToLoad) + "&action=loadInstance", function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      $("#instanceNameViewInput").text("Name: " + instanceToLoad);
+      $("#jsonViewInput").val(JSON.stringify(operationData.metadata, null, 2));
+      $("#viewInstanceModal").modal('show');
     });
   }
 

@@ -54,9 +54,6 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo '",';
 
       echo '"';
-        //echo "<a href='#' onclick=loadStorageVolumeJson('".$storage_volume."')><i class='fas fa-edit fa-lg' style='color:#ddd'></i></a>";
-        //echo " &nbsp ";
-        //echo "<a href='#' onclick=deleteStorageVolume('".$storage_volume."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd'></i></a>";
       echo '"';
 
       echo " ]";

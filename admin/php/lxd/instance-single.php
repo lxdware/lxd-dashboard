@@ -28,7 +28,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     $instance_api_data = json_decode($instance_api_data, true);
     $instance_data = $instance_api_data['metadata'];
 
-    $name = $instance_data['name']?: "N/A";
+    $name = $instance_data['name'];
     $created = $instance_data['created_at']?: "N/A";
     $description = $instance_data['description']?: "N/A";
     $type = $instance_data['type']?: "N/A"; //ex container, virtual-machine
@@ -36,7 +36,9 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     $image = $instance_data['config']['image.description']?: "N/A"; //ex Ubuntu focal amd64 (20200821_07:42)
     $status = $instance_data['status']?: "N/A"; //ex Running
     
-    echo "<strong>Name</strong>: " . htmlentities($name) . "<br />";
+    
+    echo "<strong>Name</strong>: <a href='#' onclick=viewInstanceJson('".$name."')>".htmlentities($name)."</a><br />";
+
     echo "<strong>Description</strong>: " . htmlentities($description) . "<br />";
     echo "<strong>Type</strong>: " . htmlentities($type) . "<br />";
     echo "<strong>Status</strong>: " . htmlentities($status) . "<br />";

@@ -260,7 +260,7 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <label class="col-4 col-form-label" id="profileNameEditInput"></label>
+              <label class="col-12 col-form-label" id="profileNameEditInput"></label>
               <div class="col-12">
                 <div class="form-group text-right">
                   <pre>
@@ -273,6 +273,35 @@
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
             <a class="btn btn-primary" href="#" onclick="updateProfile()" data-dismiss="modal">Submit</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Profile Modal-->
+  <div class="modal fade" id="viewProfileModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">View Profile</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-12 col-form-label" id="profileNameViewInput"></label>
+              <div class="col-12">
+                <div class="form-group text-right">
+                  <pre>
+                    <textarea name="json" class="form-control" id="jsonViewInput" rows="16" ></textarea>
+                  </pre>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Dismiss</button>
           </div>
       </div>
     </div>
@@ -447,7 +476,7 @@
     });
   }
 
-  //Called by Edit action, loads JSON data of project
+  //Called by Edit action, loads JSON data of profile
   function loadProfileJson(profileToLoad){
     console.log("Info: loading profile " + profileToLoad);
     profileToUpdate = profileToLoad;
@@ -460,6 +489,21 @@
       $("#profileNameEditInput").text("Name: " + profileToLoad);
       $("#jsonEditInput").val(JSON.stringify(operationData.metadata, null, 2));
       $("#editProfileModal").modal('show');
+    });
+  }
+
+  //Called by clicking on profile name, loads JSON data of profile
+  function viewProfileJson(profileToLoad){
+    console.log("Info: viewing profile " + profileToLoad);
+    $.get("./php/lxd/profiles.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&profile=" + encodeURI(profileToLoad) + "&action=loadProfile", function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      $("#profileNameViewInput").text("Name: " + profileToLoad);
+      $("#jsonViewInput").val(JSON.stringify(operationData.metadata, null, 2));
+      $("#viewProfileModal").modal('show');
     });
   }
 

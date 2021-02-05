@@ -30,6 +30,8 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     $path = filter_var(urldecode($_GET['path']), FILTER_SANITIZE_STRING);
   if (isset($_GET['location']))
     $location = filter_var(urldecode($_GET['location']), FILTER_SANITIZE_STRING);
+  if (isset($_GET['stateful']))
+    $stateful = filter_var(urldecode($_GET['stateful']), FILTER_SANITIZE_STRING);
 
   //Determine host info from database
   $db = new SQLite3('/var/lxdware/data/sqlite/lxdware.sqlite');
@@ -100,12 +102,15 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
         break;
       case "snapshotInstance":
         $url = $url . "/1.0/instances/" . $instance . "/snapshots?project=" . $project;
-        $data = escapeshellarg('{"name": "'. $name . '"}');
+        if ($stateful != "true"){
+          $stateful = "false";
+        }
+        $data = escapeshellarg('{"name": "' . $name . '", "stateful": ' . $stateful . '}');
         $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
         break;
       case "renameInstance":
         $url = $url . "/1.0/instances/" . $instance . "?project=" . $project;
-        $data = escapeshellarg('{"name": "'. $name . '"}');
+        $data = escapeshellarg('{"name": "' . $name . '"}');
         $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
         break;
       case "copyInstance":
@@ -186,7 +191,10 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
         $url = $url . "/1.0/instances/" . $instance . "/backups/" . $name . "?project=" . $project;
         $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE $url");
         break;
-    
+      case "loadInstance":
+        $url = $url . "/1.0/instances/" . $name . "?project=" . $project;
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+        break;
     }
   }
 

@@ -33,11 +33,11 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
       echo "[ ";
       echo '"';
-      echo "<a href='#' onclick=loadCertificateJson('".$certificate['fingerprint']."')> <i class='fas fa-wallet fa-lg' style='color:#4e73df'></i> </a>";    
+      echo "<a href='#' onclick=viewCertificateJson('".$certificate['fingerprint']."')> <i class='fas fa-wallet fa-lg' style='color:#4e73df'></i> </a>";    
       echo '",';
 
       echo '"';
-      echo "<a href='#' onclick=loadCertificateJson('".$certificate['fingerprint']."')>".htmlentities($certificate['name'])."</a>";
+      echo "<a href='#' onclick=viewCertificateJson('".$certificate['fingerprint']."')>".htmlentities($certificate['name'])."</a>";
       echo '",';
 
 

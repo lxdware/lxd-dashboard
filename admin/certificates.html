@@ -224,18 +224,18 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <label class="col-4 col-form-label" id="certificateNameEditInput"></label>
+              <label class="col-12 col-form-label" id="certificateNameViewInput"></label>
               <div class="col-12">
                 <div class="form-group text-right">
                   <pre>
-                    <textarea name="json" class="form-control" id="jsonEditInput" rows="16" ></textarea>
+                    <textarea name="json" class="form-control" id="jsonViewInput" rows="16" ></textarea>
                   </pre>
                 </div>
               </div>
             </div>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Dismiss</button>
           </div>
       </div>
     </div>
@@ -366,18 +366,17 @@
     });
   }
 
-  //Called by Edit action, loads JSON data of project
-  function loadCertificateJson(certificateToLoad){
-    console.log("Info: loading certificate " + certificateToLoad);
-    certificateToUpdate = certificateToLoad;
+  //Called by clicking on certificate name, loads JSON data of certificate
+  function viewCertificateJson(certificateToLoad){
+    console.log("Info: viewing certificate " + certificateToLoad);
     $.get("./php/lxd/certificates.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&certificate=" + encodeURI(certificateToLoad) + "&action=loadCertificate", function (data) {
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }
-      $("#certificateNameEditInput").text("Fingerprint: " + certificateToLoad);
-      $("#jsonEditInput").val(JSON.stringify(operationData.metadata, null, 2));
+      $("#certificateNameViewInput").text("Fingerprint: " + certificateToLoad);
+      $("#jsonViewInput").val(JSON.stringify(operationData.metadata, null, 2));
       $("#viewCertificateModal").modal('show');
     });
   }

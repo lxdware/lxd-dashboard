@@ -67,6 +67,12 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
           if ($running_task['description'] == "Showing console"){
             $results = "Showing console of " . $instance; 
           }
+          if ($running_task['description'] == "Freezing instance"){
+            $results .= " " . $instance; 
+          }
+          if ($running_task['description'] == "Restarting instance"){
+            $results .= " " . $instance; 
+          }
         }
       }
 

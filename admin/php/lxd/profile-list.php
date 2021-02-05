@@ -35,10 +35,8 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       $i++;
 
       echo "[ ";
-      echo '"';
-      echo "<i class='fas fa-address-card fa-lg' style='color:#4e73df'></i>";
-      echo '",';
-      echo '"' . htmlentities($profile['name']) . '",';
+      echo '"' . "<a href='#' onclick=viewProfileJson('".$profile['name']."')><i class='fas fa-address-card fa-lg' style='color:#4e73df'></i></a>" . '",';
+      echo '"' . "<a href='#' onclick=viewProfileJson('".$profile['name']."')>".htmlentities($profile['name'])."</a>" . '",';
       echo '"' . htmlentities($profile['description']) . '",';
 
       echo '"';

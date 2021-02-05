@@ -244,7 +244,7 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <label class="col-4 col-form-label" id="imageNameEditInput"></label>
+              <label class="col-12 col-form-label" id="imageNameEditInput"></label>
               <div class="col-12">
                 <div class="form-group text-right">
                   <pre>
@@ -257,6 +257,35 @@
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
             <a class="btn btn-primary" href="#" onclick="updateImage()" data-dismiss="modal">Submit</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Image Modal-->
+  <div class="modal fade" id="viewImageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">View Image</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-12 col-form-label" id="imageNameViewInput"></label>
+              <div class="col-12">
+                <div class="form-group text-right">
+                  <pre>
+                    <textarea name="json" class="form-control" id="jsonViewInput" rows="16" ></textarea>
+                  </pre>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Dismiss</button>
           </div>
       </div>
     </div>
@@ -442,9 +471,9 @@
     });
   }
 
-  //Called by Edit action, loads JSON data of project
+  //Called by Edit action, loads JSON data of image
   function loadImageJson(imageToLoad){
-    console.log("Info: loading iname " + imageToLoad);
+    console.log("Info: loading image " + imageToLoad);
     imageToUpdate = imageToLoad;
     $.get("./php/lxd/images.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&fingerprint=" + encodeURI(imageToLoad) + "&action=loadImage", function (data) {
       var operationData = JSON.parse(data);
@@ -452,9 +481,24 @@
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }
-      $("#imageNameEditInput").text("Name: " + imageToLoad);
+      $("#imageNameEditInput").text("Fingerprint: " + imageToLoad);
       $("#jsonEditInput").val(JSON.stringify(operationData.metadata, null, 2));
       $("#editImageModal").modal('show');
+    });
+  }
+
+  //Called by clicking on image name, loads JSON data of image
+  function viewImageJson(imageToLoad){
+    console.log("Info: viewing image " + imageToLoad);
+    $.get("./php/lxd/images.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&fingerprint=" + encodeURI(imageToLoad) + "&action=loadImage", function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      $("#imageNameViewInput").text("Fingerprint: " + imageToLoad);
+      $("#jsonViewInput").val(JSON.stringify(operationData.metadata, null, 2));
+      $("#viewImageModal").modal('show');
     });
   }
 

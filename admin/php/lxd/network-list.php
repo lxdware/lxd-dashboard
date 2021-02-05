@@ -37,14 +37,19 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       $i++;
 
       echo "[ ";
-      echo '"';
-      if ($network['managed'] == "true")
-        echo "<i class='fas fa-network-wired fa-lg' style='color:#4e73df'></i>";
-      else
-        echo "<i class='fas fa-network-wired fa-lg' style='color:#ddd'></i>";
-      echo '",';
-      echo '"' . htmlentities($network['name']) . '",';
+
+      if ($network['managed'] == "true"){
+        echo '"' . "<a href='#' onclick=viewNetworkJson('".$network['name']."')><i class='fas fa-network-wired fa-lg' style='color:#4e73df'></i></a>" . '",';
+        echo '"' . "<a href='#' onclick=viewNetworkJson('".$network['name']."')>".htmlentities($network['name'])."</a>" . '",';
+      }
+      else {
+        echo '"' . "<i class='fas fa-network-wired fa-lg' style='color:#ddd'></i>" . '",';
+        echo '"' . htmlentities($network['name']) . '",';
+      }
+
       echo '"' . htmlentities($network['description']) . '",';
+      echo '"' . htmlentities($network['config']['ipv4.address']) . '",';
+      echo '"' . htmlentities($network['config']['ipv6.address']) . '",';
       echo '"' . htmlentities($network['type']) . '",';
       echo '"' . htmlentities($network_data_managed) . '",';
 
