@@ -32,6 +32,10 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     $location = filter_var(urldecode($_GET['location']), FILTER_SANITIZE_STRING);
   if (isset($_GET['stateful']))
     $stateful = filter_var(urldecode($_GET['stateful']), FILTER_SANITIZE_STRING);
+  if (isset($_GET['os']))
+    $os = filter_var(urldecode($_GET['os']), FILTER_SANITIZE_STRING);
+  if (isset($_GET['release']))
+    $release = filter_var(urldecode($_GET['release']), FILTER_SANITIZE_STRING);
 
   //Determine host info from database
   $db = new SQLite3('/var/lxdware/data/sqlite/lxdware.sqlite');
@@ -165,7 +169,12 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
         break;
       case "publishInstance":
         $url = $url . "/1.0/images?project=" . $project;
-        $data = escapeshellarg('{"properties":{"description": "'. $description . '"}, "public": '. $public . ', "source":{"type": "instance", "name": "'. $instance . '"}}');
+        $data = escapeshellarg('{"properties":{"description": "'. $description . '", "os": "' . $os . '", "release": "' . $release . '"}, "public": '. $public . ', "source":{"type": "instance", "name": "'. $instance . '"}}');
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
+        break;
+      case "publishSnapshot":
+        $url = $url . "/1.0/images?project=" . $project;
+        $data = escapeshellarg('{"properties":{"description": "'. $description . '", "os": "' . $os . '", "release": "' . $release . '"}, "public": '. $public . ', "source":{"type": "snapshot", "name": "'. $instance . '"}}');
         $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
         break;
       case "loadLog":

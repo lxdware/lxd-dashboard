@@ -54,8 +54,32 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
         echo '",';
       }
     
-      echo '"' . $instance_data['config']['image.description'] . '",';
+      echo '"' . $instance_data['config']['image.os'] . '",';
       echo '"' . $instance_data['location'] . '",';
+
+      //IPv4
+      echo '"';
+      foreach ($instance_data['state']['network'] as $nic=>$nic_properties){
+        foreach ($nic_properties['addresses'] as $nic_address){
+          if ($nic_address['family'] == "inet" && $nic_address['scope'] == "global"){
+            echo $nic_address['address'] . " (" . $nic . ")<br />";
+
+          }
+        }
+      }
+      echo '",';
+
+      //IPv6
+      echo '"';
+      foreach ($instance_data['state']['network'] as $nic=>$nic_properties){
+        foreach ($nic_properties['addresses'] as $nic_address){
+          if ($nic_address['family'] == "inet6" && $nic_address['scope'] == "global"){
+            echo $nic_address['address'] . " (" . $nic . ")<br />";
+          }
+        }
+      }
+      echo '",';
+
       echo '"' . $instance_data['type'] . '",';
 
       //Convert the memory usage to an appropriate unit

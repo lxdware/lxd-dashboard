@@ -60,6 +60,8 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
         echo ' &nbsp ';
         echo '<a href="#" onclick="loadCreateInstanceFromSnapshotModal('.escapeshellarg($snapshot['name']).')"><i class="fas fa-cube fa-lg" style="color:#ddd" title="Create Instance" aria-hidden="true"></i></a>';
         echo ' &nbsp ';
+        echo '<a href="#" onclick="loadPublishImageFromSnapshotModal('.escapeshellarg($snapshot['name']).')"><i class="fas fa-box-open fa-lg" style="color:#ddd" title="Publish Image" aria-hidden="true"></i></a>';
+        echo ' &nbsp ';
         echo '<a href="#" onclick="deleteSnapshot('.escapeshellarg($snapshot['name']).')"><i class="fas fa-trash-alt fa-lg" style="color:#ddd" title="Delete" aria-hidden="true"></i></a>';
       echo "</td>";
       

@@ -1,3 +1,7 @@
+# v1.2.3
+- added IPv4 and IPv6 to instance list, making it closer to "lxc list" output
+- added the ability to publish an image from a snapshot
+
 # v1.2.2
 - added more customized notifications
 - added icons to the action in the instance page

@@ -366,7 +366,7 @@
               <label class="col-2 col-form-label text-right">Name: </label>
               <div class="col-9">
                 <div class="form-group">
-                  <input type="text" id="snapshotName" class="form-control" placeholder="Enter a name for the snapshot" name="snapshot">
+                  <input type="text" id="snapshotName" class="form-control" placeholder="" name="snapshot">
                 </div>
               </div>
             </div>
@@ -405,7 +405,7 @@
               <label class="col-2 col-form-label text-right">Name:</label>
               <div class="col-9">
                 <div class="form-group">
-                  <input type="text" id="newInstanceName" class="form-control" placeholder="Enter a new name">
+                  <input type="text" id="newInstanceName" class="form-control" placeholder="">
                 </div>
               </div>
             </div>
@@ -462,7 +462,7 @@
               <label class="col-2 col-form-label text-right">Name:</label>
               <div class="col-9">
                 <div class="form-group">
-                  <input type="text" id="copyName" class="form-control" placeholder="Enter a name for the new instance" name="copy">
+                  <input type="text" id="copyName" class="form-control" placeholder="" name="copy">
                 </div>
               </div>
             </div>
@@ -490,7 +490,7 @@
               <label class="col-2 col-form-label text-right">Name:</label>
               <div class="col-9">
                 <div class="form-group">
-                  <input type="text" id="instanceNameForSnapshotCreate" class="form-control" placeholder="Enter a name for the new instance" name="copysnap">
+                  <input type="text" id="instanceNameForSnapshotCreate" class="form-control" placeholder="" name="copysnap">
                   <input type="hidden" id="snapNameForSnapshotCreate">
                 </div>
               </div>
@@ -499,6 +499,62 @@
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
             <a class="btn btn-primary" href="#" onclick="createInstanceFromSnapshot()" data-dismiss="modal">Ok</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Publish Image from Snapshot Modal-->
+  <div class="modal fade" id="publishImageFromSnapshotModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Publish Image from Snapshot</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Description: </label>
+              <div class="col-8">
+                <div class="form-group">
+                  <input type="text" id="publishSnapshotDescriptionInput" class="form-control" placeholder="" name="description">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-3 col-form-label text-right">OS: </label>
+              <div class="col-8">
+                <div class="form-group">
+                  <input type="text" id="publishSnapshotOsInput" class="form-control" placeholder="" name="os">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Release: </label>
+              <div class="col-8">
+                <div class="form-group">
+                  <input type="text" id="publishSnapshotReleaseInput" class="form-control" placeholder="" name="release">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Public:</label>
+              <div class="col-8">
+                <div class="form-group">
+                  <select id="publishSnapshotPublicInput" class="form-control" name="public">
+                    <option value="false" selected>false</option>
+                    <option value="true">true</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <input type="hidden" id="publishSnapshotHiddenName">
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="publishImageFromSnapshot()" data-dismiss="modal">Ok</a>
           </div>
       </div>
     </div>
@@ -519,7 +575,7 @@
               <label class="col-2 col-form-label text-right">Name:</label>
               <div class="col-9">
                 <div class="form-group">
-                  <input type="text" id="backupName" class="form-control" placeholder="Enter a name for the backup" name="copy">
+                  <input type="text" id="backupName" class="form-control" placeholder="" name="copy">
                 </div>
               </div>
             </div>
@@ -585,7 +641,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Publish Instance</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Publish Image from Instance</h5>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
@@ -595,7 +651,23 @@
               <label class="col-3 col-form-label text-right">Description: </label>
               <div class="col-8">
                 <div class="form-group">
-                  <input type="text" id="publishInstanceDescriptionInput" class="form-control" placeholder="Enter a description for the image" name="description">
+                  <input type="text" id="publishInstanceDescriptionInput" class="form-control" placeholder="" name="description">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-3 col-form-label text-right">OS: </label>
+              <div class="col-8">
+                <div class="form-group">
+                  <input type="text" id="publishInstanceOsInput" class="form-control" placeholder="" name="os">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Release: </label>
+              <div class="col-8">
+                <div class="form-group">
+                  <input type="text" id="publishInstanceReleaseInput" class="form-control" placeholder="" name="release">
                 </div>
               </div>
             </div>
@@ -1122,12 +1194,37 @@
       $("#createInstanceFromSnapshotModal").modal('show');
   }
 
+  function loadPublishImageFromSnapshotModal(snap){
+      $("#publishSnapshotHiddenName").val(snap);
+      $("#publishImageFromSnapshotModal").modal('show');
+  }
+
   function createInstanceFromSnapshot(){
     var copyName = $("#instanceNameForSnapshotCreate").val();
     var snapName = $("#snapNameForSnapshotCreate").val();
     var instanceSnapshotName = instanceName + "/" + snapName;
     console.log("Info: creating instance " + copyName + " from snapshot " + instanceSnapshotName);
     $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceSnapshotName) + "&name=" + encodeURI(copyName) + "&action=copyInstance", function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
+        operationStatusCheck();
+      }
+      if (operationData.metadata.status_code >= 400){
+        alert(operationData.metadata.err);
+      }
+    });
+  }
+
+  function publishImageFromSnapshot(){
+    var description = $("#publishSnapshotDescriptionInput").val();
+    var publicDownload = $("#publishSnapshotPublicInput").val();
+    var os = $("#publishSnapshotOsInput").val();
+    var release = $("#publishSnapshotReleaseInput").val();
+    var snapName = $("#publishSnapshotHiddenName").val();
+    var instanceSnapshotName = instanceName + "/" + snapName;
+    console.log("Info: publishing image " + description + " from snapshot " + instanceSnapshotName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceSnapshotName) + "&description=" + encodeURI(description) + "&public=" + encodeURI(publicDownload) + "&os=" + encodeURI(os) + "&release=" + encodeURI(release) + "&action=publishSnapshot", function (data) {
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
@@ -1230,8 +1327,10 @@
   function publishInstance(){
     var description = $("#publishInstanceDescriptionInput").val();
     var publicDownload = $("#publishInstancePublicInput").val();
-    console.log("Info: publishing instance " + instanceName);
-    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&description=" + encodeURI(description) + "&public=" + encodeURI(publicDownload) + "&action=publishInstance", function (data) {
+    var os = $("#publishInstanceOsInput").val();
+    var release = $("#publishInstanceReleaseInput").val();
+    console.log("Info: publishing image " + description + " from instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&description=" + encodeURI(description) + "&public=" + encodeURI(publicDownload) + "&os=" + encodeURI(os) + "&release=" + encodeURI(release) + "&action=publishInstance", function (data) {
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
