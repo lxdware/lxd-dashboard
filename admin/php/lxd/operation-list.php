@@ -16,7 +16,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   $db_results = $db_statement->execute();
 
   while($row = $db_results->fetchArray()){
-    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/operations?recursion=1";
+    $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/operations?recursion=1&project=" . $project;
     $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
     $remote_data = json_decode($remote_data, true);
     $operations_dict = $remote_data['metadata'];

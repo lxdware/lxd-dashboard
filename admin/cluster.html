@@ -266,7 +266,7 @@
 
   function operationStatusCheck(){
     //check to see if there are any running operations
-    $.get("./php/lxd/operation-status.php?remote=" + encodeURI(remoteName), function (data) {
+    $.get("./php/lxd/operation-status.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName), function (data) {
       //Check to see if we have running operations
       if (data){
         //Display spinner and notification area if there are running tasks
