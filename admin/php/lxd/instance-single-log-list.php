@@ -34,7 +34,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
     //Instance Backups
     $url = $url . "/1.0/instances/" . $instance . "/logs?project=" . $project;
-    $instance_api_logs = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+    $instance_api_logs = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
     $instance_api_logs = json_decode($instance_api_logs, true);
     $instance_logs = $instance_api_logs['metadata'];
 

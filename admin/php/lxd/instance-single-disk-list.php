@@ -33,13 +33,13 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
   while($row = $db_results->fetchArray()){
     $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/instances/" . $instance . "/state?project=" . $project;
-    $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+    $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
     $remote_data = json_decode($remote_data, true);
     $disk_names = $remote_data['metadata']['disk'];
     foreach ($disk_names as $disk_name => $disk_data){
 
       $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/instances/" . $instance . "?project=" . $project;
-      $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+      $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
       $remote_data = json_decode($remote_data, true);
       $device_names = $remote_data['metadata']['expanded_devices'];
       foreach ($device_names as $device_name => $device_data){

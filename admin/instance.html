@@ -1202,9 +1202,8 @@
   function createInstanceFromSnapshot(){
     var copyName = $("#instanceNameForSnapshotCreate").val();
     var snapName = $("#snapNameForSnapshotCreate").val();
-    var instanceSnapshotName = instanceName + "/" + snapName;
-    console.log("Info: creating instance " + copyName + " from snapshot " + instanceSnapshotName);
-    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceSnapshotName) + "&name=" + encodeURI(copyName) + "&action=copyInstance", function (data) {
+    console.log("Info: creating instance " + copyName + " from snapshot " + instanceName + "/" + snapName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&snapshot=" + encodeURI(snapName) + "&name=" + encodeURI(copyName) + "&action=copyInstance", function (data) {
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){

@@ -39,31 +39,31 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       case "createNetworkForm":
         $url = $url . "/1.0/networks?project=" . $project;
         $data = escapeshellarg('{"description": "'.$description.'", "name": "'.$name.'"}');
-        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data '$url'");
         break;
       case "createNetworkJson":
         $url = $url . "/1.0/networks?project=" . $project;
         $data = escapeshellarg($json);
-        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data '$url'");
         break;
       case "deleteNetwork":
         $url = $url . "/1.0/networks/" . $network . "?project=" . $project;
         $data = escapeshellarg('{}');
-        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE -d $data '$url'");
       break;
       case "updateNetwork":
         $url = $url . "/1.0/networks/" . $network . "?project=" . $project;
         $data = escapeshellarg($json);
-        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PUT -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PUT -d $data '$url'");
       break;
       case "renameNetwork":
         $url = $url . "/1.0/networks/" . $network . "?project=" . $project;
         $data = escapeshellarg('{"name": "' . $name . '"}');
-        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data '$url'");
       break;
       case "loadNetwork":
         $url = $url . "/1.0/networks/" . $network . "?project=" . $project;
-        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
       break;
     }
   }

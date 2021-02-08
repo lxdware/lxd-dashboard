@@ -1,3 +1,7 @@
+# v1.2.4
+- merged pull request from ssoor fixing bug on operation status for projects other than default
+- fixed additional bug in displaying lists and the actions of items within projects other than default
+
 # v1.2.3
 - added IPv4 and IPv6 to instance list, making it closer to "lxc list" output
 - added the ability to publish an image from a snapshot

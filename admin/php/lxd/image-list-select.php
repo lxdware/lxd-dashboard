@@ -20,7 +20,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
   while($row = $db_results->fetchArray()){
     $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/images?recursion=1&project=" . $project;
-    $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+    $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
     $remote_data = json_decode($remote_data, true);
     $images = $remote_data['metadata'];
     echo '<option value="none">none</option>';

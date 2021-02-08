@@ -15,7 +15,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
   while($row = $db_results->fetchArray()){
     $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/cluster";
-    $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+    $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
     $remote_data = json_decode($remote_data, true);
     $cluster_status = $remote_data['metadata'];
 
@@ -24,7 +24,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     }
     else {
       $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/cluster/members?recursion=1";
-      $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+      $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
       $remote_data = json_decode($remote_data, true);
       $members = $remote_data['metadata'];
     

@@ -40,31 +40,31 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       case "createProfileForm":
         $url = $url . "/1.0/profiles?project=" . $project;
         $data = escapeshellarg('{"description": "'.$description.'", "name": "'.$name.'"}');
-        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data '$url'");
         break;
       case "createProfileJson":
         $url = $url . "/1.0/profiles?project=" . $project;
         $data = escapeshellarg($json);
-        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data '$url'");
         break;
       case "deleteProfile":
         $url = $url . "/1.0/profiles/" . $profile . "?project=" . $project;
         $data = escapeshellarg('{}');
-        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE -d $data '$url'");
       break;
       case "updateProfile":
         $url = $url . "/1.0/profiles/" . $profile . "?project=" . $project;
         $data = escapeshellarg($json);
-        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PUT -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PUT -d $data '$url'");
       break;
       case "renameProfile":
         $url = $url . "/1.0/profiles/" . $profile . "?project=" . $project;
         $data = escapeshellarg('{"name": "' . $name . '"}');
-        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data '$url'");
       break;
       case "loadProfile":
         $url = $url . "/1.0/profiles/" . $profile . "?project=" . $project;
-        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
       break;
     }
   }

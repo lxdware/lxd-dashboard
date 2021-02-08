@@ -27,7 +27,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       case "sysInfo":
         //Retrieve host resource data
         $url = $url . "/1.0/resources?project=" . $project;
-        $resource_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+        $resource_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
         if ($resource_api_data == NULL) {
           $results =  "<strong>Error</strong>: Unable to connect to host <br /> <br />";
           break;
@@ -92,7 +92,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       case "lxdInfo":
         //Retrieve host data
         $url = $url . "/1.0?project=" . $project;
-        $api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+        $api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
         if ($api_data == NULL) {
           $results =  "<strong>Error</strong>: Unable to connect to host <br /> <br />";
           break;
@@ -141,7 +141,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
         $running_instances = 0;
         $total_instances = 0;
         $url = $url. "/1.0/instances?recursion=2&project=" . $project;
-        $instance_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+        $instance_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
         $instance_api_data = json_decode($instance_api_data, true);
         foreach ($instance_api_data['metadata'] as $instance_data){
           if ($instance_data['state']['status'] == "Running"){
@@ -162,7 +162,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       case "imageInfo":
         //Retrieve list of images
         $url = $url . "/1.0/images?project=" . $project;
-        $image_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+        $image_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
         $image_api_data = json_decode($image_api_data, true);
         $image_urls = $image_api_data['metadata'];
         $results = '';
@@ -181,7 +181,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       case "clusterInfo":
         #First determine if part of a cluster
         $url_enabled = $url . "/1.0/cluster";
-        $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url_enabled");
+        $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url_enabled'");
         $remote_data = json_decode($remote_data, true);
         $cluster_status = $remote_data['metadata'];
         if ($cluster_status['enabled'] == false){
@@ -200,7 +200,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
           $online_members = 0;
           $total_members = 0;
           $url = $url . "/1.0/cluster/members?recursion=1";
-          $cluster_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+          $cluster_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
           $cluster_api_data = json_decode($cluster_api_data, true);
           $cluster_api_data = $cluster_api_data['metadata'];
           foreach ($cluster_api_data as $cluster_data){
@@ -223,7 +223,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       case "projectInfo":
         //Retrieve list of projects
         $url = $url . "/1.0/projects?project=" . $project;
-        $project_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+        $project_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
         $project_api_data = json_decode($project_api_data, true);
         $project_urls = $project_api_data['metadata'];
         $results = '';
@@ -242,7 +242,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       case "networkInfo":
         //Retrieve list of networks
         $url = $url . "/1.0/networks?project=" . $project;
-        $network_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+        $network_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
         $network_api_data = json_decode($network_api_data, true);
         $network_urls = $network_api_data['metadata'];
         $results = '';
@@ -261,7 +261,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       case "storageInfo":
         //Retrieve list of storage pools
         $url = $url . "/1.0/storage-pools?project=" . $project;
-        $storage_pool_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+        $storage_pool_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
         $storage_pool_api_data = json_decode($storage_pool_api_data, true);
         $storage_pool_urls = $storage_pool_api_data['metadata'];
         $results = '';

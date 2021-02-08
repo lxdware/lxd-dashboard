@@ -25,7 +25,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
     //Instance State
     $url = $url . "/1.0/instances/".$instance."/state?project=" . $project;
-    $instance_api_state = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+    $instance_api_state = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
     $instance_api_state = json_decode($instance_api_state, true);
     $instance_state = $instance_api_state['metadata'];
 

@@ -31,12 +31,12 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
   while($row = $db_results->fetchArray()){
     $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/instances/" . $instance . "?project=" . $project;
-    $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+    $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
     $remote_data = json_decode($remote_data, true);
     $profile_names = $remote_data['metadata']['profiles'];
     foreach ($profile_names as $profile_name){
       $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/profiles/" . $profile_name . "?project=" . $project;
-      $profile_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+      $profile_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
       $profile_data = json_decode($profile_data, true);
       $profile_data = $profile_data['metadata'];
       if ($profile_data['name'] == "")

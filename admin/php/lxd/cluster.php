@@ -32,7 +32,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
         else {
           $url = $url . "/1.0/cluster/members/" . $name;
         }
-        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE '$url'");
         break;
     }
   }

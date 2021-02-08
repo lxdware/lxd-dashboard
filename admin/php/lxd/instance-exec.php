@@ -27,12 +27,12 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     //Send the command using exec api and record the output to the instance logs
     $exec_url = $url. "/1.0/instances/" . $instance . "/exec?project=" . $project;
     $data = escapeshellarg('{ "command": ["/bin/sh", "-c", "' . $command . '"], "environment": {}, "wait-for-websocket": false, "record-output": true, "interactive": false, "width": 80, "height": 25, "user": 0, "group": 0, "cwd": "/"}');
-    $exec_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $exec_url");
+    $exec_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data '$exec_url'");
     $exec_api_data = json_decode($exec_api_data, true);
 
     //Use the operation url to check the status of the command and wait up to 30 seconds for operation to complete to return data. Consider PHP timeout.
     $operation_url = $url . $exec_api_data['operation']. "/wait?timeout=30";
-    $exec_operation_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $operation_url");
+    $exec_operation_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$operation_url'");
     $exec_operation_data = json_decode($exec_operation_data, true);
     $operation_data = $exec_operation_data['metadata'];
 
@@ -44,16 +44,16 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       $stderr_log_url = $url . $operation_data['metadata']['output']['2']; //stderr log
 
       //Store the data from both the stdout and stderr logs in variables
-      $stdout = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $stdout_log_url");
-      $stderr = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $stderr_log_url");
+      $stdout = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$stdout_log_url'");
+      $stderr = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$stderr_log_url'");
 
       //Display the contents
       echo $stdout;
       echo $stderr;
 
       //Delete the stdout and stderr logs
-      $stdout_delete_log = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE $stdout_log_url");
-      $stderr_delete_log = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE $stderr_log_url");   
+      $stdout_delete_log = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE '$stdout_log_url'");
+      $stderr_delete_log = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE '$stderr_log_url'");   
     }
     if ($operation_data['status_code'] >= 400){
       //This means the operation did not execute the command, display the error
@@ -61,8 +61,8 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       //Delete the the stdout and stderr logs
       $stdout_log_url = $url . "/1.0/instances/" . $instance . "/logs/exec_" . $operation_data['id'] . ".stdout";
       $stderr_log_url = $url . "/1.0/instances/" . $instance . "/logs/exec_" . $operation_data['id'] . ".stderr";
-      $stdout_delete_log = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE $stdout_log_url");
-      $stderr_delete_log = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE $stderr_log_url"); 
+      $stdout_delete_log = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE '$stdout_log_url'");
+      $stderr_delete_log = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE '$stderr_log_url'"); 
     }
    
     if ($operation_data['status_code'] < 200){

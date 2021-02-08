@@ -37,21 +37,21 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     switch ($action) {
       case "deleteProject":
         $url = $url . "/1.0/projects/" . $name;
-        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE '$url'");
         break;
       case "createProject":
         $url = $url . "/1.0/projects";
         $data = escapeshellarg('{"name":"' . $name . '"}');
-        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data '$url'");
       break;
       case "loadProject":
         $url = $url . "/1.0/projects/" . $name;
-        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
       break;
       case "updateProject":
         $url = $url . "/1.0/projects/" . $project;
         $data = $json;
-        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PUT -d '$data' $url");
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PUT -d '$data' '$url'");
       break;
 
     }
