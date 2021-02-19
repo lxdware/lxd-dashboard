@@ -54,8 +54,6 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     if (!$network_interfaces)
     echo "N/A";
     foreach ($network_interfaces as $network_interface){
-      if (count($network_interface['addresses']) == 0)
-        echo "N/A";
       foreach ($network_interface['addresses'] as $address){
         if ($address['family'] == "inet" && $address['scope'] == "global"){
           if ($i > 0)
@@ -72,8 +70,6 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     if (!$network_interfaces)
       echo "N/A";
     foreach ($network_interfaces as $network_interface){
-      if (count($network_interface['addresses']) == 0)
-        echo "N/A";
       foreach ($network_interface['addresses'] as $address){
         if ($address['family'] == "inet6" && $address['scope'] == "global"){
           if ($i > 0)

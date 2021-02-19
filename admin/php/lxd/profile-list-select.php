@@ -26,8 +26,13 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       
       if ($profile['name'] == "")
       continue;
-    
-      echo '<option value="' . $profile['name'] . '">' . htmlentities($profile['name']) . '</option>';
+      
+      if ($profile['name'] == "default"){
+        echo '<option value="' . $profile['name'] . '" selected>' . htmlentities($profile['name']) . '</option>';
+      }
+      else {
+        echo '<option value="' . $profile['name'] . '">' . htmlentities($profile['name']) . '</option>';
+      }
     }
   }
 }

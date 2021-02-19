@@ -139,7 +139,7 @@
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Instances</h6>
                   <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle mr-2" href="#" data-toggle="modal" data-target="#launchInstanceModal" title="New Instance" aria-hidden="true">
+                    <a class="dropdown-toggle mr-2" href="#" data-toggle="modal" data-target="#createInstanceModal" title="New Instance" aria-hidden="true">
                       <i class="fas fa-plus fa-sm fa-fw"></i> Instance</a>
                   </div>
                 </div>
@@ -183,73 +183,275 @@
     <i class="fas fa-angle-up"></i>
   </a>
 
-  <!-- Launch Instance Modal-->
-  <div class="modal fade" id="launchInstanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+  <!-- Create Instance Modal-->
+  <div class="modal fade" id="createInstanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Launch New Instance</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Create Instance</h5>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
           </div>
           <div class="modal-body">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="form-tab" data-toggle="tab" href="#form" role="tab" aria-controls="form" aria-selected="true">Form</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="json-tab" data-toggle="tab" href="#json" role="tab" aria-controls="json" aria-selected="false">JSON</a>
+              </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade show active" id="form" role="tabpanel" aria-labelledby="form-tab">
+                <br />
+                <div class="row">
+                  <label class="col-2 col-form-label text-right">Name: </label>
+                  <div class="col-9">
+                    <div class="form-group">
+                      <input type="text" id="instanceNameInput" class="form-control" required="required" placeholder="Enter name of instance" name="name">
+                    </div>
+                  </div>
+                </div>
+    
+                <div class="row">
+                  <label class="col-2 col-form-label text-right">Type:</label>
+                  <div class="col-9 text-right">
+                    <div class="form-group">
+                      <select id="selectTypeInput" onchange="changeImageInput()" class="form-control" name="type">
+                        <option value="container" selected>container</option>
+                        <option value="virtual-machine">virtual-machine</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+    
+                <div class="row">
+                  <label class="col-2 col-form-label text-right">Image: </label>
+                  <div class="col-9">
+                    <div class="form-group">
+                      <select id="selectImageInput" class="form-control" name="fingerprint">
+                      </select>
+                    </div>
+                  </div>
+                </div>
+    
+                <div class="row">
+                  <label class="col-2 col-form-label text-right">Profile: </label>
+                  <div class="col-9">
+                    <div class="form-group">
+                      <select id="selectProfileInput" class="form-control" name="profile">
+                      </select>
+                    </div>
+                  </div>
+                </div>
 
-            <div class="row">
-              <label class="col-2 col-form-label text-right">Name: </label>
-              <div class="col-9">
-                <div class="form-group">
-                  <input type="text" id="instanceNameInput" class="form-control" required="required" placeholder="Enter name of instance" name="name">
+                <div class="row">
+                  <label class="col-2 col-form-label text-right">Instance Type: </label>
+                  <div class="col-9">
+                    <div class="form-group">
+                      <select id="selectInstanceTypeInput" class="form-control" name="instance_type">
+                        <option value="none" selected>none</option>
+                        <option disabled>--- AWS Instance Types ---</option>
+                        <option value="aws:c1.medium">c1.medium</option>
+                        <option value="aws:c1.xlarge">c1.xlarge</option>
+                        <option value="aws:c3.2xlarge">c3.2xlarge</option>
+                        <option value="aws:c3.4xlarge">c3.4xlarge</option>
+                        <option value="aws:c3.8xlarge">c3.8xlarge</option>
+                        <option value="aws:c3.large">c3.large</option>
+                        <option value="aws:c3.xlarge">c3.xlarge</option>
+                        <option value="aws:c4.2xlarge">c4.2xlarge</option>
+                        <option value="aws:c4.4xlarge">c4.4xlarge</option>
+                        <option value="aws:c4.8xlarge">c4.8xlarge</option>
+                        <option value="aws:c4.large">c4.large</option>
+                        <option value="aws:c4.xlarge">c4.xlarge</option>
+                        <option value="aws:c5.large">c5.large</option>
+                        <option value="aws:c5.xlarge">c5.xlarge</option>
+                        <option value="aws:c5.2xlarge">c5.2xlarge</option>
+                        <option value="aws:c5.4xlarge">c5.4xlarge</option>
+                        <option value="aws:c5.9xlarge">c5.9xlarge</option>
+                        <option value="aws:c5.18xlarge">c5.18xlarge</option>
+                        <option value="aws:cc2.8xlarge">cc2.8xlarge</option>
+                        <option value="aws:cg1.4xlarge">cg1.4xlarge</option>
+                        <option value="aws:cr1.8xlarge">cr1.8xlarge</option>
+                        <option value="aws:d2.xlarge">d2.xlarge</option>
+                        <option value="aws:d2.2xlarge">d2.2xlarge</option>
+                        <option value="aws:d2.4xlarge">d2.4xlarge</option>
+                        <option value="aws:d2.8xlarge">d2.8xlarge</option>
+                        <option value="aws:f1.2xlarge">f1.2xlarge</option>
+                        <option value="aws:f1.16xlarge">f1.16xlarge</option>
+                        <option value="aws:g2.2xlarge">g2.2xlarge</option>
+                        <option value="aws:g2.8xlarge">g2.8xlarge</option>
+                        <option value="aws:g3.4xlarge">g3.4xlarge</option>
+                        <option value="aws:g3.8xlarge">g3.8xlarge</option>
+                        <option value="aws:g3.16xlarge">g3.16xlarge</option>
+                        <option value="aws:hi1.4xlarge">hi1.4xlarge</option>
+                        <option value="aws:hs1.8xlarge">hs1.8xlarge</option>
+                        <option value="aws:i2.xlarge">i2.xlarge</option>
+                        <option value="aws:i2.2xlarge">i2.2xlarge</option>
+                        <option value="aws:i2.4xlarge">i2.4xlarge</option>
+                        <option value="aws:i2.8xlarge">i2.8xlarge</option>
+                        <option value="aws:i3.large">i3.large</option>
+                        <option value="aws:i3.xlarge">i3.xlarge</option>
+                        <option value="aws:i3.2xlarge">i3.2xlarge</option>
+                        <option value="aws:i3.4xlarge">i3.4xlarge</option>
+                        <option value="aws:i3.8xlarge">i3.8xlarge</option>
+                        <option value="aws:i3.16xlarge">i3.16xlarge</option>
+                        <option value="aws:m1.small">m1.small</option>
+                        <option value="aws:m1.medium">m1.medium</option>
+                        <option value="aws:m1.large">m1.large</option>
+                        <option value="aws:m1.xlarge">m1.xlarge</option>
+                        <option value="aws:m2.xlarge">m2.xlarge</option>
+                        <option value="aws:m2.2xlarge">m2.2xlarge</option>
+                        <option value="aws:m2.4xlarge">m2.4xlarge</option>
+                        <option value="aws:m3.medium">m3.medium</option>
+                        <option value="aws:m3.large">m3.large</option>
+                        <option value="aws:m3.xlarge">m3.xlarge</option>
+                        <option value="aws:m3.2xlarge">m3.2xlarge</option>
+                        <option value="aws:m4.large">m4.large</option>
+                        <option value="aws:m4.xlarge">m4.xlarge</option>
+                        <option value="aws:m4.2xlarge">m4.2xlarge</option>
+                        <option value="aws:m4.4xlarge">m4.4xlarge</option>
+                        <option value="aws:m4.10xlarge">m4.10xlarge</option>
+                        <option value="aws:m4.16xlarge">m4.16xlarge</option>
+                        <option value="aws:p2.xlarge">p2.xlarge</option>
+                        <option value="aws:p2.8xlarge">p2.8xlarge</option>
+                        <option value="aws:p2.16xlarge">p2.16xlarge</option>
+                        <option value="aws:r3.large">r3.large</option>
+                        <option value="aws:r3.xlarge">r3.xlarge</option>
+                        <option value="aws:r3.2xlarge">r3.2xlarge</option>
+                        <option value="aws:r3.4xlarge">r3.4xlarge</option>
+                        <option value="aws:r3.8xlarge">r3.8xlarge</option>
+                        <option value="aws:r4.large">r4.large</option>
+                        <option value="aws:r4.xlarge">r4.xlarge</option>
+                        <option value="aws:r4.2xlarge">r4.2xlarge</option>
+                        <option value="aws:r4.4xlarge">r4.4xlarge</option>
+                        <option value="aws:r4.8xlarge">r4.8xlarge</option>
+                        <option value="aws:r4.16xlarge">r4.16xlarge</option>
+                        <option value="aws:t1.micro">t1.micro</option>
+                        <option value="aws:t2.nano">t2.nano</option>
+                        <option value="aws:t2.micro">t2.micro</option>
+                        <option value="aws:t2.small">t2.small</option>
+                        <option value="aws:t2.medium">t2.medium</option>
+                        <option value="aws:t2.large">t2.large</option>
+                        <option value="aws:t2.xlarge">t2.xlarge</option>
+                        <option value="aws:t2.2xlarge">t2.2xlarge</option>
+                        <option value="aws:t3.nano">t3.nano</option>
+                        <option value="aws:t3.micro">t3.micro</option>
+                        <option value="aws:t3.small">t3.small</option>
+                        <option value="aws:t3.medium">t3.medium</option>
+                        <option value="aws:t3.large">t3.large</option>
+                        <option value="aws:t3.xlarge">t3.xlarge</option>
+                        <option value="aws:t3.2xlarge">t3.2xlarge</option>
+                        <option value="aws:x1.16xlarge">x1.16xlarge</option>
+                        <option value="aws:x1.32xlarge">x1.32xlarge</option>
+                        <option disabled>--- Azure Instance Types ---</option>
+                        <option value="azure:A5">A5</option>
+                        <option value="azure:A6">A6</option>
+                        <option value="azure:A7">A7</option>
+                        <option value="azure:A8">A8</option>
+                        <option value="azure:A9">A9</option>
+                        <option value="azure:A10">A10</option>
+                        <option value="azure:A11">A11</option>
+                        <option value="azure:ExtraSmall">ExtraSmall</option>
+                        <option value="azure:Small">Small</option>
+                        <option value="azure:Medium">Medium</option>
+                        <option value="azure:Large">Large</option>
+                        <option value="azure:ExtraLarge">ExtraLarge</option>
+                        <option value="azure:Standard_A1_v2">Standard_A1_v2</option>
+                        <option value="azure:Standard_A2m_v2">Standard_A2m_v2</option>
+                        <option value="azure:Standard_A2_v2">Standard_A2_v2</option>
+                        <option value="azure:Standard_A4m_v2">Standard_A4m_v2</option>
+                        <option value="azure:Standard_A4_v2">Standard_A4_v2</option>
+                        <option value="azure:Standard_A8m_v2">Standard_A8m_v2</option>
+                        <option value="azure:Standard_A8_v2">Standard_A8_v2</option>
+                        <option value="azure:Standard_D1">Standard_D1</option>
+                        <option value="azure:Standard_D1_v2">Standard_D1_v2</option>
+                        <option value="azure:Standard_D2">Standard_D2</option>
+                        <option value="azure:Standard_D2_v2">Standard_D2_v2</option>
+                        <option value="azure:Standard_D3">Standard_D3</option>
+                        <option value="azure:Standard_D3_v2">Standard_D3_v2</option>
+                        <option value="azure:Standard_D4">Standard_D4</option>
+                        <option value="azure:Standard_D4_v2">Standard_D4_v2</option>
+                        <option value="azure:Standard_D5_v2">Standard_D5_v2</option>
+                        <option value="azure:Standard_D11">Standard_D11</option>
+                        <option value="azure:Standard_D11_v2">Standard_D11_v2</option>
+                        <option value="azure:Standard_D12">Standard_D12</option>
+                        <option value="azure:Standard_D12_v2">Standard_D12_v2</option>
+                        <option value="azure:Standard_D13">Standard_D13</option>
+                        <option value="azure:Standard_D13_v2">Standard_D13_v2</option>
+                        <option value="azure:Standard_D14">Standard_D14</option>
+                        <option value="azure:Standard_D14_v2">Standard_D14_v2</option>
+                        <option value="azure:Standard_D15_v2">Standard_D15_v2</option>
+                        <option value="azure:Standard_G1">Standard_G1</option>
+                        <option value="azure:Standard_G2">Standard_G2</option>
+                        <option value="azure:Standard_G3">Standard_G3</option>
+                        <option value="azure:Standard_G4">Standard_G4</option>
+                        <option value="azure:Standard_G5">Standard_G5</option>
+                        <option value="azure:Standard_H8">Standard_H8</option>
+                        <option value="azure:Standard_H8m">Standard_H8m</option>
+                        <option value="azure:Standard_H16">Standard_H16</option>
+                        <option value="azure:Standard_H16m">Standard_H16m</option>
+                        <option value="azure:Standard_H16mr">Standard_H16mr</option>
+                        <option value="azure:Standard_H16r">Standard_H16r</option>
+                        <option disabled>--- GCE Instance Types ---</option>
+                        <option value="gce:f1-micro">f1-micro</option>
+                        <option value="gce:g1-small">g1-small</option>
+                        <option value="gce:n1-highcpu-2">n1-highcpu-2</option>
+                        <option value="gce:n1-highcpu-4">n1-highcpu-4</option>
+                        <option value="gce:n1-highcpu-8">n1-highcpu-8</option>
+                        <option value="gce:n1-highcpu-16">n1-highcpu-16</option>
+                        <option value="gce:n1-highcpu-32">n1-highcpu-32</option>
+                        <option value="gce:n1-highcpu-64">n1-highcpu-64</option>
+                        <option value="gce:n1-highmem-2">n1-highmem-2</option>
+                        <option value="gce:n1-highmem-4">n1-highmem-4</option>
+                        <option value="gce:n1-highmem-8">n1-highmem-8</option>
+                        <option value="gce:n1-highmem-16">n1-highmem-16</option>
+                        <option value="gce:n1-highmem-32">n1-highmem-32</option>
+                        <option value="gce:n1-highmem-64">n1-highmem-64</option>
+                        <option value="gce:n1-standard-1">n1-standard-1</option>
+                        <option value="gce:n1-standard-2">n1-standard-2</option>
+                        <option value="gce:n1-standard-4">n1-standard-4</option>
+                        <option value="gce:n1-standard-8">n1-standard-8</option>
+                        <option value="gce:n1-standard-16">n1-standard-16</option>
+                        <option value="gce:n1-standard-32">n1-standard-32</option>
+                        <option value="gce:n1-standard-64">n1-standard-64</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+    
+                <div class="row">
+                  <label class="col-2 col-form-label text-right">Location: </label>
+                  <div class="col-9">
+                    <div class="form-group">
+                      <select id="selectLocationInput" class="form-control" name="location">
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                  <a class="btn btn-primary" href="#" onclick="createInstance()" data-dismiss="modal">Ok</a>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="json" role="tabpanel" aria-labelledby="json-tab">
+                <br />
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group text-right">
+                      <pre>
+                        <textarea name="json" class="form-control" id="jsonCreateInput" rows="16" placeholder="Enter JSON data"></textarea>
+                      </pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                  <a class="btn btn-primary" href="#" onclick="createInstanceJson()" data-dismiss="modal">Submit</a>
                 </div>
               </div>
             </div>
-
-            <div class="row">
-              <label class="col-2 col-form-label text-right">Type:</label>
-              <div class="col-9 text-right">
-                <div class="form-group">
-                  <select id="selectTypeInput" onchange="changeImageInput()" class="form-control" name="instance_type">
-                    <option value="container" selected>container</option>
-                    <option value="virtual-machine">virtual-machine</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <label class="col-2 col-form-label text-right">Image: </label>
-              <div class="col-9">
-                <div class="form-group">
-                  <select id="selectImageInput" class="form-control" name="fingerprint">
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <label class="col-2 col-form-label text-right">Profile: </label>
-              <div class="col-9">
-                <div class="form-group">
-                  <select id="selectProfileInput" class="form-control" name="profile">
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <label class="col-2 col-form-label text-right">Location: </label>
-              <div class="col-9">
-                <div class="form-group">
-                  <select id="selectLocationInput" class="form-control" name="location">
-                  </select>
-                </div>
-              </div>
-            </div>
-
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="#" onclick="createInstance()" data-dismiss="modal">Ok</a>
           </div>
       </div>
     </div>
@@ -376,10 +578,11 @@
     var instanceName = $("#instanceNameInput").val();
     var profileName = $("#selectProfileInput").val();
     var fingerprint = $("#selectImageInput").val();
-    var instanceType = $("#selectTypeInput").val();
+    var type = $("#selectTypeInput").val();
+    var instanceType = $("#selectInstanceTypeInput").val();
     var location = $("#selectLocationInput").val();
     console.log("Info: creating instance " + instanceName + " with profile " + profileName + ", fingerprint " + fingerprint + ", and location " + location);
-    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&name=" + encodeURI(instanceName) + "&profile=" + encodeURI(profileName) + "&fingerprint=" + encodeURI(fingerprint) + "&instance_type=" + encodeURI(instanceType) + "&location=" + encodeURI(location) + "&action=createInstance",  function (data) {
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&name=" + encodeURI(instanceName) + "&profile=" + encodeURI(profileName) + "&fingerprint=" + encodeURI(fingerprint) + "&type=" + encodeURI(type) + "&instance_type=" + encodeURI(instanceType) + "&location=" + encodeURI(location) + "&action=createInstance",  function (data) {
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
@@ -388,6 +591,19 @@
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err);
       }
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function createInstanceJson(){
+    var instanceCreateJSON = $("#jsonCreateInput").val();
+    console.log("Info: creating instance");
+    $.post("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=createInstanceJson", {json: instanceCreateJSON},  function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }

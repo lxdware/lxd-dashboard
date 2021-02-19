@@ -28,7 +28,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     //echo '<li class="nav-item dropdown no-arrow">';
     echo '<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
     echo '<i class="fas fa-server mr-2 text-gray-600"></i>';
-    echo '<span class="mr-2 d-none d-lg-inline text-gray-600">Host: <strong>'. htmlentities($display_name) . '</strong></span>';
+    echo '<span class="mr-2 d-none d-lg-inline text-gray-600">Host: <font class="text-primary">'. htmlentities($display_name) . '</font></span>';
     echo '</a>';
     echo '<!-- Dropdown - User Information -->';
     echo '<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">';
@@ -41,9 +41,9 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       else
         $display_name2 = $row2['host'];
       if ($row2['id'] == $remote)
-        echo '<a class="dropdown-item"  href="host.html?remote=' . $row2['id'] . '&project=' . $project . '"><i class="fas fa-server fa-sm fa-fw mr-2 text-gray-400"></i><strong>' . htmlentities($display_name2) . '</strong></a>';
+        echo '<a class="dropdown-item"  href="host.html?remote=' . $row2['id'] . '&project=' . $project . '"><i class="fas fa-server fa-sm fa-fw mr-2 text-gray-900"></i><strong>' . htmlentities($display_name2) . '</strong></a>';
       else
-        echo '<a class="dropdown-item"  href="host.html?remote=' . $row2['id'] . '&project=default"><i class="fas fa-server fa-sm fa-fw mr-2 text-gray-400"></i>' . htmlentities($display_name2) . '</a>'; 
+        echo '<a class="dropdown-item"  href="host.html?remote=' . $row2['id'] . '&project=default"><i class="fas fa-server fa-sm fa-fw mr-2 text-gray-600"></i>' . htmlentities($display_name2) . '</a>'; 
     
     }
     echo '</div>';

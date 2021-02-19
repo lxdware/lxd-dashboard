@@ -1,3 +1,13 @@
+# v1.2.5
+- added ability to create an instance from JSON
+- added "instance type" option to replicate cloud instance types from AWS, Azure, and GCE
+- added edit action for configuration and device information of an instance
+- improved delete function of instance. If the instance is not found when deleting, redirect to instance list
+- improved list of cluster members when migrating to include none for non-clustered host
+- added an additional custom notification for updating instance
+- UI improvements to host and project nav menu
+- fixed displaying results from exec in instances within projects other than default
+
 # v1.2.4
 - merged pull request from ssoor fixing bug on operation status for projects other than default
 - fixed additional bug in displaying lists and the actions of items within projects other than default

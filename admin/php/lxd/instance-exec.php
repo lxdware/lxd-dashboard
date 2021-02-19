@@ -31,7 +31,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     $exec_api_data = json_decode($exec_api_data, true);
 
     //Use the operation url to check the status of the command and wait up to 30 seconds for operation to complete to return data. Consider PHP timeout.
-    $operation_url = $url . $exec_api_data['operation']. "/wait?timeout=30";
+    $operation_url = $url . $exec_api_data['operation']. "/wait?project=".$project."&timeout=30";
     $exec_operation_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$operation_url'");
     $exec_operation_data = json_decode($exec_operation_data, true);
     $operation_data = $exec_operation_data['metadata'];
@@ -40,8 +40,8 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     if ($operation_data['status_code'] == 200){
       //This means operation completed, but the command it executed may either be in stdout or stderr
       $return_value = $operation_data['metadata']['return']; //Similar to $? in bash
-      $stdout_log_url = $url . $operation_data['metadata']['output']['1']; //stdout log
-      $stderr_log_url = $url . $operation_data['metadata']['output']['2']; //stderr log
+      $stdout_log_url = $url . $operation_data['metadata']['output']['1'] . "?project=".$project; //stdout log
+      $stderr_log_url = $url . $operation_data['metadata']['output']['2'] . "?project=".$project; //stderr log
 
       //Store the data from both the stdout and stderr logs in variables
       $stdout = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$stdout_log_url'");
@@ -59,8 +59,8 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       //This means the operation did not execute the command, display the error
       echo $operation_data['err'];
       //Delete the the stdout and stderr logs
-      $stdout_log_url = $url . "/1.0/instances/" . $instance . "/logs/exec_" . $operation_data['id'] . ".stdout";
-      $stderr_log_url = $url . "/1.0/instances/" . $instance . "/logs/exec_" . $operation_data['id'] . ".stderr";
+      $stdout_log_url = $url . "/1.0/instances/" . $instance . "/logs/exec_" . $operation_data['id'] . ".stdout?project=" . $project;
+      $stderr_log_url = $url . "/1.0/instances/" . $instance . "/logs/exec_" . $operation_data['id'] . ".stderr?project=" . $project;
       $stdout_delete_log = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE '$stdout_log_url'");
       $stderr_delete_log = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE '$stderr_log_url'"); 
     }

@@ -33,47 +33,52 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
           $results =  $running_task['description'];
           $instance = basename($running_task['resources']['instances'][0]);
 
-          if ($running_task['description'] == "Downloading image"){
-            $results .= " " . $running_task['metadata']['download_progress'];
-          }
-          if ($running_task['description'] == "Executing command"){
-            $results = "Executing " . htmlentities($running_task['metadata']['command'][0]) . " command on " . htmlentities($instance);
-          }
-          if ($running_task['description'] == "Stopping instance"){
-            $results .= " " . $instance; 
-          }
-          if ($running_task['description'] == "Starting instance"){
-            $results .= " " . $instance; 
-          }
-          if ($running_task['description'] == "Backing up container"){
-            $results .= " " . $instance; 
-          }
-          if ($running_task['description'] == "Restoring backup"){
-            $results .= " to instance " . $instance; 
-          }
-          if ($running_task['description'] == "Creating instance"){
-            $results .= " " . $instance; 
-          }
-          if ($running_task['description'] == "Creating container"){
-            $results .= " " . $instance; 
-          }
-          if ($running_task['description'] == "Migrating container"){
-            $results .= " " . $instance; 
-          }
-          if ($running_task['description'] == "Deleting container"){
-            $results .= " " . $instance; 
-          }
-          if ($running_task['description'] == "Deleting instance"){
-            $results .= " " . $instance; 
-          }
-          if ($running_task['description'] == "Showing console"){
-            $results = "Showing console of " . $instance; 
-          }
-          if ($running_task['description'] == "Freezing instance"){
-            $results .= " " . $instance; 
-          }
-          if ($running_task['description'] == "Restarting instance"){
-            $results .= " " . $instance; 
+          switch($running_task['description']){
+            case "Backing up container":
+              $results .= " " . $instance; 
+              break;
+            case "Creating container":
+              $results .= " " . $instance; 
+              break;
+            case "Creating instance":
+              $results .= " " . $instance; 
+              break;
+            case "Deleting container":
+              $results .= " " . $instance; 
+              break;
+            case "Deleting instance":
+              $results .= " " . $instance; 
+              break;
+            case "Downloading image":
+              $results .= " " . $running_task['metadata']['download_progress'];
+              break;
+            case "Executing command":
+              $results = "Executing " . htmlentities($running_task['metadata']['command'][0]) . " command on " . htmlentities($instance);
+              break;
+            case "Freezing instance":
+              $results .= " " . $instance;
+              break;
+            case "Migrating container":
+              $results .= " " . $instance; 
+              break;
+            case "Restarting instance":
+              $results .= " " . $instance;
+              break;
+            case "Restoring backup":
+              $results .= " to instance " . $instance; 
+              break;
+            case "Showing console":
+              $results = "Showing console of " . $instance; 
+              break;
+            case "Starting instance":
+              $results .= " " . $instance; 
+              break;
+            case "Stopping instance":
+              $results .= " " . $instance; 
+              break;
+            case "Updating instance":
+              $results .= " " . $instance; 
+              break;
           }
         }
       }

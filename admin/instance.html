@@ -147,6 +147,7 @@
                       <i class="fas fa-bars fa-sm fa-fw"></i></a>
                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                       <!--<div class="dropdown-header">Options:</div>-->
+                      <a class="dropdown-item text-primary" href="#" onclick="editInstanceJson()" id="editInstanceOption"><i class="fas fa-edit fa-sm fa-fw mr-2"></i>Edit</a>
                       <a class="dropdown-item text-primary" href="#" onclick="restartInstance()" id="restartInstanceOption"><i class="fas fa-redo fa-sm fa-fw mr-2"></i>Restart</a>
                       <a class="dropdown-item text-primary" href="#" onclick="forceStopInstance()" id="forceStopInstanceOption"><i class="fas fa-plug fa-sm fa-fw mr-2"></i>Force Stop</a>
                       <a class="dropdown-item text-primary" href="#" onclick="freezeInstance()" id="freezeInstanceOption"><i class="fas fa-pause fa-sm fa-fw mr-2"></i>Freeze</a>
@@ -749,6 +750,36 @@
     </div>
   </div>
 
+  <!-- Edit Instance Modal-->
+  <div class="modal fade" id="editInstanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Instance</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-12 col-form-label" id="instanceNameEditInput"></label>
+              <div class="col-12">
+                <div class="form-group text-right">
+                  <pre>
+                    <textarea name="json" class="form-control" id="jsonEditInput" rows="16" ></textarea>
+                  </pre>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="updateInstanceJson()" data-dismiss="modal">Ok</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
   <!-- About Modal-->
   <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -820,6 +851,7 @@
         $('#unfreezeLink').hide();
         $('#snapshotInstanceOption').show();
         $('#attachProfileOption').show();
+        $('#editInstanceOption').show();
         $('#renameInstanceOption').show();
         $('#copyInstanceOption').show();
         $('#migrateInstanceOption').show();
@@ -835,6 +867,7 @@
         $('#unfreezeLink').show();
         $('#snapshotInstanceOption').show();
         $('#attachProfileOption').hide();
+        $('#editInstanceOption').hide();
         $('#renameInstanceOption').hide();
         $('#copyInstanceOption').show();
         $('#migrateInstanceOption').hide();
@@ -850,6 +883,7 @@
         $('#unfreezeLink').hide();
         $('#snapshotInstanceOption').show();
         $('#attachProfileOption').show();
+        $('#editInstanceOption').show();
         $('#renameInstanceOption').hide();
         $('#copyInstanceOption').hide();
         $('#migrateInstanceOption').hide();
@@ -1261,6 +1295,10 @@
         redirectURL = "instances.html?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName)
         window.location.replace(redirectURL);
       }
+      if (operationData.error_code == 404){
+        redirectURL = "instances.html?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName)
+        window.location.replace(redirectURL);
+      }
       if (operationData.metadata.status_code >= 400){
         alert(operationData.metadata.err)
       }
@@ -1354,6 +1392,8 @@
   function deleteLog(logPath){
     console.log("Info: deleting log " + logPath);
     $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&path=" + encodeURI(logPath) + "&action=deleteLog", function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
       setTimeout(() => { reloadPageContent(); }, 1000);
     });
   }
@@ -1437,20 +1477,48 @@
   }
 
   //Called by clicking on instance name, loads JSON data of instance
-  function viewInstanceJson(instanceToLoad){
-    console.log("Info: viewing instance " + instanceToLoad);
-    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&name=" + encodeURI(instanceToLoad) + "&action=loadInstance", function (data) {
+  function viewInstanceJson(){
+    console.log("Info: viewing instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&name=" + encodeURI(instanceName) + "&action=loadInstance", function (data) {
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.error_code >= 400){
         alert(operationData.error);
       }
-      $("#instanceNameViewInput").text("Name: " + instanceToLoad);
+      $("#instanceNameViewInput").text("Name: " + instanceName);
       $("#jsonViewInput").val(JSON.stringify(operationData.metadata, null, 2));
       $("#viewInstanceModal").modal('show');
     });
   }
 
+  function editInstanceJson(){
+    console.log("Info: viewing instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&name=" + encodeURI(instanceName) + "&action=loadInstance", function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      $("#instanceNameEditInput").text("Name: " + instanceName);
+      $("#jsonEditInput").val(JSON.stringify(operationData.metadata, null, 2));
+      $("#editInstanceModal").modal('show');
+    });
+  }
+
+  function updateInstanceJson(){
+    var instanceUpdateJSON = $("#jsonEditInput").val();
+    console.log("Info: updating instance " + instanceName);
+    $.post("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&name=" + encodeURI(instanceName) + "&action=updateInstance", {json: instanceUpdateJSON},  function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  
+
+  }
 
   $(document).ready(function(){
     

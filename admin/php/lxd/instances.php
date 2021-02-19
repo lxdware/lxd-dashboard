@@ -20,6 +20,8 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     $profile = filter_var(urldecode($_GET['profile']), FILTER_SANITIZE_STRING);
   if (isset($_GET['fingerprint']))
     $fingerprint = filter_var(urldecode($_GET['fingerprint']), FILTER_SANITIZE_STRING);
+  if (isset($_GET['type']))
+    $type = filter_var(urldecode($_GET['type']), FILTER_SANITIZE_STRING);
   if (isset($_GET['instance_type']))
     $instance_type = filter_var(urldecode($_GET['instance_type']), FILTER_SANITIZE_STRING);
   if (isset($_GET['description']))
@@ -39,6 +41,10 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
   if (isset($_GET['snapshot']))
     $snapshot = filter_var(urldecode($_GET['snapshot']), FILTER_SANITIZE_STRING);
 
+  //Instantiate the POST variable
+  if (isset($_POST['json']))  
+    $json = $_POST['json'];
+
   //Determine host info from database
   $db = new SQLite3('/var/lxdware/data/sqlite/lxdware.sqlite');
   $db_statement = $db->prepare('SELECT * FROM lxd_hosts WHERE id = :id LIMIT 1;');
@@ -51,23 +57,32 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     //Run the matching action
     switch ($action) {
       case "createInstance":
-        
+        //None is not a valid instance type, change it to "" if none is selected.
+        if ($instance_type == "none"){
+          $instance_type = "";
+        } 
+        //If location == none let LXD determine where the instance is created        
         if ($location == "none"){
           $url = $url . "/1.0/instances?project=" . $project; 
         }
         else {
           $url = $url . "/1.0/instances?target=" . $location . "&project=" . $project;
         }
-        
+        //If fingerprint == none create an empty instance
         if ($fingerprint == "none") {
-          $data = escapeshellarg('{"name":"' . $name . '", "profiles": ["'. $profile . '"], "type": "' . $instance_type . '",  "source": {"type": "none"} }');
+          $data = escapeshellarg('{"name":"' . $name . '", "profiles": ["'. $profile . '"], "type": "' . $type . '", "instance_type": "' . $instance_type . '", "source": {"type": "none"} }');
         }
         else {
-          $data = escapeshellarg('{"name":"' . $name . '", "profiles": ["'. $profile . '"], "type": "' . $instance_type . '",  "source": {"type": "image", "fingerprint": "' . $fingerprint . '"} }');
+          $data = escapeshellarg('{"name":"' . $name . '", "profiles": ["'. $profile . '"], "type": "' . $type . '", "instance_type": "' . $instance_type . '", "source": {"type": "image", "fingerprint": "' . $fingerprint . '"} }');
         }
 
         $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data '$url'");
         break;
+      case "createInstanceJson":
+          $url = $url . "/1.0/instances?project=" . $project;
+          $data = escapeshellarg($json);
+          $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data '$url'");
+          break;
       case "status":
         $url = $url . "/1.0/instances/" . $instance . "/state?project=" . $project;
         $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
@@ -214,6 +229,11 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       case "loadInstance":
         $url = $url . "/1.0/instances/" . $name . "?project=" . $project;
         $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
+        break;
+      case "updateInstance":
+        $url = $url . "/1.0/instances/" . $name . "?project=" . $project;
+        $data = escapeshellarg($json);
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PUT -d $data '$url'");
         break;
     }
   }

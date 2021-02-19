@@ -37,7 +37,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     $status = $instance_data['status']?: "N/A"; //ex Running
     
     
-    echo "<strong>Name</strong>: <a href='#' onclick=viewInstanceJson('".$name."')>".htmlentities($name)."</a><br />";
+    echo "<strong>Name</strong>: <a href='#' onclick=viewInstanceJson()>".htmlentities($name)."</a><br />";
 
     echo "<strong>Description</strong>: " . htmlentities($description) . "<br />";
     echo "<strong>Type</strong>: " . htmlentities($type) . "<br />";

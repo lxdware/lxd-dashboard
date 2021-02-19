@@ -28,7 +28,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     //echo '<li class="nav-item dropdown no-arrow">';
     echo '<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
     echo '<i class="fas fa-chart-bar mr-2 text-gray-600"></i>';
-    echo '<span class="mr-2 d-none d-lg-inline text-gray-600">Project: <strong>'. htmlentities($project) . '</strong></span>';
+    echo '<span class="mr-2 d-none d-lg-inline text-gray-600">Project: <font class="text-primary">'. htmlentities($project) . '</font></span>';
     echo '</a>';
     echo '<!-- Dropdown - User Information -->';
     echo '<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">';
@@ -36,12 +36,12 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     foreach ($projects as $project_data){
     
       if ($project_data['name'] == $project)
-        echo '<a class="dropdown-item"  href="'.$return_url.'?remote=' . $remote . '&project=' . $project_data['name'] . '"><i class="fas fa-chart-bar fa-sm fa-fw mr-2 text-gray-400"></i><strong>' . htmlentities($project_data['name']) . '</strong></a>';
+        echo '<a class="dropdown-item"  href="'.$return_url.'?remote=' . $remote . '&project=' . $project_data['name'] . '"><i class="fas fa-chart-bar fa-sm fa-fw mr-2 text-gray-900"></i><strong>' . htmlentities($project_data['name']) . '</strong></a>';
       else {
         if (basename($return_url) == "instance.html")
-          echo '<a class="dropdown-item"  href="instances.html?remote=' . $remote . '&project=' . $project_data['name'] . '"><i class="fas fa-chart-bar fa-sm fa-fw mr-2 text-gray-400"></i>' . htmlentities($project_data['name']) . '</a>';
+          echo '<a class="dropdown-item"  href="instances.html?remote=' . $remote . '&project=' . $project_data['name'] . '"><i class="fas fa-chart-bar fa-sm fa-fw mr-2 text-gray-600"></i>' . htmlentities($project_data['name']) . '</a>';
         else
-          echo '<a class="dropdown-item"  href="'.$return_url.'?remote=' . $remote . '&project=' . $project_data['name'] . '"><i class="fas fa-chart-bar fa-sm fa-fw mr-2 text-gray-400"></i>' . htmlentities($project_data['name']) . '</a>';
+          echo '<a class="dropdown-item"  href="'.$return_url.'?remote=' . $remote . '&project=' . $project_data['name'] . '"><i class="fas fa-chart-bar fa-sm fa-fw mr-2 text-gray-600"></i>' . htmlentities($project_data['name']) . '</a>';
       }
     }
 
