@@ -31,6 +31,18 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
       $network_data_managed = ($network['managed'])?"true":"false";
 
+      //This array key is not availabe on unmanaged network devices
+      if (isset($network['config']['ipv4.address']))
+        $ipv4 = $network['config']['ipv4.address'];
+      else
+        $ipv4 = "";
+
+      //This array key is not available on unmanaged network devices
+      if (isset($network['config']['ipv6.address']))
+        $ipv6 = $network['config']['ipv6.address'];
+      else
+        $ipv6 = "";
+
       if ($i > 0){
         echo ",";
       }
@@ -48,8 +60,8 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       }
 
       echo '"' . htmlentities($network['description']) . '",';
-      echo '"' . htmlentities($network['config']['ipv4.address']) . '",';
-      echo '"' . htmlentities($network['config']['ipv6.address']) . '",';
+      echo '"' . htmlentities($ipv4) . '",';
+      echo '"' . htmlentities($ipv6) . '",';
       echo '"' . htmlentities($network['type']) . '",';
       echo '"' . htmlentities($network_data_managed) . '",';
 

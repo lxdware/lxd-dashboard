@@ -36,25 +36,29 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/instances/" . $instance . "?project=" . $project;
     $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
     $remote_data = json_decode($remote_data, true);
-    $device_names = $remote_data['metadata']['expanded_devices'];
-    foreach ($device_names as $device_name => $device_data){
-      if ($device_data['type'] == "proxy"){
-        echo "<tr>";
 
-        echo "<td> <i class='fas fa-exchange-alt fa-lg' style='color:#4e73df'></i> </td>";
-        echo "<td>" . htmlentities($device_name) . "</td>";
-        echo "<td>" . htmlentities($device_data['connect']) . "</td>";
-        echo "<td>" . htmlentities($device_data['listen']) . "</td>";
-        echo "<td>" . htmlentities($device_data['type']) . "</td>";
-        
-        echo "<td>";
-          //echo '<a href="#" onclick="detachProfile('.escapeshellarg($device_name).')"><i class="fas fa-trash-alt fa-lg" style="color:#ddd"></i></a>';
-        echo "</td>";
-        
-        echo "</tr>";
-      }
-      else {
-        continue;
+    if (isset($remote_data['metadata']['expanded_devices'])){
+      $device_names = $remote_data['metadata']['expanded_devices'];
+      
+      foreach ($device_names as $device_name => $device_data){
+        if ($device_data['type'] == "proxy"){
+          echo "<tr>";
+  
+          echo "<td> <i class='fas fa-exchange-alt fa-lg' style='color:#4e73df'></i> </td>";
+          echo "<td>" . htmlentities($device_name) . "</td>";
+          echo "<td>" . htmlentities($device_data['connect']) . "</td>";
+          echo "<td>" . htmlentities($device_data['listen']) . "</td>";
+          echo "<td>" . htmlentities($device_data['type']) . "</td>";
+          
+          echo "<td>";
+            //echo '<a href="#" onclick="detachProfile('.escapeshellarg($device_name).')"><i class="fas fa-trash-alt fa-lg" style="color:#ddd"></i></a>';
+          echo "</td>";
+          
+          echo "</tr>";
+        }
+        else {
+          continue;
+        }
       }
     }
     

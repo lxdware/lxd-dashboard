@@ -10,6 +10,12 @@ then
   mkdir -p /var/lxdware/data/lxd
 fi
 
+#Create backups directory if needed
+if [ ! -d /var/lxdware/backups ]
+then
+  mkdir -p /var/lxdware/backups
+fi
+
 
 #Create LXC cert if necessary, because LXD dameon is not running we need to make a fake remote connection to create it
 if [ ! -f /var/lxdware/data/lxd/client.crt ]
@@ -49,7 +55,7 @@ then
 fi
 
 chown -R www-data:www-data /var/lxdware/data/sqlite
-
+chown -R www-data:www-data /var/lxdware/backups
 
 #Start PHP for NGINX
 service php7.4-fpm start

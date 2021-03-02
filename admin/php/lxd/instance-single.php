@@ -26,24 +26,33 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     $data_url = $url . "/1.0/instances/".$instance."?project=" . $project;
     $instance_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$data_url'");
     $instance_api_data = json_decode($instance_api_data, true);
-    $instance_data = $instance_api_data['metadata'];
 
-    $name = $instance_data['name'];
-    $created = $instance_data['created_at']?: "N/A";
-    $description = $instance_data['description']?: "N/A";
-    $type = $instance_data['type']?: "N/A"; //ex container, virtual-machine
-    $location = $instance_data['location']?: "N/A"; //used with clusters,none for non-clustered host
-    $image = $instance_data['config']['image.description']?: "N/A"; //ex Ubuntu focal amd64 (20200821_07:42)
-    $status = $instance_data['status']?: "N/A"; //ex Running
-    
-    
-    echo "<strong>Name</strong>: <a href='#' onclick=viewInstanceJson()>".htmlentities($name)."</a><br />";
+    if (isset($instance_api_data['metadata'])){
+      $instance_data = $instance_api_data['metadata'];
 
-    echo "<strong>Description</strong>: " . htmlentities($description) . "<br />";
-    echo "<strong>Type</strong>: " . htmlentities($type) . "<br />";
-    echo "<strong>Status</strong>: " . htmlentities($status) . "<br />";
-    echo "<strong>Image</strong>: " . htmlentities($image) . "<br />";
-    echo "<strong>Location</strong>: " . htmlentities($location) . "<br />";
+      $name = $instance_data['name'];
+      $created = $instance_data['created_at']?: "N/A";
+      $description = $instance_data['description']?: "N/A";
+      $type = $instance_data['type']?: "N/A"; //ex container, virtual-machine
+      $location = $instance_data['location']?: "N/A"; //used with clusters,none for non-clustered host
+
+      if (isset($instance_data['config']['image.description']))
+        $image = $instance_data['config']['image.description']?: "N/A"; //ex Ubuntu focal amd64 (20200821_07:42)
+      else 
+        $image = "N/A";
+        
+      $status = $instance_data['status']?: "N/A"; //ex Running
+      
+      
+      echo "<strong>Name</strong>: <a href='#' onclick=viewInstanceJson()>".htmlentities($name)."</a><br />";
+  
+      echo "<strong>Description</strong>: " . htmlentities($description) . "<br />";
+      echo "<strong>Type</strong>: " . htmlentities($type) . "<br />";
+      echo "<strong>Status</strong>: " . htmlentities($status) . "<br />";
+      echo "<strong>Image</strong>: " . htmlentities($image) . "<br />";
+      echo "<strong>Location</strong>: " . htmlentities($location) . "<br />";
+    }
+    
 
   }
 

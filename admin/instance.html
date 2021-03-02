@@ -573,10 +573,47 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <label class="col-2 col-form-label text-right">Name:</label>
-              <div class="col-9">
+              <label class="col-3 col-form-label text-right">Name:</label>
+              <div class="col-8">
                 <div class="form-group">
-                  <input type="text" id="backupName" class="form-control" placeholder="" name="copy">
+                  <input type="text" id="backupName" class="form-control" placeholder="" name="backupName">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Instance Only:</label>
+              <div class="col-8 text-right">
+                <div class="form-group">
+                  <select id="backupInstanceOnly" class="form-control" name="backupInstanceOnly">
+                    <option value="false" selected>false</option>
+                    <option value="true">true</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Optimized Storage:</label>
+              <div class="col-8 text-right">
+                <div class="form-group">
+                  <select id="backupOptimizedStorage" class="form-control" name="backupOptimizedStorage">
+                    <option value="false" selected>false</option>
+                    <option value="true">true</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Compression:</label>
+              <div class="col-8">
+                <div class="form-group">
+                  <select id="backupCompressionAlgorithm" class="form-control" name="backupCompressionAlgorithm">
+                    <option value="bzip2">bzip2</option>
+                    <option value="gzip" selected>gzip</option>
+                    <option value="lzma">lzma</option>
+                    <option value="none">none</option>
+                    <option value="xz">xz</option>
+                    <option value="zstd">zstd</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -1427,8 +1464,11 @@
 
   function createBackup(){
     var backupName = $("#backupName").val();
+    var backupInstanceOnly = $("#backupInstanceOnly").val();
+    var backupOptimizedStorage = $("#backupOptimizedStorage").val();
+    var backupCompressionAlgorithm = $("#backupCompressionAlgorithm").val();
     console.log("Info: backing up instance " + instanceName + " to " + backupName);
-    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(backupName) + "&action=createBackup", function (data) {
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(backupName) + "&instance_only=" + encodeURI(backupInstanceOnly) + "&optimized_storage=" + encodeURI(backupOptimizedStorage) + "&compression_algorithm=" + encodeURI(backupCompressionAlgorithm) + "&action=createBackup", function (data) {
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
@@ -1441,11 +1481,15 @@
     });
   }
 
-  function downloadBackup(backupName){
-    console.log("Info: downloading backup " + backupName + " from instance " + instanceName);
-    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(backupName) + "&action=downloadBackup", function (data) {
-      console.log(data);
-      window.location.href = data;
+  function exportBackup(backupName){
+    console.log("Info: exporting backup " + backupName + " from instance " + instanceName + " to a file");
+    $('#spinner').show();
+    $('#notificationArea').show();
+    $('#notification').text('Exporting ' + backupName + ' to local file');
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(backupName) + "&action=exportBackupFile", function (data) {
+      $('#spinner').hide();
+      $('#notificationArea').hide();
+      $('#notification').text("");
     });
   }
 

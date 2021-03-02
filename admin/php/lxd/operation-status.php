@@ -31,10 +31,17 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       if (!empty($operations_data['running'])){
         foreach ($operations_data['running'] as $running_task){
           $results =  $running_task['description'];
-          $instance = basename($running_task['resources']['instances'][0]);
+
+          if (isset($running_task['resources']['instances'][0]))
+            $instance = basename($running_task['resources']['instances'][0]);
+          else 
+            $instance = "";
 
           switch($running_task['description']){
             case "Backing up container":
+              $results .= " " . $instance; 
+              break;
+            case "Backing up instance":
               $results .= " " . $instance; 
               break;
             case "Creating container":
@@ -50,10 +57,12 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
               $results .= " " . $instance; 
               break;
             case "Downloading image":
-              $results .= " " . $running_task['metadata']['download_progress'];
+              if (isset($running_task['metadata']['download_progress']))
+                $results .= " " . htmlentities($running_task['metadata']['download_progress']);
               break;
             case "Executing command":
-              $results = "Executing " . htmlentities($running_task['metadata']['command'][0]) . " command on " . htmlentities($instance);
+              if (isset($running_task['metadata']['command'][0]))
+                $results = "Executing " . htmlentities($running_task['metadata']['command'][0]) . " command on " . htmlentities($instance);
               break;
             case "Freezing instance":
               $results .= " " . $instance;
@@ -85,7 +94,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
       if (!empty($operations_data['failure'])){
         foreach ($operations_data['failure'] as $failed_task){
-          $results =  $failed_task['description'] . " Error: " . $failed_task['err'];
+          $results =  htmlentities($failed_task['description']) . " Error: " . htmlentities($failed_task['err']);
         }
       }
     

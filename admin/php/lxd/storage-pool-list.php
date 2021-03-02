@@ -40,7 +40,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo '",';
 
       echo '"';
-      echo "<a href='storage-volumes.html?pool=".$storage_pool['name']."&remote=".$remote."&project=".$project."'> ".$storage_pool['name']."</a>";
+      echo "<a href='storage-volumes.html?pool=".$storage_pool['name']."&remote=".$remote."&project=".$project."'> ".htmlentities($storage_pool['name'])."</a>";
       echo '",';
 
       echo '"' . htmlentities($storage_pool['description']) . '",';

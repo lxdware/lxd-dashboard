@@ -40,6 +40,12 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     $release = filter_var(urldecode($_GET['release']), FILTER_SANITIZE_STRING);
   if (isset($_GET['snapshot']))
     $snapshot = filter_var(urldecode($_GET['snapshot']), FILTER_SANITIZE_STRING);
+  if (isset($_GET['instance_only']))
+    $instance_only = filter_var(urldecode($_GET['instance_only']), FILTER_SANITIZE_STRING);
+  if (isset($_GET['optimized_storage']))
+    $optimized_storage = filter_var(urldecode($_GET['optimized_storage']), FILTER_SANITIZE_STRING);
+  if (isset($_GET['compression_algorithm']))
+    $compression_algorithm = filter_var(urldecode($_GET['compression_algorithm']), FILTER_SANITIZE_STRING);
 
   //Instantiate the POST variable
   if (isset($_POST['json']))  
@@ -212,17 +218,60 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
         $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE '$url'");
         break;
       case "createBackup":
+        //Determine file extension for backup file
+        switch ($compression_algorithm) {
+          case "bzip2":
+            $file_extension = ".tar.bz2";
+            break;
+          case "gzip":
+            $file_extension = ".tar.gz";
+            break;
+          case "lzma":
+            $file_extension = ".tar.lzma";
+            break;
+          case "xz":
+            $file_extension = ".tar.xz";
+            break;
+          case "zstd":
+            $file_extension = ".tar.zst";
+            break;
+          default:
+            $file_extension = ".tar";
+        }
         $url = $url . "/1.0/instances/" . $instance . "/backups?project=" . $project;
-        $data = escapeshellarg('{"name": "'. $name . '"}');
+        $data = escapeshellarg('{"name": "'. $name . $file_extension . '", "instance_only": '.$instance_only.', "optimized_storage": '.$optimized_storage.', "compression_algorithm": "'.$compression_algorithm.'"}');
         $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data '$url'");
         break;
-      case "downloadBackup":
-        mkdir('../../downloads');
-        $url = $url . "/1.0/instances/" . $instance . "/backups/" . $name . "/export?project=" . $project;
-        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --output ../../downloads/".$name.".tar.gz --cert $cert --key $key -X GET '$url'");
-        $results = "downloads/".$name.".tar.gz";
+      case "exportBackupFile":
+        $file = '/var/lxdware/backups/' . $row['host'] . '/' . $project . '/' . $instance . '/' . $name;
+        if (!file_exists($file)){
+          //If there is no directory yet for the host to store backups, create it
+          if (!file_exists('/var/lxdware/backup/' . $row['host'] . '/' . $project . '/' . $instance)){
+            mkdir('/var/lxdware/backups/'.$row['host'] . '/' . $project . '/' . $instance, 0777, true);
+          }
+          $url = $url . "/1.0/instances/" . $instance . "/backups/" . $name . "/export?project=" . $project;
+          $results = shell_exec("sudo curl -k -L --connect-timeout 3 --output $file --cert $cert --key $key -X GET '$url'");
+        }
+        break;
+      case "downloadExportFile":      
+        $file = '/var/lxdware/backups/' . $row['host'] . '/' . $project . '/' . $instance . '/' . $name;
+        $file_name = basename($file);
+        $file_size = filesize($file);
+        if (file_exists($file)) {
+          header('Content-Description: File Transfer');
+          header('Content-Type: application/octet-stream');
+          header('Content-Disposition: attachment; filename="'.$file_name.'"');
+          header('Expires: 0');
+          header('Cache-Control: must-revalidate');
+          header('Pragma: public');
+          header('Content-Length: ' . $file_size);
+          readfile($file);
+          exit;
+        }       
         break;
       case "deleteBackup":
+        $file = '/var/lxdware/backups/' . $row['host'] . '/' . $project . '/' . $instance . '/' . $name;
+        unlink($file);
         $url = $url . "/1.0/instances/" . $instance . "/backups/" . $name . "?project=" . $project;
         $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE '$url'");
         break;

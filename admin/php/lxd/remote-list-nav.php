@@ -24,8 +24,6 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       $display_name = $row['host'];
 
 
-
-    //echo '<li class="nav-item dropdown no-arrow">';
     echo '<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
     echo '<i class="fas fa-server mr-2 text-gray-600"></i>';
     echo '<span class="mr-2 d-none d-lg-inline text-gray-600">Host: <font class="text-primary">'. htmlentities($display_name) . '</font></span>';
@@ -47,7 +45,6 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     
     }
     echo '</div>';
-  //echo '</li>';
 
   }
 

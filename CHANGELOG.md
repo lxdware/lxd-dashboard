@@ -1,3 +1,11 @@
+# v1.2.6
+- moved local exports of backups to /var/lxdware/backups
+- added compression algorithms options to creating backups
+- added instance_only and optimized_storage options to creating backups
+- modified backup export to provide a download link
+- improved code to reduce PHP notices in error log for undefined variables and arrays
+- added htmlentities() to a few echo statements that where missing it in the PHP code
+
 # v1.2.5
 - added ability to create an instance from JSON
 - added "instance type" option to replicate cloud instance types from AWS, Azure, and GCE

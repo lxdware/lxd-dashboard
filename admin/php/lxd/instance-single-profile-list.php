@@ -33,29 +33,34 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/instances/" . $instance . "?project=" . $project;
     $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
     $remote_data = json_decode($remote_data, true);
-    $profile_names = $remote_data['metadata']['profiles'];
-    foreach ($profile_names as $profile_name){
-      $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/profiles/" . $profile_name . "?project=" . $project;
-      $profile_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
-      $profile_data = json_decode($profile_data, true);
-      $profile_data = $profile_data['metadata'];
-      if ($profile_data['name'] == "")
-      continue;
 
-
-      echo "<tr>";
-
-      echo "<td> <i class='fas fa-address-card fa-lg' style='color:#4e73df'></i> </td>";
-      echo "<td>" . htmlentities($profile_data['name']) . "</td>";
-      echo "<td>" . htmlentities($profile_data['description']) . "</td>";
-
-      echo "<td>";
-        echo '<a href="#" onclick="detachProfile('.escapeshellarg($profile_data['name']).')"><i class="fas fa-trash-alt fa-lg" style="color:#ddd" title="Detach" aria-hidden="true"></i></a>';
-      echo "</td>";
+    if (isset($remote_data['metadata']['profiles'])){
+      $profile_names = $remote_data['metadata']['profiles'];
       
-      echo "</tr>";
-
+      foreach ($profile_names as $profile_name){
+        $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/profiles/" . $profile_name . "?project=" . $project;
+        $profile_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
+        $profile_data = json_decode($profile_data, true);
+        $profile_data = $profile_data['metadata'];
+        if ($profile_data['name'] == "")
+        continue;
+  
+  
+        echo "<tr>";
+  
+        echo "<td> <i class='fas fa-address-card fa-lg' style='color:#4e73df'></i> </td>";
+        echo "<td>" . htmlentities($profile_data['name']) . "</td>";
+        echo "<td>" . htmlentities($profile_data['description']) . "</td>";
+  
+        echo "<td>";
+          echo '<a href="#" onclick="detachProfile('.escapeshellarg($profile_data['name']).')"><i class="fas fa-trash-alt fa-lg" style="color:#ddd" title="Detach" aria-hidden="true"></i></a>';
+        echo "</td>";
+        
+        echo "</tr>";
+  
+      }
     }
+
   }
 
   echo "</tbody>";

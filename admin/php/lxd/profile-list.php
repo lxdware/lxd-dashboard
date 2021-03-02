@@ -44,7 +44,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
         foreach($profile['devices'] as $device=>$value){
           if ($ii > 0)
             echo ", ";
-          echo $device;
+          echo htmlentities($device);
           $ii++;
         }
       echo '",';

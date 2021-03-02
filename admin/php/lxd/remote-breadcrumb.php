@@ -12,9 +12,9 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
   while($row = $db_results->fetchArray()){
     if ($row['alias'] != "")
-      echo $row['alias'];
+      echo htmlentities($row['alias']);
     else
-      echo $row['host'];
+      echo htmlentities($row['host']);
   }
 
 }

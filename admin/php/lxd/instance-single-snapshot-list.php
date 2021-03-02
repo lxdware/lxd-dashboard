@@ -35,39 +35,43 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     $url = "https://" . $row['host'] . ":" . $row['port'] . "/1.0/instances/" . $instance . "/snapshots?recursion=1&project=" . $project;
     $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
     $remote_data = json_decode($remote_data, true);
-    $snapshots = $remote_data['metadata'];
 
-    foreach ($snapshots as $snapshot){
+    if (isset($remote_data['metadata'])){
+      $snapshots = $remote_data['metadata'];
 
-      if ($snapshot['name'] == "")
-      continue;
-
-      if ($snapshot['stateful'])
-        $state = "stateful";
-      else
-        $state = "stateless";
-
-      echo "<tr>";
-
-      echo "<td> <i class='fas fa-clone fa-lg' style='color:#4e73df'></i> </td>";
-      echo "<td>" . htmlentities($snapshot['name']) . "</td>";
-      echo "<td>" . htmlentities($state) . "</td>";
-      echo "<td>" . htmlentities(number_format($snapshot['size']/1024/1024,2)) . "MB</td>";
-      echo "<td>" . htmlentities($snapshot['created_at']) . "</td>";
-
-      echo "<td>";
-        echo '<a href="#" onclick="restoreSnapshot('.escapeshellarg($snapshot['name']).')"><i class="fas fa-window-restore fa-lg" style="color:#ddd" title="Restore Snapshot" aria-hidden="true"></i></a>';
-        echo ' &nbsp ';
-        echo '<a href="#" onclick="loadCreateInstanceFromSnapshotModal('.escapeshellarg($snapshot['name']).')"><i class="fas fa-cube fa-lg" style="color:#ddd" title="Create Instance" aria-hidden="true"></i></a>';
-        echo ' &nbsp ';
-        echo '<a href="#" onclick="loadPublishImageFromSnapshotModal('.escapeshellarg($snapshot['name']).')"><i class="fas fa-box-open fa-lg" style="color:#ddd" title="Publish Image" aria-hidden="true"></i></a>';
-        echo ' &nbsp ';
-        echo '<a href="#" onclick="deleteSnapshot('.escapeshellarg($snapshot['name']).')"><i class="fas fa-trash-alt fa-lg" style="color:#ddd" title="Delete" aria-hidden="true"></i></a>';
-      echo "</td>";
-      
-      echo "</tr>";
-
+      foreach ($snapshots as $snapshot){
+  
+        if ($snapshot['name'] == "")
+        continue;
+  
+        if ($snapshot['stateful'])
+          $state = "stateful";
+        else
+          $state = "stateless";
+  
+        echo "<tr>";
+  
+        echo "<td> <i class='fas fa-clone fa-lg' style='color:#4e73df'></i> </td>";
+        echo "<td>" . htmlentities($snapshot['name']) . "</td>";
+        echo "<td>" . htmlentities($state) . "</td>";
+        echo "<td>" . htmlentities(number_format($snapshot['size']/1024/1024,2)) . "MB</td>";
+        echo "<td>" . htmlentities($snapshot['created_at']) . "</td>";
+  
+        echo "<td>";
+          echo '<a href="#" onclick="restoreSnapshot('.escapeshellarg($snapshot['name']).')"><i class="fas fa-window-restore fa-lg" style="color:#ddd" title="Restore Snapshot" aria-hidden="true"></i></a>';
+          echo ' &nbsp ';
+          echo '<a href="#" onclick="loadCreateInstanceFromSnapshotModal('.escapeshellarg($snapshot['name']).')"><i class="fas fa-cube fa-lg" style="color:#ddd" title="Create Instance" aria-hidden="true"></i></a>';
+          echo ' &nbsp ';
+          echo '<a href="#" onclick="loadPublishImageFromSnapshotModal('.escapeshellarg($snapshot['name']).')"><i class="fas fa-box-open fa-lg" style="color:#ddd" title="Publish Image" aria-hidden="true"></i></a>';
+          echo ' &nbsp ';
+          echo '<a href="#" onclick="deleteSnapshot('.escapeshellarg($snapshot['name']).')"><i class="fas fa-trash-alt fa-lg" style="color:#ddd" title="Delete" aria-hidden="true"></i></a>';
+        echo "</td>";
+        
+        echo "</tr>";
+  
+      }
     }
+
   }
 
   echo "</tbody>";
