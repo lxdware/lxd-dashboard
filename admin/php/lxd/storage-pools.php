@@ -46,7 +46,7 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
         $remote_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$enabled_url'");
         $remote_data = json_decode($remote_data, true);
         $cluster_status = $remote_data['metadata'];
-        if ($cluster_status['enabled'] = true){
+        if ($cluster_status['enabled'] == true){
           //Now setup storage pool on each cluster member, putting them in pending status
           $cluster_url = $url . "/1.0/cluster/members?recursion=1";
           $cluster_api_data = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$cluster_url'");

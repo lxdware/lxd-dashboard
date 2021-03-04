@@ -1,3 +1,7 @@
+# v1.2.7
+- fixed bug that caused new storage pools to default to size 30GB
+- improved list of disk devices displayed on instance page
+
 # v1.2.6
 - moved local exports of backups to /var/lxdware/backups
 - added compression algorithms options to creating backups
