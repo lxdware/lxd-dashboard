@@ -42,6 +42,8 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo '",';
       echo '"' . htmlentities($storage_volume['name']) . '",';
       echo '"' . htmlentities($storage_volume['type']) . '",';
+      echo '"' . htmlentities($storage_volume['location']) . '",';
+      echo '"' . htmlentities($storage_volume['content_type']) . '",';
 
       echo '"';
       $ii = 0;
@@ -54,6 +56,9 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
       echo '",';
 
       echo '"';
+        echo "<a href='#' onclick=loadStorageVolumeJson('".$storage_volume['type']."/".$storage_volume['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
+        echo " &nbsp ";
+        echo "<a href='#' onclick=deleteStorageVolume('".$storage_volume['type']."/".$storage_volume['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
       echo '"';
 
       echo " ]";

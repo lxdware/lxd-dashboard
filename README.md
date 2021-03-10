@@ -1,19 +1,20 @@
 # lxd-dashboard
-This LXD dashboard by LXDWARE is a web-based user interface that makes it easy to manage the containers and virtual machines on your LXD servers. Some of the features include:
+This LXD dashboard is a web-based user interface allowing users to easily manage LXD/LXC servers. Some of the features include:
 
-- Creating/launching new LXD container and virtual machine instances
-- Starting, stopping, renaming, and deleting LXD instances
-- Copying instances to create new instances 
-- Creating, restoring and deleting snapshots of instances
-- Creating instances from snaphots
-- Migrating instances between hosts on an LXD cluster
-- Downloading LXD container and virtual machine images to your host
-- Creating, editing and applying LXD profiles
-- Creating and editing networks, storage pools, and projects
-- Selecting between projects on a host
-- Sending shell commands to instances using exec
-- Creating and downloading backups of your LXD instance to your local computer
+- Connect and manage multiple LXD servers
+- Create LXD container and virtual machine instances from either a form or JSON input
+- Start, stop, rename, and delete LXD instances
+- Copy instances to create new instances 
+- Create, restore and delete snapshots of instances
+- Create instances from snaphots
+- Migrate instances between hosts on an LXD cluster
+- Download LXD container and virtual machine images to LXD hosts
+- Create, edit, apply, and remove LXD profiles
+- Create, edit, and delete networks, storage pools, storage volumes, and projects
+- Switch between projects on an LXD host
+- Send shell commands to instances using exec
+- Create and download backups of LXD instance to your local computer
 
-You can deploy the LXD dashboard on either an LXC or Docker container. The software is built primarly using Ubuntu, NGINX, and PHP.
+The LXD dashboard can be deployed on either an LXC or Docker container. The software is built primarily using Ubuntu, NGINX, and PHP.
 
 Installation instructions can be found on the LXDWARE web site located at https://lxdware.com/installation

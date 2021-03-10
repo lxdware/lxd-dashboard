@@ -11,16 +11,14 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
     $action = filter_var(urldecode($_GET['action']), FILTER_SANITIZE_STRING);
   if (isset($_GET['storage_pool']))
     $storage_pool = filter_var(urldecode($_GET['storage_pool']), FILTER_SANITIZE_STRING);
-  if (isset($_GET['storage_volume_url']))
-    $storage_volume_url = filter_var(urldecode($_GET['storage_volume_url']), FILTER_SANITIZE_STRING);
-
-
   if (isset($_GET['name']))
-    $image = filter_var(urldecode($_GET['name']), FILTER_SANITIZE_STRING);
-  if (isset($_GET['repo']))
-    $repo = filter_var(urldecode($_GET['repo']), FILTER_SANITIZE_STRING);
-
-  //Instantiate the POST variable
+    $name = filter_var(urldecode($_GET['name']), FILTER_SANITIZE_STRING);
+  if (isset($_GET['content_type']))
+    $content_type = filter_var(urldecode($_GET['content_type']), FILTER_SANITIZE_STRING);
+  if (isset($_GET['size']))
+    $size = filter_var(urldecode($_GET['size']), FILTER_SANITIZE_STRING);
+  
+    //Instantiate the POST variable
   if (isset($_POST['json']))  
     $json = $_POST['json'];
 
@@ -37,23 +35,28 @@ if (!empty($_SERVER['PHP_AUTH_USER'])) {
 
     //Run the matching action
     switch ($action) {
-      case "createStorageVolume":
-        $url = $url . "/1.0/storage-pools?project=" . $project;
+      case "createStorageVolumeForm":
+        $url = $url . "/1.0/storage-pools/" . $storage_pool . "/volumes?project=" . $project;
+        $data = escapeshellarg('{"config": {"size": "'.$size.'GB"}, "name": "'.$name.'", "type": "custom", "content_type": "'.$content_type.'"}');
+        $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data '$url'");
+        break;
+      case "createStorageVolumeJson":
+        $url = $url . "/1.0/storage-pools/" . $storage_pool . "/volumes?project=" . $project;
         $data = escapeshellarg($json);
         $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X POST -d $data '$url'");
         break;
       case "deleteStorageVolume":
-        $url = $url . $storage_volume_url . "?project=" . $project;
+        $url = $url . "/1.0/storage-pools/" . $storage_pool . "/volumes/" . $name . "?project=" . $project;
         $data = escapeshellarg('{}');
         $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X DELETE -d $data '$url'");
       break;
       case "updateStorageVolume":
-        $url = $url . $storage_volume_url . "?project=" . $project;
+        $url = $url . "/1.0/storage-pools/" . $storage_pool . "/volumes/" . $name . "?project=" . $project;
         $data = escapeshellarg($json);
         $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X PUT -d $data '$url'");
       break;
       case "loadStorageVolume":
-        $url = $url . $storage_volume_url . "?project=" . $project;
+        $url = $url . "/1.0/storage-pools/" . $storage_pool . "/volumes/" . $name . "?project=" . $project;
         $results = shell_exec("sudo curl -k -L --connect-timeout 3 --cert $cert --key $key -X GET '$url'");
       break;
     }

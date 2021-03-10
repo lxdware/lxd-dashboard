@@ -1,3 +1,7 @@
+# v1.2.8
+- added edit and delete actions for storage volumes
+- added action to create new storage volumes, with form options for size and content_type
+
 # v1.2.7
 - fixed bug that caused new storage pools to default to size 30GB
 - improved list of disk devices displayed on instance page

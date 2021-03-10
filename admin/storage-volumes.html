@@ -140,6 +140,8 @@
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Storage Volumes</h6>
                   <div class="dropdown no-arrow">
+                    <a class="dropdown-toggle mr-2" href="#" data-toggle="modal" data-target="#createStorageVolumeModal" title="New Storage Volume" aria-hidden="true">
+                      <i class="fas fa-plus fa-sm fa-fw"></i> Storage Volume</a>
                   </div>
                 </div>
                 <!-- Card Body -->
@@ -182,34 +184,81 @@
     <i class="fas fa-angle-up"></i>
   </a>
 
-  <!-- Create Storage Volume Modal-->
-  <div class="modal fade" id="createStorageVolumeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Create Storage Volume</h5>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-12">
-                <div class="form-group text-right">
-                  <pre>
-                    <textarea name="json" class="form-control" id="jsonCreateInput" rows="16" placeholder="Enter JSON data"></textarea>
-                  </pre>
+    <!-- Create Storage Volume Modal-->
+    <div class="modal fade" id="createStorageVolumeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Create Storage Volume</h5>
+              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="form-tab" data-toggle="tab" href="#form" role="tab" aria-controls="form" aria-selected="true">Form</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="json-tab" data-toggle="tab" href="#json" role="tab" aria-controls="json" aria-selected="false">JSON</a>
+                </li>
+              </ul>
+              <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="form" role="tabpanel" aria-labelledby="form-tab">
+                  <br />
+                  <div class="row">
+                    <label class="col-3 col-form-label text-right">Name: </label>
+                    <div class="col-7">
+                      <div class="form-group">
+                        <input type="text" id="storageVolumeNameCreate" class="form-control" placeholder="Storage Volume Name" name="storage_volume_name">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <label class="col-3 col-form-label text-right">Content Type: </label>
+                    <div class="col-7">
+                      <div class="form-group">
+                        <select id="storageVolumeContentTypeCreate" class="form-control" name="content_type">
+                          <option value="filesystem" selected>filesystem</option>
+                          <option value="block">block</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <label class="col-3 col-form-label text-right">Size (GB): </label>
+                    <div class="col-4">
+                      <div class="form-group">
+                        <input type="number" id="storageVolumeSizeCreate" class="form-control" value="10" name="storage_volume_size">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="#" onclick="createStorageVolumeForm()" data-dismiss="modal">Submit</a>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="json" role="tabpanel" aria-labelledby="json-tab">
+                 <br />
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form-group text-right">
+                        <pre>
+                          <textarea name="json" class="form-control" id="jsonCreateInput" rows="16" placeholder="Enter JSON data"></textarea>
+                        </pre>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="#" onclick="createStorageVolumeJson()" data-dismiss="modal">Submit</a>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="#" onclick="createStorageVolume()" data-dismiss="modal">Submit</a>
-          </div>
+        </div>
       </div>
     </div>
-  </div>
 
   <!-- Edit Storage Volume Modal-->
   <div class="modal fade" id="editStorageVolumeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -338,6 +387,8 @@
         {},
         { title: "Name" },
         { title: "Type" },
+        { title: "Location" },
+        { title: "Content Type" },
         { title: "Used by" },
         { title: "Action" }
       ],
@@ -354,11 +405,26 @@
     setInterval(() => { reloadPageContent(); }, 5000);
   }
 
-  //API uses sync, NOT YET SETUP
-  function createStorageVolume(){
+  function createStorageVolumeForm(){
+    var storageVolumeName = $("#storageVolumeNameCreate").val();
+    var storageVolumeContentType = $("#storageVolumeContentTypeCreate").val();
+    var storageVolumeSize = $("#storageVolumeSizeCreate").val();
+    console.log("Info: creating storage volume " + storageVolumeName + " in " + storagePoolName);
+    $.get("./php/lxd/storage-volumes.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&name=" + encodeURI(storageVolumeName) + "&content_type=" + encodeURI(storageVolumeContentType) + "&size=" + encodeURI(storageVolumeSize) + "&storage_pool=" + encodeURI(storagePoolName) + "&action=createStorageVolumeForm", function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  //API uses sync
+  function createStorageVolumeJson(){
     var storageVolumeCreateJSON = $("#jsonCreateInput").val();
     console.log("Info: creating storage volume");
-    $.post("./php/lxd/storage-volumes.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&action=createStorageVolume", {json: storageVolumeCreateJSON},  function (data) {
+    $.post("./php/lxd/storage-volumes.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&storage_pool=" + encodeURI(storagePoolName) + "&action=createStorageVolumeJson", {json: storageVolumeCreateJSON},  function (data) {
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.error_code >= 400){
@@ -372,7 +438,7 @@
   function loadStorageVolumeJson(storageVolumeToLoad){
     console.log("Info: loading storage volume " + storageVolumeToLoad);
     storageVolumeToUpdate = storageVolumeToLoad;
-    $.get("./php/lxd/storage-volumes.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&storage_volume_url=" + encodeURI(storageVolumeToLoad) + "&action=loadStorageVolume", function (data) {
+    $.get("./php/lxd/storage-volumes.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&name=" + encodeURI(storageVolumeToLoad) + "&storage_pool=" + encodeURI(storagePoolName) + "&action=loadStorageVolume", function (data) {
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.error_code >= 400){
@@ -388,7 +454,7 @@
   function updateStorageVolume(){
     var storageVolumeUpdateJSON = $("#jsonEditInput").val();
     console.log("Info: updating storage volume " + storageVolumeToUpdate);
-    $.post("./php/lxd/storage-volumes.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&storage_volume_url=" + encodeURI(storageVolumeToUpdate) + "&action=updateStorageVolume", {json: storageVolumeUpdateJSON},  function (data) {
+    $.post("./php/lxd/storage-volumes.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&name=" + encodeURI(storageVolumeToUpdate) + "&storage_pool=" + encodeURI(storagePoolName) + "&action=updateStorageVolume", {json: storageVolumeUpdateJSON},  function (data) {
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.error_code >= 400){
@@ -401,7 +467,7 @@
   //API uses sync
   function deleteStorageVolume(storageVolumeToDelete){
     console.log("Info: deleting storage volume " + storageVolumeToDelete);
-    $.get("./php/lxd/storage-volumes.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&storage_volume_url=" + encodeURI(storageVolumeToDelete) + "&action=deleteStorageVolume",  function (data) {
+    $.get("./php/lxd/storage-volumes.php?remote=" + encodeURI(remoteName) + "&project=" + encodeURI(projectName) + "&name=" + encodeURI(storageVolumeToDelete) + "&storage_pool=" + encodeURI(storagePoolName) + "&action=deleteStorageVolume",  function (data) {
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.error_code >= 400){
