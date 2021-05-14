@@ -1,8 +1,8 @@
 server {
 	listen 80 default_server;
 	listen [::]:80 default_server;
-	root /var/www/html;
-	index index.html index.htm index.nginx-debian.html;
+	root /var/www/html/lxd-dashboard;
+	index index.html;
 	server_name _;
 
 	location / {
@@ -17,12 +17,4 @@ server {
     	include fastcgi_params;
     	include snippets/fastcgi-php.conf;
      }
-
-
-        location /admin {
-                auth_basic "LXDWARE Admin Area";
-                auth_basic_user_file /etc/nginx/.htpasswd;
-        }
-
-
 }

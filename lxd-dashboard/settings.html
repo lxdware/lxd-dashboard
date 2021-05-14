@@ -1,0 +1,789 @@
+<!--
+LXDWARE LXD Dashboard - A web-based interface for managing LXD servers
+Copyright (C) 2020-2021  LXDWARE.COM
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <link rel="icon" type="image/png" href="assets/images/logo-light.svg">
+
+  <title>LXD Dashboard</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="vendor/fonts/nunito.css" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="vendor/sb-admin-2/css/sb-admin-2.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+
+  <!-- Custom styles for this page -->
+  <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-dark sidebar sidebar-dark accordion" id="accordionSidebar">
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+        <div class="sidebar-brand-icon rotate-n-0">
+          <img src="assets/images/logo-dark.svg" style="width: 2rem;"></img>
+          <!-- <i class="fas fa-cube" style="width: 2rem;"></i> -->
+        </div>
+        <div class="sidebar-brand-text mx-3">LXDWARE</div>
+      </a>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item">
+        <a class="nav-link" href="remotes.html">
+          <i class="fas fa-fw fa-server"></i>
+          <span>Hosts</span></a>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider d-none d-md-block">  
+
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="text-center d-none d-md-inline">
+      <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+    </ul>
+    <!-- End of Sidebar -->
+
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+          <!-- Sidebar Toggle (Topbar) -->
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
+
+          <!-- Topbar Navbar -->
+          <ul class="navbar-nav ml-auto">
+
+            <div class="topbar-divider d-none d-sm-block"></div>
+
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-user-circle fa-1x fa-fw mr-2 text-gray-600"></i>
+                <span id="username" class="mr-2 d-none d-lg-inline text-gray-600"></span>
+              </a>
+              <!-- Dropdown - User Information -->
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="user-profile.html">
+                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Profile
+                </a>
+                <a class="dropdown-item" href="settings.html">
+                  <i class="fas fa-cog fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Settings
+                </a>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#aboutModal">
+                  <i class="fas fa-info-circle fa-sm fa-fw mr-2 text-gray-400"></i>
+                  About
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" onclick="logout()">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logout
+                </a>
+              </div>
+            </li>
+
+          </ul>
+
+        </nav>
+        <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between">
+            <h1 class="h5 mb-0 text-gray-800">SETTINGS</h1>
+          </div>
+
+          <div class="col-12">
+
+            <div class="row">
+
+              <div class="col-2 border-right mt-5">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                  <a class="nav-link active" id="v-pills-users-tab" data-toggle="pill" href="#v-pills-users" role="tab" aria-controls="v-pills-users" aria-selected="false">Users</a>
+                  <a class="nav-link" id="v-pills-groups-tab" data-toggle="pill" href="#v-pills-groups" role="tab" aria-controls="v-pills-groups" aria-selected="false">Groups</a>
+                </div>
+              </div>
+
+              <div class="col-10">
+                <div class="tab-content" id="v-pills-tabContent">
+                  <div class="tab-pane fade show active" id="v-pills-users" role="tabpanel" aria-labelledby="v-pills-users-tab">
+                    <!-- Users List -->
+                    <div class="card border-light mb-4">
+                      <!-- Card Header - Dropdown -->
+                      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Users</h6>
+                        <div class="dropdown no-arrow">
+                          <a class="dropdown-toggle mr-2" href="#" data-toggle="modal" data-target="#createUserModal" title="New User" aria-hidden="true">
+                            <i class="fas fa-plus fa-sm fa-fw"></i> User</a>
+                        </div>
+                      </div>
+                      <!-- Card Body -->
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table" id="userListTable" width="100%" cellspacing="0">
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Users List -->
+                  </div>
+                  <div class="tab-pane fade" id="v-pills-groups" role="tabpanel" aria-labelledby="v-pills-groups-tab">
+                    <!-- Groups List -->
+                    <div class="card border-light mb-4">
+                      <!-- Card Header - Dropdown -->
+                      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Groups</h6>
+                        <div class="dropdown no-arrow">
+                          <a class="dropdown-toggle mr-2" href="#" data-toggle="modal" data-target="#createGroupModal" title="New Group" aria-hidden="true">
+                            <i class="fas fa-plus fa-sm fa-fw"></i> Group</a>
+                        </div>
+                      </div>
+                      <!-- Card Body -->
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table" id="groupListTable" width="100%" cellspacing="0">
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Groups List -->
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright &copy; lxdware.com 2021</span>
+          </div>
+        </div>
+      </footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Add User Modal-->
+  <div class="modal fade" id="createUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create User</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+          <div class="row">
+            <label class="col-3 col-form-label text-right">Username: </label>
+            <div class="col-8">
+              <div class="form-group">
+                <input type="text" id="usernameInput" class="form-control" required="required" placeholder="" name="usernameInput">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <label class="col-3 col-form-label text-right">Password: </label>
+            <div class="col-8">
+              <div class="form-group">
+                <input type="password" id="passwordInput" class="form-control" required="required" placeholder="" name="passwordInput">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <label class="col-3 col-form-label text-right">First Name: </label>
+            <div class="col-8">
+              <div class="form-group">
+                <input type="text" id="firstNameInput" class="form-control" placeholder="" name="firstNameInput">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <label class="col-3 col-form-label text-right">Last Name: </label>
+            <div class="col-8">
+              <div class="form-group">
+                <input type="text" id="lastNameInput" class="form-control" placeholder="" name="lastNameInput">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <label class="col-3 col-form-label text-right">Email: </label>
+            <div class="col-8">
+              <div class="form-group">
+                <input type="text" id="emailInput" class="form-control" required="required" placeholder="" name="emailInput">
+              </div>
+            </div>
+          </div>
+
+        </div> <!-- End Modal Body-->
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="#" onclick="createUser()" data-dismiss="modal">Submit</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Group Modal-->
+  <div class="modal fade" id="addGroupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Group</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+          <div class="row">
+            <label class="col-3 col-form-label text-right">Group:</label>
+            <div class="col-8 text-right">
+              <div class="form-group">
+                <select id="groupIdForAddGroupInput" class="form-control" name="groupIdForAddGroupInput">
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <input type="hidden" id="userIdForAddGroupInput" name="userIdForAddGroupInput">
+
+        </div> <!-- End Modal Body-->
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="#" onclick="addGroup()" data-dismiss="modal">Submit</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Remove Group Modal-->
+  <div class="modal fade" id="removeGroupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Remove Group</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+          <div class="row">
+            <label class="col-3 col-form-label text-right">Group:</label>
+            <div class="col-8 text-right">
+              <div class="form-group">
+                <select id="groupIdForRemoveGroupInput" class="form-control" name="groupIdForRemoveGroupInput">
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <input type="hidden" id="userIdForRemoveGroupInput" name="userIdForRemoveGroupInput">
+
+        </div> <!-- End Modal Body-->
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="#" onclick="removeGroup()" data-dismiss="modal">Submit</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete User Modal-->
+  <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Delete User</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Are you sure you want to delete this user?</div>
+        <input type="hidden" id="userIdForDeleteUserInput" name="userIdForDeleteUserInput">
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="#" onclick="deleteUser()" data-dismiss="modal">Yes</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Group Modal-->
+  <div class="modal fade" id="createGroupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create Group</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+          <div class="row">
+            <label class="col-3 col-form-label text-right">Name: </label>
+            <div class="col-8">
+              <div class="form-group">
+                <input type="text" id="nameInput" class="form-control" required="required" placeholder="" name="nameInput">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <label class="col-3 col-form-label text-right">Description </label>
+            <div class="col-8">
+              <div class="form-group">
+                <input type="text" id="descriptionInput" class="form-control" required="required" placeholder="" name="descriptionInput">
+              </div>
+            </div>
+          </div>
+
+        </div> <!-- End Modal Body-->
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="#" onclick="createGroup()" data-dismiss="modal">Submit</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Role Modal-->
+  <div class="modal fade" id="addRoleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Role</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+          <div class="row">
+            <label class="col-3 col-form-label text-right">Role:</label>
+            <div class="col-8 text-right">
+              <div class="form-group">
+                <select id="roleIdForAddRoleInput" class="form-control" name="roleIdForAddRoleInput">
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <input type="hidden" id="groupIdForAddRoleInput" name="groupIdForAddRoleInput">
+
+        </div> <!-- End Modal Body-->
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="#" onclick="addRole()" data-dismiss="modal">Submit</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Remove Role Modal-->
+  <div class="modal fade" id="removeRoleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Remove Role</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+          <div class="row">
+            <label class="col-3 col-form-label text-right">Role:</label>
+            <div class="col-8 text-right">
+              <div class="form-group">
+                <select id="roleIdForRemoveRoleInput" class="form-control" name="roleIdForRemoveRoleInput">
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <input type="hidden" id="groupIdForRemoveRoleInput" name="groupIdForRemoveRoleInput">
+
+        </div> <!-- End Modal Body-->
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="#" onclick="removeRole()" data-dismiss="modal">Submit</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Delete Group Modal-->
+  <div class="modal fade" id="deleteGroupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Delete Group</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Are you sure you want to delete this group?</div>
+        <input type="hidden" id="groupIdForDeleteGroupInput" name="groupIdForDeleteGroupInput">
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="#" onclick="deleteGroup()" data-dismiss="modal">Yes</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Modal-->
+  <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">About</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+              <div id="about"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Dismiss</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="vendor/sb-admin-2/js/sb-admin-2.min.js"></script>
+
+  <!-- Page level plugins -->
+  <script src="vendor/datatables/jquery.dataTables.min.js"></script>
+  <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+</body>
+
+<script>
+
+  function logout(){
+    $.get("./php/aaa/authentication.php?action=deauthenticateUser", function (data) {
+      operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code == 200) {
+        window.location = './index.html'
+      }
+    });
+  }
+
+  function reloadPageContent() {
+
+    //Check Authorization
+    $.get("./php/aaa/authentication.php?action=validateAuthentication", function (data) {
+      operationData = JSON.parse(data);
+      if (operationData.status_code != 200) {
+        console.log(operationData);
+        window.location = './index.html'
+      }
+    });
+
+    $('#userListTable').DataTable().ajax.reload(null, false);
+    $('#groupListTable').DataTable().ajax.reload(null, false);
+  }
+
+  function loadPageContent(){
+
+    //Display current logged in username
+    $("#username").load("./php/admin/settings.php?action=displayUsername");
+
+    $('#userListTable').DataTable( {
+      ajax: "./php/admin/settings.php?action=listUsers",
+      columns: [
+        {},
+        { title: "Username" },
+        { title: "Email" },
+        { title: "Account Type" },
+        { title: "Groups" },
+        { title: "Action" }
+      ],
+      order: [],
+      columnDefs: [
+        { targets: 0, orderable: false, width: "25px" }
+      ]
+    });
+
+    $('#groupListTable').DataTable( {
+      ajax: "./php/admin/settings.php?action=listGroups",
+      columns: [
+        {},
+        { title: "Name" },
+        { title: "Description" },
+        { title: "Roles" },
+        { title: "Action" }
+      ],
+      order: [],
+      columnDefs: [
+        { targets: 0, orderable: false, width: "25px" }
+      ]
+    });
+
+    //Set the page content to reload in 10 seconds
+    setInterval(() => { reloadPageContent(); }, 10000);
+  }
+
+  function createUser(){
+    var usernameInput = $("#usernameInput").val();
+    var passwordInput = $("#passwordInput").val();
+    var firstNameInput = $("#firstNameInput").val();
+    var lastNameInput = $("#lastNameInput").val();
+    var emailInput = $("#emailInput").val();
+    console.log("Info: creating user " + usernameInput);
+    $.post('./php/admin/settings.php?action=createUser', {username: usernameInput, password: passwordInput, first_name: firstNameInput, last_name: lastNameInput, email: emailInput}, function (data) {
+        var operationData = JSON.parse(data);
+        console.log(operationData);
+        if (operationData.status_code >= 400) {
+          alert(operationData.metadata.error);
+        }
+        setTimeout(() => { reloadPageContent(); }, 1000)
+    });
+  }
+
+  function deleteUser(){
+    var userIdForDeleteUserInput = $("#userIdForDeleteUserInput").val();
+    console.log("Info: deleting user, id: " + userIdForDeleteUserInput);
+    $.get("./php/admin/settings.php?id=" + encodeURI(userIdForDeleteUserInput) + "&action=deleteUser",  function (data) {
+      operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code >= 400){
+        alert(operationData.metadata.error);
+      }
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function addGroup(){
+    var userIdForAddGroupInput = $("#userIdForAddGroupInput").val();
+    var groupIdForAddGroupInput = $("#groupIdForAddGroupInput").val();
+    console.log("Info: adding group to user");
+    $.get("./php/admin/settings.php?id=" + encodeURI(userIdForAddGroupInput) + "&group_id=" + encodeURI(groupIdForAddGroupInput) + "&action=addUserToGroup",  function (data) {
+      operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code >= 400){
+        alert(operationData.metadata.error);
+      }
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function removeGroup(){
+    var userIdForRemoveGroupInput = $("#userIdForRemoveGroupInput").val();
+    var groupIdForRemoveGroupInput = $("#groupIdForRemoveGroupInput").val();
+    console.log("Info: removing group from user");
+    $.get("./php/admin/settings.php?id=" + encodeURI(userIdForRemoveGroupInput) + "&group_id=" + encodeURI(groupIdForRemoveGroupInput) + "&action=removeGroupFromUser",  function (data) {
+      operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code >= 400){
+        alert(operationData.metadata.error);
+      }
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function loadAddGroupModal(userId){
+    $("#groupIdForAddGroupInput").load("./php/admin/settings.php?id=" + userId + "&action=listGroupsNotAssignedToUserForSelect");
+    $("#userIdForAddGroupInput").val(userId);
+    $("#addGroupModal").modal('show');
+  }
+
+  function loadRemoveGroupModal(userId){
+    $("#groupIdForRemoveGroupInput").load("./php/admin/settings.php?id=" + userId + "&action=listGroupsAssignedToUserForSelect");
+    $("#userIdForRemoveGroupInput").val(userId);
+    $("#removeGroupModal").modal('show');
+  }
+
+  function loadDeleteUserModal(userId){
+    $("#userIdForDeleteUserInput").val(userId);
+    $("#deleteUserModal").modal('show');
+  }
+
+  function createGroup(){
+    var nameInput = $("#nameInput").val();
+    var descriptionInput = $("#descriptionInput").val();
+    console.log("Info: adding group " + nameInput);
+    $.get("./php/admin/settings.php?name=" + encodeURI(nameInput) + "&description=" + encodeURI(descriptionInput) + "&action=createGroup",  function (data) {
+      operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code >= 400){
+        alert(operationData.metadata.error);
+      }
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function deleteGroup(){
+    var groupIdForDeleteGroupInput = $("#groupIdForDeleteGroupInput").val();
+    console.log("Info: deleting group, id " + groupIdForDeleteGroupInput);
+    $.get("./php/admin/settings.php?id=" + encodeURI(groupIdForDeleteGroupInput) + "&action=deleteGroup",  function (data) {
+      operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code >= 400){
+        alert(operationData.metadata.error);
+      }
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function addRole(){
+    var groupIdForAddRoleInput = $("#groupIdForAddRoleInput").val();
+    var roleIdForAddRoleInput = $("#roleIdForAddRoleInput").val();
+    console.log("Info: adding role to group");
+    $.get("./php/admin/settings.php?id=" + encodeURI(groupIdForAddRoleInput) + "&role_id=" + encodeURI(roleIdForAddRoleInput) + "&action=addRoleToGroup",  function (data) {
+      operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code >= 400){
+        alert(operationData.metadata.error);
+      }
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function removeRole(){
+    var groupIdForRemoveRoleInput = $("#groupIdForRemoveRoleInput").val();
+    var roleIdForRemoveRoleInput = $("#roleIdForRemoveRoleInput").val();
+    console.log("Info: removing role from group");
+    $.get("./php/admin/settings.php?id=" + encodeURI(groupIdForRemoveRoleInput) + "&role_id=" + encodeURI(roleIdForRemoveRoleInput) + "&action=removeRoleFromGroup",  function (data) {
+      operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code >= 400){
+        alert(operationData.metadata.error);
+      }
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function loadAddRoleModal(groupId){
+    $("#roleIdForAddRoleInput").load("./php/admin/settings.php?id=" + groupId + "&action=listRolesNotAssignedToGroupForSelect");
+    $("#groupIdForAddRoleInput").val(groupId);
+    $("#addRoleModal").modal('show');
+  }
+
+  function loadRemoveRoleModal(groupId){
+    $("#roleIdForRemoveRoleInput").load("./php/admin/settings.php?id=" + groupId + "&action=listRolesAssignedToGroupForSelect");
+    $("#groupIdForRemoveRoleInput").val(groupId);
+    $("#removeRoleModal").modal('show');
+  }
+
+  function loadDeleteGroupModal(groupId){
+    $("#groupIdForDeleteGroupInput").val(groupId);
+    $("#deleteGroupModal").modal('show');
+  }
+
+  $(document).ready(function(){
+
+    //Check Authorization
+    $.get("./php/aaa/authentication.php?action=validateAuthentication", function (data) {
+      operationData = JSON.parse(data);
+      if (operationData.status_code != 200) {
+        console.log(operationData);
+        window.location = './index.html'
+      }
+    });
+
+    //Load the card contents
+    loadPageContent();
+    
+    //Load the about info for the about modal
+    $.get("./about.html", function (data) {
+      $("#about").html(data);
+    });    
+
+  });
+
+</script>
+
+</html>

@@ -1,0 +1,21 @@
+.bg-dark {
+    background-color: #262626 !important;
+    background-size: cover;
+  }
+
+  .btn-danger {
+    color: #fff;
+    background-color: #ff0000;
+    border-color: #ff0000;
+  }
+
+  .text-danger {
+    color: #ff0000 !important;
+  }
+
+
+  code {
+    font-size: 87.5%;
+    color: #ff0000 !important;
+    word-break: break-word;
+  }

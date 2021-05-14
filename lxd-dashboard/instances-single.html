@@ -1,0 +1,2571 @@
+<!--
+LXDWARE LXD Dashboard - A web-based interface for managing LXD servers
+Copyright (C) 2020-2021  LXDWARE.COM
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <link rel="icon" type="image/png" href="assets/images/logo-light.svg">
+
+  <title>LXD Dashboard</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="vendor/fonts/nunito.css" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="vendor/sb-admin-2/css/sb-admin-2.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+
+  <!-- Custom styles for this page -->
+  <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="vendor/xterm/css/xterm.css"/>
+
+</head>
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-dark sidebar sidebar-dark accordion" id="accordionSidebar">
+      
+      <div id="sidebarLinks"></div>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider d-none d-md-block"> 
+
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+    </ul>
+    <!-- End of Sidebar -->
+
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+          <!-- Sidebar Toggle (Topbar) -->
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
+
+
+          <!-- Topbar Notification -->
+          <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+            <ul class="navbar-nav ml-auto"> 
+
+              <li>
+                <div class="nav-item spinner-border m-3" role="status" style="display:none;" id="spinner">
+                  <span class="nav-item sr-only">Loading...</span>
+                </div>
+              </li>
+  
+              <li class="nav-item dropdown no-arrow" id="notificationArea" style="display: none;">
+                <div class="nav-link dropdown-toggle">
+                  <span id="notification" class="mr-2 d-none d-lg-inline text-gray-600">Notification</span>
+                </div>
+              </li>
+              
+            </ul>
+          </div>
+          
+
+          <!-- Topbar Navbar -->
+          <ul class="navbar-nav ml-auto"> 
+
+            <li class="nav-item dropdown" id="remoteListNav">
+            </li>
+
+            <li class="nav-item dropdown" id="projectListNav">
+            </li>
+
+            <div class="topbar-divider d-none d-sm-block"></div>
+
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-user-circle fa-1x fa-fw mr-2 text-gray-600"></i>
+                <span id="username" class="mr-2 d-none d-lg-inline text-gray-600"></span>
+              </a>
+              <!-- Dropdown - User Information -->
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="user-profile.html">
+                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Profile
+                </a>
+                <a class="dropdown-item" href="settings.html">
+                  <i class="fas fa-cog fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Settings
+                </a>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#aboutModal">
+                  <i class="fas fa-info-circle fa-sm fa-fw mr-2 text-gray-400"></i>
+                  About
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" onclick="logout()">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logout
+                </a>
+              </div>
+            </li>
+
+          </ul>
+
+        </nav>
+        <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- BreadCrumb -->
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#" id="remoteBreadCrumb"></a></li>
+              <li class="breadcrumb-item"><a href="#" id="instancesBreadCrumb"></a></li>
+              <li class="breadcrumb-item active" aria-current="page" id="instanceBreadCrumb"></li>
+            </ol>
+          </nav>
+
+          <div class="col-12">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between border-bottom-0">
+              <h6 class="m-0 font-weight-bold text-primary">Instance Details</h6>
+              <div class="dropdown no-arrow">
+                <a class="dropdown-toggle mr-2" href="#" role="button" id="startLink" onclick="startInstance()" style="display: none;" Title="Start">
+                  <i class="fas fa-play fa-lg fa-fw"></i></a>
+                <a class="dropdown-toggle mr-2" href="#" role="button" id="stopLink" onclick="stopInstance()" style="display: none;" title="Stop">
+                  <i class="fas fa-stop fa-lg fa-fw"></i></a>
+                <a class="dropdown-toggle mr-2" href="#" role="button" id="unfreezeLink" onclick="unfreezeInstance()" style="display: none;" title="UnFreeze">
+                  <i class="fas fa-pause fa-lg fa-fw"></i></a>
+                <a class="dropdown-toggle mr-2" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Actions">
+                  <i class="fas fa-bars fa-lg fa-fw"></i></a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                  <!--<div class="dropdown-header">Options:</div>-->
+                  <a class="dropdown-item text-primary" href="#" onclick="editInstanceJson()" id="editInstanceOption"><i class="fas fa-edit fa-sm fa-fw mr-2"></i>Edit</a>
+                  <a class="dropdown-item text-primary" href="#" onclick="restartInstance()" id="restartInstanceOption"><i class="fas fa-redo fa-sm fa-fw mr-2"></i>Restart</a>
+                  <a class="dropdown-item text-primary" href="#" onclick="stopInstanceForcefully()" id="stopInstanceForcefullyOption"><i class="fas fa-plug fa-sm fa-fw mr-2"></i>Force Stop</a>
+                  <a class="dropdown-item text-primary" href="#" onclick="freezeInstance()" id="freezeInstanceOption"><i class="fas fa-pause fa-sm fa-fw mr-2"></i>Freeze</a>
+                  <a class="dropdown-item text-primary" href="#" data-toggle="modal" data-target="#snapshotInstanceModal" id="snapshotInstanceOption"><i class="fas fa-clone fa-sm fa-fw mr-2"></i>Snapshot</a>
+                  <a class="dropdown-item text-primary" href="#" data-toggle="modal" data-target="#attachInstanceProfileModal" id="attachInstanceProfileOption"><i class="fas fa-address-card fa-sm fa-fw mr-2"></i>Attach Profile</a>
+                  <a class="dropdown-item text-primary" href="#" data-toggle="modal" data-target="#renameInstanceModal" id="renameInstanceOption"><i class="fas fa-edit fa-sm fa-fw mr-2"></i>Rename</a>
+                  <a class="dropdown-item text-primary" href="#" data-toggle="modal" data-target="#copyInstanceModal" id="copyInstanceOption"><i class="fas fa-copy fa-sm fa-fw mr-2"></i>Copy</a>
+                  <a class="dropdown-item text-primary" href="#" data-toggle="modal" data-target="#migrateInstanceModal" id="migrateInstanceOption"><i class="fas fa-suitcase fa-sm fa-fw mr-2"></i>Migrate</a>
+                  <a class="dropdown-item text-primary" href="#" onclick="initializeCreateBackup()" id="backupInstanceOption"><i class="fas fa-save fa-sm fa-fw mr-2"></i>Backup</a>
+                  <a class="dropdown-item text-primary" href="#" data-toggle="modal" data-target="#publishInstanceModal" id="publishInstanceOption"><i class="fas fa-box-open fa-sm fa-fw mr-2"></i>Publish</a>
+                  <a class="dropdown-item text-primary" href="#" data-toggle="modal" data-target="#deleteInstanceModal" id="deleteInstanceOption"><i class="fas fa-trash-alt fa-sm fa-fw mr-2"></i>Delete</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12">
+
+            <div class="row">
+
+              <div class="col-2 border-right">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                  <a class="nav-link active" id="v-pills-general-tab" data-toggle="pill" href="#v-pills-general" role="tab" aria-controls="v-pills-general" aria-selected="false">General</a>
+                  <a class="nav-link" id="v-pills-snapshots-tab" data-toggle="pill" href="#v-pills-snapshots" role="tab" aria-controls="v-pills-snapshots" aria-selected="false">Snapshots</a>
+                  <a class="nav-link" id="v-pills-profiles-tab" data-toggle="pill" href="#v-pills-profiles" role="tab" aria-controls="v-pills-profiles" aria-selected="false">Profiles</a>
+                  <a class="nav-link" id="v-pills-network-devices-tab" data-toggle="pill" href="#v-pills-network-devices" role="tab" aria-controls="v-pills-network-devices" aria-selected="false">Network Devices</a>
+                  <a class="nav-link" id="v-pills-disk-devices-tab" data-toggle="pill" href="#v-pills-disk-devices" role="tab" aria-controls="v-pills-disk-devices" aria-selected="false">Disk Devices</a>
+                  <a class="nav-link" id="v-pills-proxy-devices-tab" data-toggle="pill" href="#v-pills-proxy-devices" role="tab" aria-controls="v-pills-proxy-devices" aria-selected="false">Proxy Devices</a>
+                  <a class="nav-link" id="v-pills-backups-tab" data-toggle="pill" href="#v-pills-backups" role="tab" aria-controls="v-pills-backups" aria-selected="false">Backups</a>
+                  <a class="nav-link" id="v-pills-logs-tab" data-toggle="pill" href="#v-pills-logs" role="tab" aria-controls="v-pills-logs" aria-selected="false">Logs</a>
+                  <a class="nav-link" id="v-pills-console-tab" data-toggle="pill" href="#v-pills-console" role="tab" aria-controls="v-pills-console" aria-selected="false">Console</a>
+                </div>
+              </div>
+
+              <div class="col-10">
+                <div class="tab-content" id="v-pills-tabContent">
+                  <div class="tab-pane fade show active" id="v-pills-general" role="tabpanel" aria-labelledby="v-pills-general-tab">
+                    <div class="row">
+
+                      <!-- General Tab -->
+                      <div class="col-xl-5 col-lg-12">
+                        <div class="card shadow mb-4 h-100">
+                          <!-- Card Header - Dropdown -->
+                          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-primary">Instance Information</h6>
+                            <div class="dropdown no-arrow">
+                              <a class="dropdown-toggle" href="#" role="button" onclick="editInstanceJson()" id="snapshotConfigurationLink" title="Edit Instance Information">
+                                <i class="fas fa-edit fa-1x fa-fw"></i>
+                              </a>
+                            </div>
+                          </div>
+                          <!-- Card Body -->
+                          <div class="card-body">
+                            <div class="row">
+                              <div class="col-12">
+                                <h5><strong>Basic Information</strong></h5>
+                                <div><strong>Name</strong>: <span id="name"></span></div>
+                                <div><strong>Description</strong>: <span id="description"></span></div>
+                                <div><strong>Type</strong>: <span id="type"></span></div>
+                                <div><strong>Status</strong>: <span id="status"></span></div>
+                                <div><strong>Image</strong>: <span id="image"></span></div>
+                                <div><strong>Location</strong>: <span id="location"></span></div>
+                                <div><strong>Created</strong>: <span id="created"></span></div>
+                                <br><br>
+                                <h5><strong>State Information</strong></h5>
+                                <div><strong>Memory</strong>: <span id="memory"></span></div>
+                                <div><strong>Swap</strong>: <span id="swap"></span></div>
+                                <div><strong>PID</strong>: <span id="pid"></span></div>
+                                <div><strong>Processes</strong>: <span id="processes"></span></div>
+                                <div><strong>IPv4 Addresses</strong>: <span id="ipv4Addresses"></span></div>
+                                <div><strong>IPv6 Addresses</strong>: <span id="ipv6Addresses"></span></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- End General Tab -->
+
+                      <div class="col-xl-7 col-lg-12">
+                        <div class="row">
+
+                          <!-- Security Configuration Card -->
+                          <div class="col-6">
+                            <div class="card shadow mb-4">
+                              <!-- Card Header - Dropdown -->
+                              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">Security Configuration</h6>
+                                <div class="dropdown no-arrow">
+                                  <a class="dropdown-toggle" href="#" role="button" onclick="editSecurityConfiguration()" id="securityConfigurationLink" title="Edit Security Configuration">
+                                    <i class="fas fa-edit fa-1x fa-fw"></i>
+                                  </a>
+                                </div>
+                              </div>
+                              <!-- Card Body -->
+                              <div class="card-body">
+                                <div class="row">
+                                  <div class="col-12">
+                                    <div><strong>security.nesting</strong>: <span id="securityNesting"></span></div>
+                                    <div><strong>security.privileged</strong>: <span id="securityPrivileged"></span></div>
+                                    <div><strong>security.protection.delete</strong>: <span id="securityProtectionDelete"></span></div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- End Security Configuration Card -->
+
+                          <!-- CPU Configuration Card -->
+                          <div class="col-6">
+                            <div class="card shadow mb-4">
+                              <!-- Card Header - Dropdown -->
+                              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">CPU Limits</h6>
+                                <div class="dropdown no-arrow">
+                                  <a class="dropdown-toggle" href="#" role="button"  onclick="editCpuLimits()" id="cpuLimitsLink" title="Edit CPU Limits">
+                                    <i class="fas fa-edit fa-1x fa-fw"></i>
+                                  </a>
+                                </div>
+                              </div>
+                              <!-- Card Body -->
+                              <div class="card-body">
+                                <div class="row">
+                                  <div class="col-12">
+                                    <div><strong>limits.cpu</strong>: <span id="limitsCpu"></span></div>
+                                    <div><strong>limits.cpu.allowance</strong>: <span id="limitsCpuAllowance"></span></div>
+                                    <div><strong>limits.cpu.priority</strong>: <span id="limitsCpuPriority"></span></div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- End CPU Configuration Card -->
+
+                          <!-- Boot Configuration Card -->
+                          <div class="col-6">
+                            <div class="card shadow mb-4">
+                              <!-- Card Header - Dropdown -->
+                              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">Boot Configuration</h6>
+                                <div class="dropdown no-arrow">
+                                  <a class="dropdown-toggle" href="#" role="button" onclick="editBootConfiguration()" id="bootConfigurationLink" title="Edit Boot Configuration">
+                                    <i class="fas fa-edit fa-1x fa-fw"></i>
+                                  </a>
+                                </div>
+                              </div>
+                              <!-- Card Body -->
+                              <div class="card-body">
+                                <div class="row">
+                                  <div class="col-12">
+                                    <div><strong>boot.autostart</strong>: <span id="bootAutostart"></span></div>
+                                    <div><strong>boot.autostart.delay</strong>: <span id="bootAutostartDelay"></span></div>
+                                    <div><strong>boot.autostart.priority</strong>: <span id="bootAutostartPriority"></span></div>
+                                    <div><strong>boot.host_shutdown_timeout</strong>: <span id="bootHostShutdownTimeout"></span></div>
+                                    <div><strong>boot.stop.priority</strong>: <span id="bootStopPriority"></span></div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- End Boot Configuration Card -->
+
+                          <!-- Memory Configuration Card -->
+                          <div class="col-6">
+                            <div class="card shadow mb-4">
+                              <!-- Card Header - Dropdown -->
+                              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">Memory Limits</h6>
+                                <div class="dropdown no-arrow">
+                                  <a class="dropdown-toggle" href="#" role="button" onclick="editMemoryLimits()" id="memoryLimitsLink" title="Edit Memory Limits">
+                                    <i class="fas fa-edit fa-1x fa-fw"></i>
+                                  </a>
+                                </div>
+                              </div>
+                              <!-- Card Body -->
+                              <div class="card-body">
+                                <div class="row">
+                                  <div class="col-12">
+                                    <div><strong>limits.memory</strong>: <span id="limitsMemory"></span></div>
+                                    <div><strong>limits.memory.enforce</strong>: <span id="limitsMemoryEnforce"></span></div>
+                                    <div><strong>limits.memory.hugepages</strong>: <span id="limitsMemoryHugepages"></span></div>
+                                    <div><strong>limits.memory.swap</strong>: <span id="limitsMemorySwap"></span></div>
+                                    <div><strong>limits.memory.swap.priority</strong>: <span id="limitsMemorySwapPriority"></span></div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- End Memory Configuration Card -->
+
+                          <!-- Snapshot Configuration Card -->
+                          <div class="col-6">
+                            <div class="card shadow">
+                              <!-- Card Header - Dropdown -->
+                              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">Snapshot Configuration</h6>
+                                <div class="dropdown no-arrow">
+                                  <a class="dropdown-toggle" href="#" role="button" onclick="editSnapshotConfiguration()" id="snapshotConfigurationLink" title="Edit Snapshot Configuration">
+                                    <i class="fas fa-edit fa-1x fa-fw"></i>
+                                  </a>
+                                </div>
+                              </div>
+                              <!-- Card Body -->
+                              <div class="card-body">
+                                <div class="row">
+                                  <div class="col-12">
+                                    <div><strong>snapshots.schedule</strong>: <span id="snapshotsSchedule"></span></div>
+                                    <div><strong>snapshots.schedule.stopped</strong>: <span id="snapshotsScheduleStopped"></span></div>
+                                    <div><strong>snapshots.pattern</strong>: <span id="snapshotsPattern"></span></div>
+                                    <div><strong>snapshots.expiry</strong>: <span id="snapshotsExpiry"></span></div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- End Snapshot Configuration -->
+
+                        </div>
+                                      
+                      </div>
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="tab-pane fade" id="v-pills-snapshots" role="tabpanel" aria-labelledby="v-pills-snapshots-tab">
+                    <!-- Snapshot List -->
+                    <div class="card mb-4 border-0">
+                      <!-- Card Header - Dropdown -->
+                      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Snapshots</h6>
+                        <div class="dropdown no-arrow">
+                          <a class="dropdown-toggle mr-2" href="#" data-toggle="modal" data-target="#snapshotInstanceModal" title="Create Snapshot" aria-hidden="true">
+                            <i class="fas fa-plus fa-sm fa-fw"></i>Snapshot</a>
+                        </div>
+                      </div>
+                      <!-- Card Body -->
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table" id="snapshotTableList" width="100%" cellspacing="0">
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Snapshot List -->
+                  </div>
+                  <div class="tab-pane fade" id="v-pills-profiles" role="tabpanel" aria-labelledby="v-pills-profiles-tab">
+                    <!-- Profiles List -->
+                    <div class="card border-light mb-4">
+                      <!-- Card Header - Dropdown -->
+                      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Profiles</h6>
+                        <div class="dropdown no-arrow">
+                          <a class="dropdown-toggle mr-2" href="#" data-toggle="modal" data-target="#attachInstanceProfileModal" title="Attach Profile" aria-hidden="true">
+                            <i class="fas fa-plus fa-sm fa-fw"></i>Profile</a>
+                        </div>
+                      </div>
+                      <!-- Card Body -->
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table" id="profileTableList" width="100%" cellspacing="0">
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Profiles List -->
+                  </div>
+                  <div class="tab-pane fade" id="v-pills-network-devices" role="tabpanel" aria-labelledby="v-pills-network-devices-tab">
+                    <!-- Network Devices List -->
+                    <div class="card mb-4 border-0">
+                      <!-- Card Header -->
+                      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Network Devices</h6>
+                      </div>
+                      <!-- Card Body -->
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table" id="networkDeviceTableList" width="100%" cellspacing="0">
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Network Devices List -->
+                  </div>
+                  <div class="tab-pane fade" id="v-pills-disk-devices" role="tabpanel" aria-labelledby="v-pills-disk-devices-tab">
+                    <!-- Disk Device List -->
+                    <div class="card mb-4 border-0">
+                      <!-- Card Header -->
+                      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Disk Devices</h6>
+                      </div>
+                      <!-- Card Body -->
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table" id="diskDeviceTableList" width="100%" cellspacing="0">
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Disk Device List -->
+                  </div>
+                  <div class="tab-pane fade" id="v-pills-proxy-devices" role="tabpanel" aria-labelledby="v-pills-proxy-devices-tab">
+                    <!-- Proxy Device List -->
+                    <div class="card mb-4 border-0">
+                      <!-- Card Header -->
+                      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Proxy Devices</h6>
+                      </div>
+                      <!-- Card Body -->
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table" id="proxyDeviceTableList" width="100%" cellspacing="0">
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Proxy Device List -->
+                  </div>
+                  <div class="tab-pane fade" id="v-pills-backups" role="tabpanel" aria-labelledby="v-pills-backups-tab">
+                    <!-- Backups List -->                      
+                    <div class="card border-light mb-4">
+                      <!-- Card Header - Dropdown -->
+                      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Backups</h6>
+                        <div class="dropdown no-arrow">
+                          <a class="dropdown-toggle mr-2" href="#" onclick="initializeCreateBackup()" title="Create Backup" aria-hidden="true">
+                            <i class="fas fa-plus fa-sm fa-fw"></i>Backup</a>
+                        </div>
+                      </div>
+                      <!-- Card Body -->
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table" id="backupTableList" width="100%" cellspacing="0">
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Backups List -->
+                  </div>
+                  <div class="tab-pane fade" id="v-pills-logs" role="tabpanel" aria-labelledby="v-pills-logs-tab">
+                    <!-- Logs List -->
+                    <div class="card mb-4 border-0">
+                      <!-- Card Header -->
+                      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Logs</h6>
+                      </div>
+                      <!-- Card Body -->
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table" id="logTableList" width="100%" cellspacing="0">
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Logs List -->
+                  </div>
+                  <div class="tab-pane fade" id="v-pills-console" role="tabpanel" aria-labelledby="v-pills-console-tab">
+                    <!-- Console Tab -->
+                    <div class="card mb-4 border-0">
+                      <!-- Card Header - Dropdown -->
+                      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Console</h6>
+                        <div class="dropdown no-arrow">
+                            <button type="button" class="btn btn-primary" id="startConsoleButton" onclick="establishInstanceWebSocketConsoleConnection()">Start Console</button>
+                            <button type="button" class="btn btn-primary" style="display: none;" id="stopConsoleButton" onclick="closeWebSocketConsoleConnection()">Stop Console</button>
+                        </div>
+                      </div>
+                      <!-- Card Body -->
+                      <div class="card-body">
+                        <div id="terminal-console"></div>
+                      </div>
+                    </div>
+                    <!-- End Console Tab -->
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright &copy; lxdware.com 2021</span>
+          </div>
+        </div>
+      </footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+
+  <!-- New Snapshot Modal-->
+  <div class="modal fade" id="snapshotInstanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Create Snapshot</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-2 col-form-label text-right">Name: </label>
+              <div class="col-9">
+                <div class="form-group">
+                  <input type="text" id="snapshotName" class="form-control" placeholder="" name="snapshot">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-2 col-form-label text-right">Stateful:</label>
+              <div class="col-9 text-right">
+                <div class="form-group">
+                  <select id="snapshotStateful" class="form-control" name="snapshotStateful">
+                    <option value="false" selected>false</option>
+                    <option value="true">true</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="snapshotInstance()" data-dismiss="modal">Ok</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rename Instance Modal-->
+  <div class="modal fade" id="renameInstanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Rename Instance</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-2 col-form-label text-right">Name:</label>
+              <div class="col-9">
+                <div class="form-group">
+                  <input type="text" id="newInstanceName" class="form-control" placeholder="">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="renameInstance()" data-dismiss="modal">Ok</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Migrate Instance Modal-->
+  <div class="modal fade" id="migrateInstanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Migrate Instance</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-2 col-form-label text-right">Host:</label>
+              <div class="col-9">
+                <div class="form-group">
+                  <select id="selectClusterInput" class="form-control" name="cluster">
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="migrateInstance()" data-dismiss="modal">Ok</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copy Instance Modal-->
+  <div class="modal fade" id="copyInstanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Copy Instance</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-2 col-form-label text-right">Name:</label>
+              <div class="col-9">
+                <div class="form-group">
+                  <input type="text" id="copyName" class="form-control" placeholder="" name="copy">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="copyInstance()" data-dismiss="modal">Ok</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Instance from Snapshot Modal-->
+  <div class="modal fade" id="createInstanceFromSnapshotModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Create Instance from Snapshot</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-2 col-form-label text-right">Name:</label>
+              <div class="col-9">
+                <div class="form-group">
+                  <input type="text" id="instanceNameForSnapshotCreate" class="form-control" placeholder="" name="copysnap">
+                  <input type="hidden" id="snapNameForSnapshotCreate">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="createInstanceFromSnapshot()" data-dismiss="modal">Ok</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Publish Image from Snapshot Modal-->
+  <div class="modal fade" id="publishImageFromSnapshotModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Publish Image from Snapshot</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Description: </label>
+              <div class="col-8">
+                <div class="form-group">
+                  <input type="text" id="publishSnapshotDescriptionInput" class="form-control" placeholder="" name="description">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-3 col-form-label text-right">OS: </label>
+              <div class="col-8">
+                <div class="form-group">
+                  <input type="text" id="publishSnapshotOsInput" class="form-control" placeholder="" name="os">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Release: </label>
+              <div class="col-8">
+                <div class="form-group">
+                  <input type="text" id="publishSnapshotReleaseInput" class="form-control" placeholder="" name="release">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Public:</label>
+              <div class="col-8">
+                <div class="form-group">
+                  <select id="publishSnapshotPublicInput" class="form-control" name="public">
+                    <option value="false" selected>false</option>
+                    <option value="true">true</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <input type="hidden" id="publishSnapshotHiddenName">
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="publishImageFromSnapshot()" data-dismiss="modal">Ok</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Backup Instance Modal-->
+  <div class="modal fade" id="backupInstanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Backup Instance</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Name:</label>
+              <div class="col-8">
+                <div class="form-group">
+                  <input type="text" id="backupName" class="form-control" placeholder="" name="backupName">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Instance Only:</label>
+              <div class="col-8 text-right">
+                <div class="form-group">
+                  <select id="backupInstanceOnly" class="form-control" name="backupInstanceOnly">
+                    <option value="false" selected>false</option>
+                    <option value="true">true</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Optimized Storage:</label>
+              <div class="col-8 text-right">
+                <div class="form-group">
+                  <select id="backupOptimizedStorage" class="form-control" name="backupOptimizedStorage">
+                    <option value="false" selected>false</option>
+                    <option value="true">true</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Compression:</label>
+              <div class="col-8">
+                <div class="form-group">
+                  <select id="backupCompressionAlgorithm" class="form-control" name="backupCompressionAlgorithm">
+                    <option value="bzip2">bzip2</option>
+                    <option value="gzip" selected>gzip</option>
+                    <option value="lzma">lzma</option>
+                    <option value="none">none</option>
+                    <option value="xz">xz</option>
+                    <option value="zstd">zstd</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="createBackup()" data-dismiss="modal">Ok</a>
+          </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Delete Instance Modal-->
+  <div class="modal fade" id="deleteInstanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Delete Instance</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Are you sure you want to delete this instance?</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="#" onclick="deleteInstance()" data-dismiss="modal">Yes</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Attach Profile Modal-->
+  <div class="modal fade" id="attachInstanceProfileModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Attach Profile</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-2 col-form-label text-right">Profile:</label>
+              <div class="col-9">
+                <div class="form-group">
+                  <select id="selectProfileInput" class="form-control" name="profile">
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="attachInstanceProfile()" data-dismiss="modal">Ok</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Publish Instance Modal-->
+  <div class="modal fade" id="publishInstanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Publish Image from Instance</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Description: </label>
+              <div class="col-8">
+                <div class="form-group">
+                  <input type="text" id="publishInstanceDescriptionInput" class="form-control" placeholder="" name="description">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-3 col-form-label text-right">OS: </label>
+              <div class="col-8">
+                <div class="form-group">
+                  <input type="text" id="publishInstanceOsInput" class="form-control" placeholder="" name="os">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Release: </label>
+              <div class="col-8">
+                <div class="form-group">
+                  <input type="text" id="publishInstanceReleaseInput" class="form-control" placeholder="" name="release">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Public:</label>
+              <div class="col-8">
+                <div class="form-group">
+                  <select id="publishInstancePublicInput" class="form-control" name="public">
+                    <option value="false" selected>false</option>
+                    <option value="true">true</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="publishInstance()" data-dismiss="modal">Ok</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load Log Modal-->
+  <div class="modal fade" id="loadLogModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Log Contents</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-12 col-form-label" id="logNameInput"></label>
+              <div class="col-12">
+                <div class="form-group text-right">
+                  <pre>
+                    <textarea name="log_data" class="form-control" id="logDataInput" rows="16" ></textarea>
+                  </pre>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Instance Modal-->
+  <div class="modal fade" id="editInstanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Instance</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-12 col-form-label" id="instanceNameEditInput"></label>
+              <div class="col-12">
+                <div class="form-group text-right">
+                  <pre>
+                    <textarea name="json" class="form-control" id="jsonEditInput" rows="16" ></textarea>
+                  </pre>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="updateInstanceJson()" data-dismiss="modal">Save</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Boot Configuration Modal-->
+  <div class="modal fade" id="editBootConfigurationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Boot Configuration</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-4 col-form-label text-right">Autostart:</label>
+              <div class="col-6 text-right">
+                <div class="form-group">
+                  <select id="bootAutostartInput" class="form-control" name="bootAutostartInput">
+                    <option value="">(not set)</option>
+                    <option value="true">true</option>
+                    <option value="false">false</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Always start the instance when LXD starts (if not set, restore last state). Default: (not set)'></i>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-4 col-form-label text-right">Autostart Delay:</label>
+              <div class="col-6">
+                <div class="form-group">
+                  <input type="number" min="0" step="1" id="bootAutostartDelayInput" class="form-control" placeholder="" name="bootAutostartDelayInput">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Number of seconds to wait after the instance started before starting the next one. Default: 0'></i>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-4 col-form-label text-right">Autostart Priority:</label>
+              <div class="col-6">
+                <div class="form-group">
+                  <input type="number" min="0" step="1" id="bootAutostartPriorityInput" class="form-control" placeholder="" name="bootAutostartPriorityInput">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='What order to start the instances in (starting with highest). Default: 0'></i>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-4 col-form-label text-right">Host Shutdown Timeout:</label>
+              <div class="col-6">
+                <div class="form-group">
+                  <input type="number" min="0" step="1" id="bootHostShutdownTimeoutInput" class="form-control" placeholder="" name="bootHostShutdownTimeoutInput">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Seconds to wait for instance to shutdown before it is force stopped. Default: 30'></i>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-4 col-form-label text-right">Stop Priority:</label>
+              <div class="col-6">
+                <div class="form-group">
+                  <input type="number" min="0" step="1" id="bootStopPriorityInput" class="form-control" placeholder="" name="bootStopPriorityInput">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='What order to shutdown the instances (starting with highest). Default: 0'></i>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="updateBootConfiguration()" data-dismiss="modal">Save</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit CPU Limits Modal-->
+  <div class="modal fade" id="editCpuLimitsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit CPU Limits</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-4 col-form-label text-right">CPU: </label>
+              <div class="col-6">
+                <div class="form-group">
+                  <input type="text" id="limitsCpuInput" class="form-control" placeholder="" name="limitsCpuInput">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Number or range of CPUs to expose to the instance. Default: (all)'></i>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-4 col-form-label text-right">CPU Allowance: </label>
+              <div class="col-6">
+                <div class="form-group">
+                  <input type="text" id="limitsCpuAllowanceInput" class="form-control" placeholder="" name="limitsCpuAllowanceInput">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='How much of the CPU can be used. Can be a percentage (e.g. 50%) for a soft limit or hard a chunk of time (25ms/100ms). Default: 100%'></i>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-4 col-form-label text-right">CPU Priority:</label>
+              <div class="col-6">
+                <div class="form-group">
+                  <input type="number" min="0" step="1" id="limitsCpuPriorityInput" class="form-control" placeholder="" name="limitsCpuPriorityInput">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='CPU scheduling priority compared to other instances sharing the same CPUs (overcommit) (integer between 0 and 10). Default: 10'></i>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="updateCpuLimits()" data-dismiss="modal">Save</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Memory Limits Modal-->
+  <div class="modal fade" id="editMemoryLimitsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Memory Limits</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-4 col-form-label text-right">Memory: </label>
+              <div class="col-6">
+                <div class="form-group">
+                  <input type="text" id="limitsMemoryInput" class="form-control" placeholder="" name="limitsMemoryInput">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title="Percentage of the host's memory or fixed value in bytes (various suffixes supported, see below). Default: (all)"></i>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-4 col-form-label text-right">Memory Enforce: </label>
+              <div class="col-6 text-right">
+                <div class="form-group">
+                  <select id="limitsMemoryEnforceInput" class="form-control" name="limitsMemoryEnforceInput">
+                    <option value="">(not set)</option>
+                    <option value="hard">hard</option>
+                    <option value="soft">soft</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title="If hard, instance can't exceed its memory limit. If soft, the instance can exceed its memory limit when extra host memory is available. Default: hard"></i>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-4 col-form-label text-right">Memory Hugepages:</label>
+              <div class="col-6 text-right">
+                <div class="form-group">
+                  <select id="limitsMemoryHugepagesInput" class="form-control" name="limitsMemoryHugepagesInput">
+                    <option value="">(not set)</option>
+                    <option value="true">true</option>
+                    <option value="false">false</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Controls whether to back the instance using hugepages rather than regular system memory. Default: false'></i>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-4 col-form-label text-right">Memory Swap:</label>
+              <div class="col-6 text-right">
+                <div class="form-group">
+                  <select id="limitsMemorySwapInput" class="form-control" name="limitsMemorySwapInput">
+                    <option value="">(not set)</option>
+                    <option value="true">true</option>
+                    <option value="false">false</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Controls whether to encourage/discourage swapping less used pages for this instance. Default: true'></i>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-4 col-form-label text-right">Memory Swap Priority:</label>
+              <div class="col-6">
+                <div class="form-group">
+                  <input type="number" min="0" step="1" max="10" id="limitsMemorySwapPriorityInput" class="form-control" placeholder="" name="limitsMemorySwapPriorityInput">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='The higher this is set, the least likely the instance is to be swapped to disk (integer between 0 and 10). Default: 10'></i>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="updateMemoryLimits()" data-dismiss="modal">Save</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Security Configuration Modal-->
+  <div class="modal fade" id="editSecurityConfigurationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Security Configuration</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <div class="row">
+              <label class="col-4 col-form-label text-right">Nesting:</label>
+              <div class="col-6 text-right">
+                <div class="form-group">
+                  <select id="securityNestingInput" class="form-control" name="securityNestingInput">
+                    <option value="">(not set)</option>
+                    <option value="true">true</option>
+                    <option value="false">false</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Support running lxd (nested) inside the instance. Default: false'></i>
+              </div>
+            </div>
+
+            <div class="row">
+              <label class="col-4 col-form-label text-right">Privileged:</label>
+              <div class="col-6 text-right">
+                <div class="form-group">
+                  <select id="securityPrivilegedInput" class="form-control" name="securityPrivilegedInput">
+                    <option value="">(not set)</option>
+                    <option value="true">true</option>
+                    <option value="false">false</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Runs the instance in privileged mode. Default: false'></i>
+              </div>
+            </div>
+
+            <div class="row">
+              <label class="col-4 col-form-label text-right">Protection Delete:</label>
+              <div class="col-6 text-right">
+                <div class="form-group">
+                  <select id="securityProtectionDeleteInput" class="form-control" name="securityProtectionDeleteInput">
+                    <option value="">(not set)</option>
+                    <option value="true">true</option>
+                    <option value="false">false</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Prevents the instance from being deleted. Default: false'></i>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="updateSecurityConfiguration()" data-dismiss="modal">Save</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Snapshot Configuration Modal-->
+  <div class="modal fade" id="editSnapshotConfigurationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Snapshot Configuration</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label class="col-4 col-form-label text-right">Schedule: </label>
+              <div class="col-6">
+                <div class="form-group">
+                  <input type="text" id="snapshotsScheduleInput" class="form-control" placeholder="" name="snapshot">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Cron expression (<minute> <hour> <dom> <month> <dow>). Default: (not set)'></i>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-4 col-form-label text-right">Schedule Stopped:</label>
+              <div class="col-6 text-right">
+                <div class="form-group">
+                  <select id="snapshotsScheduleStoppedInput" class="form-control" name="snapshotStateful">
+                    <option value="">(not set)</option>
+                    <option value="true">true</option>
+                    <option value="false">false</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Controls whether or not stopped instances are to be snapshoted automatically. Default: false'></i>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-4 col-form-label text-right">Pattern:</label>
+              <div class="col-6">
+                <div class="form-group">
+                  <input type="text" id="snapshotsPatternInput" class="form-control" placeholder="" name="snapshot">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Pongo2 template string which represents the snapshot name (used for scheduled snapshots and unnamed snapshots). Default: snap%d'></i>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-4 col-form-label text-right">Expiry:</label>
+              <div class="col-6">
+                <div class="form-group">
+                  <input type="text" id="snapshotsExpiryInput" class="form-control" placeholder="" name="snapshot">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Controls when snapshots are to be deleted (expects expression like 1M 2H 3d 4w 5m 6y). Default: (not set)'></i>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="#" onclick="updateSnapshotConfiguration()" data-dismiss="modal">Save</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Modal-->
+  <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">About</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+              <div id="about"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Dismiss</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Web Socket Connection Error Modal-->
+  <div class="modal fade" id="webSocketConnectionErrorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">WebSocket Connection Error</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+              <div id="webSocketConnectionError"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Dismiss</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="vendor/sb-admin-2/js/sb-admin-2.min.js"></script>
+
+  <!-- Page level plugins -->
+  <script src="vendor/datatables/jquery.dataTables.min.js"></script>
+  <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+  <script src="vendor/xterm/lib/xterm.js"></script>
+
+</body>
+
+<script>
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const remoteId = urlParams.get('remote');
+  const instanceName = urlParams.get('instance');
+  const projectName = urlParams.get('project');
+  var instanceDetails = "";
+  var instanceStateDetails = "";
+  var socket;
+  var term;
+  var activeTab = "#v-pills-general";
+
+  function logout(){
+    $.get("./php/aaa/authentication.php?action=deauthenticateUser", function (data) {
+      operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code == 200) {
+        window.location = './index.html'
+      }
+    });
+  }
+
+  function displayMenuOptions(data){
+    jsonData = JSON.parse(data);
+    switch (jsonData.metadata.status){
+      case "Stopped":
+        $('#startLink').show();
+        $('#stopLink').hide();
+        $('#restartInstanceOption').hide();
+        $('#stopInstanceForcefullyOption').hide();
+        $('#freezeInstanceOption').hide();
+        $('#unfreezeLink').hide();
+        $('#snapshotInstanceOption').show();
+        $('#attachInstanceProfileOption').show();
+        $('#editInstanceOption').show();
+        $('#renameInstanceOption').show();
+        $('#copyInstanceOption').show();
+        $('#migrateInstanceOption').show();
+        $('#publishInstanceOption').show();
+        $('#deleteInstanceOption').show();
+        break;
+      case "Frozen":
+        $('#startLink').hide();
+        $('#stopLink').hide();
+        $('#restartInstanceOption').hide();
+        $('#stopInstanceForcefullyOption').hide();
+        $('#freezeInstanceOption').hide();
+        $('#unfreezeLink').show();
+        $('#snapshotInstanceOption').show();
+        $('#attachInstanceProfileOption').hide();
+        $('#editInstanceOption').hide();
+        $('#renameInstanceOption').hide();
+        $('#copyInstanceOption').show();
+        $('#migrateInstanceOption').hide();
+        $('#publishInstanceOption').hide();
+        $('#deleteInstanceOption').hide();
+        break;
+      default:
+        $('#startLink').hide();
+        $('#stopLink').show();
+        $('#restartInstanceOption').show();
+        $('#stopInstanceForcefullyOption').show();
+        $('#freezeInstanceOption').show();
+        $('#unfreezeLink').hide();
+        $('#snapshotInstanceOption').show();
+        $('#attachInstanceProfileOption').show();
+        $('#editInstanceOption').show();
+        $('#renameInstanceOption').hide();
+        $('#copyInstanceOption').hide();
+        $('#migrateInstanceOption').hide();
+        $('#publishInstanceOption').hide();
+        $('#deleteInstanceOption').hide();
+    }
+  }
+
+  function operationStatusCheck(){
+    //check to see if there are any running operations
+    $.get("./php/lxd/operations.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=displayOperationStatus", function (data) {
+      //Check to see if we have running operations
+      if (data){
+        //Display spinner and notification area if there are running tasks
+        $('#spinner').show();
+        $('#notificationArea').show();
+        $('#notification').text(data);
+        //Set the page to check operations again in 1 second
+        setTimeout(() => { operationStatusCheck(); }, 1000);
+      }
+      else {
+        //Hide spinner and notification area if no running tasks
+        $('#spinner').hide();
+        $('#notificationArea').hide();
+        $('#notification').text("");
+        //Set the page to check operations again in 3 seconds
+        setTimeout(() => { operationStatusCheck(); }, 3000);
+      }
+    });
+  }
+  
+  function reloadPageContent(){
+
+    //Check Authorization
+    $.get("./php/aaa/authentication.php?action=validateAuthentication", function (data) {
+      operationData = JSON.parse(data);
+      if (operationData.status_code != 200) {
+        console.log(operationData);
+        window.location = './index.html'
+      }
+    });
+
+    //Reload based on which tab is active
+    switch(activeTab) {
+      case "#v-pills-general":
+        $.get("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=displayInstanceInfo", function (data) {
+          if (instanceDetails != data){  
+            data = JSON.parse(data);
+
+            $("#name").text(data.name)
+            $("#description").text(data.description)
+            $("#type").text(data.type)
+            $("#status").text(data.status)
+            $("#image").text(data.image)
+            $("#location").text(data.location)
+            $("#created").text(data.created)
+
+            $("#bootAutostart").text(data.bootAutostart)
+            $("#bootAutostartDelay").text(data.bootAutostartDelay)
+            $("#bootAutostartPriority").text(data.bootAutostartPriority)
+            $("#bootHostShutdownTimeout").text(data.bootHostShutdownTimeout)
+            $("#bootStopPriority").text(data.bootStopPriority)
+
+            $("#limitsMemory").text(data.limitsMemory)
+            $("#limitsMemoryEnforce").text(data.limitsMemoryEnforce)
+            $("#limitsMemoryHugepages").text(data.limitsMemoryHugepages)
+            $("#limitsMemorySwap").text(data.limitsMemorySwap)
+            $("#limitsMemorySwapPriority").text(data.limitsMemorySwapPriority)
+
+            $("#securityNesting").text(data.securityNesting)
+            $("#securityPrivileged").text(data.securityPrivileged)
+            $("#securityProtectionDelete").text(data.securityProtectionDelete)
+
+            $("#limitsCpu").text(data.limitsCpu)
+            $("#limitsCpuAllowance").text(data.limitsCpuAllowance)
+            $("#limitsCpuPriority").text(data.limitsCpuPriority)
+
+            $("#snapshotsSchedule").text(data.snapshotsSchedule)
+            $("#snapshotsScheduleStopped").text(data.snapshotsScheduleStopped)
+            $("#snapshotsPattern").text(data.snapshotsPattern)
+            $("#snapshotsExpiry").text(data.snapshotsExpiry)
+          }
+        });
+        
+        $.get("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=displayInstanceStateInfo", function (data) {
+          data = JSON.parse(data);
+          $("#memory").text(data.memory)
+          $("#swap").text(data.swap)
+          $("#pid").text(data.pid)
+          $("#processes").text(data.processes)
+          $("#ipv4Addresses").text(data.ipv4Addresses)
+          $("#ipv6Addresses").text(data.ipv6Addresses)
+        });
+        break;
+
+      case "#v-pills-snapshots":
+        $('#snapshotTableList').DataTable().ajax.reload(null, false);
+        break;
+
+      case "#v-pills-profiles":
+        $('#profileTableList').DataTable().ajax.reload(null, false);
+        break;
+
+      case "#v-pills-network-devices":
+        $('#networkDeviceTableList').DataTable().ajax.reload(null, false);
+        break;
+
+      case "#v-pills-disk-devices":
+        $('#diskDeviceTableList').DataTable().ajax.reload(null, false);
+        break;
+
+      case "#v-pills-proxy-devices":
+        $('#proxyDeviceTableList').DataTable().ajax.reload(null, false);
+        break;
+
+      case "#v-pills-backups":
+        $('#backupTableList').DataTable().ajax.reload(null, false);
+        break;
+
+      case "#v-pills-logs":
+        $('#logTableList').DataTable().ajax.reload(null, false);
+        break;
+
+      case "#v-pills-console":
+        // code block
+        break;
+
+      default:
+        // code block
+    } 
+
+    //Display instance menu options based on state
+    $.get("./php/lxd/instances-single.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=retrieveInstanceState", displayMenuOptions)
+
+  }
+
+  function loadPageContent(){
+
+    //Display current logged in username
+    $("#username").load("./php/admin/settings.php?action=displayUsername");
+
+    //Display instance menu options based on state
+    $.get("./php/lxd/instances-single.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=retrieveInstanceState", displayMenuOptions)
+    
+    //Load Instance Information Cards
+    $.get("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=displayInstanceInfo", function (data) {
+        data = JSON.parse(data);
+        console.log(data);
+        $("#name").text(data.name)
+        $("#description").text(data.description)
+        $("#type").text(data.type)
+        $("#status").text(data.status)
+        $("#image").text(data.image)
+        $("#location").text(data.location)
+        $("#created").text(data.created)
+
+        $("#bootAutostart").text(data.bootAutostart)
+        $("#bootAutostartDelay").text(data.bootAutostartDelay)
+        $("#bootAutostartPriority").text(data.bootAutostartPriority)
+        $("#bootHostShutdownTimeout").text(data.bootHostShutdownTimeout)
+        $("#bootStopPriority").text(data.bootStopPriority)
+
+        $("#limitsMemory").text(data.limitsMemory)
+        $("#limitsMemoryEnforce").text(data.limitsMemoryEnforce)
+        $("#limitsMemoryHugepages").text(data.limitsMemoryHugepages)
+        $("#limitsMemorySwap").text(data.limitsMemorySwap)
+        $("#limitsMemorySwapPriority").text(data.limitsMemorySwapPriority)
+
+        $("#securityNesting").text(data.securityNesting)
+        $("#securityPrivileged").text(data.securityPrivileged)
+        $("#securityProtectionDelete").text(data.securityProtectionDelete)
+
+        $("#limitsCpu").text(data.limitsCpu)
+        $("#limitsCpuAllowance").text(data.limitsCpuAllowance)
+        $("#limitsCpuPriority").text(data.limitsCpuPriority)
+
+        $("#snapshotsSchedule").text(data.snapshotsSchedule)
+        $("#snapshotsScheduleStopped").text(data.snapshotsScheduleStopped)
+        $("#snapshotsPattern").text(data.snapshotsPattern)
+        $("#snapshotsExpiry").text(data.snapshotsExpiry)
+    });
+    
+    //Load Instance State Information for Card
+    $.get("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=displayInstanceStateInfo", function (data) {
+        data = JSON.parse(data);
+        $("#memory").text(data.memory)
+        $("#swap").text(data.swap)
+        $("#pid").text(data.pid)
+        $("#processes").text(data.processes)
+        $("#ipv4Addresses").text(data.ipv4Addresses)
+        $("#ipv6Addresses").text(data.ipv6Addresses)
+    });
+
+    //Load Snapshots Table
+    $('#snapshotTableList').DataTable( {
+      ajax: "./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceSnapshots",
+      columns: [
+        {},
+        { title: "Name" },
+        { title: "Stateful/Stateless" },
+        { title: "Size" },
+        { title: "Created" },
+        { title: "Expires" },
+        { title: "Actions" }
+      ],
+      order: [],
+      columnDefs: [
+        { targets: 0, orderable: false, width: "25px" }
+      ]
+    });
+
+    //Load Profiles Table
+    $('#profileTableList').DataTable( {
+      ajax: "./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceProfiles",
+      columns: [
+        {},
+        { title: "Name" },
+        { title: "Description" },
+        { title: "Actions" }
+      ],
+      order: [],
+      columnDefs: [
+        { targets: 0, orderable: false, width: "25px" }
+      ]
+    });
+
+    //Load Network Devices Table
+    $('#networkDeviceTableList').DataTable( {
+      ajax: "./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceNetworkDevices",
+      columns: [
+        {},
+        { title: "Name" },
+        { title: "HW Address" },
+        { title: "IPv4" },
+        { title: "IPv6" },
+        { title: "State" }
+      ],
+      order: [],
+      columnDefs: [
+        { targets: 0, orderable: false, width: "25px" }
+      ]
+    });
+
+    //Load Disk Devices Table
+    $('#diskDeviceTableList').DataTable( {
+      ajax: "./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceDiskDevices",
+      columns: [
+        {},
+        { title: "Name" },
+        { title: "Path" },
+        { title: "Usage" },
+        { title: "Type" }
+      ],
+      order: [],
+      columnDefs: [
+        { targets: 0, orderable: false, width: "25px" }
+      ]
+    });
+
+    //Load Proxy Devices Table
+    $('#proxyDeviceTableList').DataTable( {
+      ajax: "./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceProxyDevices",
+      columns: [
+        {},
+        { title: "Name" },
+        { title: "Connect" },
+        { title: "Listen" },
+        { title: "Type" }
+      ],
+      order: [],
+      columnDefs: [
+        { targets: 0, orderable: false, width: "25px" }
+      ]
+    });
+    
+    //Load Backups Table
+    $('#backupTableList').DataTable( {
+      ajax: "./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceBackups",
+      columns: [
+        {},
+        { title: "Name" },
+        { title: "Created" },
+        { title: "Expires" },
+        { title: "Instance Only" },
+        { title: "Optimized Storage" },
+        { title: "Actions" }
+      ],
+      order: [],
+      columnDefs: [
+        { targets: 0, orderable: false, width: "25px" }
+      ]
+    });
+
+    //Load Logs Table
+    $('#logTableList').DataTable( {
+      ajax: "./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceLogs",
+      columns: [
+        {},
+        { title: "Name" },
+        { title: "Actions" }
+      ],
+      order: [],
+      columnDefs: [
+        { targets: 0, orderable: false, width: "25px" }
+      ]
+    });
+
+    //Check for any running operations
+    operationStatusCheck();
+
+    //Set the page content to reload in 5 seconds
+    setInterval(() => { reloadPageContent(); }, 5000);
+  }
+
+  function startInstance(){
+    console.log("Info: starting instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=startInstance",  function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function stopInstance(){
+    console.log("Info: stopping instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=stopInstance",  function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function stopInstanceForcefully(){
+    console.log("Info: forcefully stopping instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=stopInstanceForcefully",  function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function restartInstance(){
+    console.log("Info: restarting instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=restartInstance",  function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function freezeInstance(){
+    console.log("Info: freezing instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=freezeInstance",  function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function unfreezeInstance(){
+    console.log("Info: unfreezing instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=unfreezeInstance",  function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
+        operationStatusCheck();
+      }
+      if (operationData.metadata.status_code >= 400){
+        alert(operationData.metadata.err);
+      }
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function snapshotInstance(){
+    var snapshotName = $("#snapshotName").val();
+    var snapshotStateful = $("#snapshotStateful").val();
+    console.log("Info: creating snapshot " + snapshotName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(snapshotName) + "&stateful=" + encodeURI(snapshotStateful) + "&action=snapshotInstance", function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function renameInstance(){
+    var newInstanceName = $("#newInstanceName").val();
+    console.log("Info: renaming instance " + instanceName + " to " + newInstanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(newInstanceName) + "&action=renameInstance", function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
+        operationStatusCheck();
+        redirectURL = "instance.html?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(newInstanceName);
+        window.location.replace(redirectURL);
+      }
+      if (operationData.metadata.status_code >= 400){
+        alert(operationData.metadata.err);
+      }
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function copyInstance(){
+    var copyName = $("#copyName").val();
+    console.log("Info: copying instance " + instanceName + " to " + copyName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(copyName) + "&action=copyInstance", function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+    });
+  }
+
+  function loadCreateInstanceFromSnapshotModal(snap){
+      $("#snapNameForSnapshotCreate").val(snap);
+      $("#createInstanceFromSnapshotModal").modal('show');
+  }
+
+  function loadPublishImageFromSnapshotModal(snap){
+      $("#publishSnapshotHiddenName").val(snap);
+      $("#publishImageFromSnapshotModal").modal('show');
+  }
+
+  function createInstanceFromSnapshot(){
+    var copyName = $("#instanceNameForSnapshotCreate").val();
+    var snapName = $("#snapNameForSnapshotCreate").val();
+    console.log("Info: creating instance " + copyName + " from snapshot " + instanceName + "/" + snapName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&snapshot=" + encodeURI(snapName) + "&name=" + encodeURI(copyName) + "&action=createInstanceFromSnapshot", function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+    });
+  }
+
+  function publishImageFromSnapshot(){
+    var description = $("#publishSnapshotDescriptionInput").val();
+    var publicDownload = $("#publishSnapshotPublicInput").val();
+    var os = $("#publishSnapshotOsInput").val();
+    var release = $("#publishSnapshotReleaseInput").val();
+    var snapName = $("#publishSnapshotHiddenName").val();
+    var instanceSnapshotName = instanceName + "/" + snapName;
+    console.log("Info: publishing image " + description + " from snapshot " + instanceSnapshotName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceSnapshotName) + "&description=" + encodeURI(description) + "&public=" + encodeURI(publicDownload) + "&os=" + encodeURI(os) + "&release=" + encodeURI(release) + "&action=publishInstanceSnapshot", function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+    });
+  }
+
+  function migrateInstance(){
+    var clusterInput = $("#selectClusterInput").val();
+    console.log("Info: migrating instance " + instanceName + " to " + clusterInput);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&location=" + encodeURI(clusterInput) + "&action=migrateInstance", function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function deleteInstance(){
+    console.log("Info: deleting instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=deleteInstance", function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code == 100 && operationData.metadata.status_code < 400){
+        operationStatusCheck();
+        redirectURL = "instances.html?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName)
+        window.location.replace(redirectURL);
+      }
+      if (operationData.error_code == 404){
+        redirectURL = "instances.html?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName)
+        window.location.replace(redirectURL);
+      }
+      if (operationData.metadata.status_code >= 400){
+        alert(operationData.metadata.err)
+      }
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function attachInstanceProfile(){
+    var profileName = $("#selectProfileInput").val();
+    console.log("Info: attaching profile " + profileName + " to instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(profileName) + "&action=attachInstanceProfile", function (data) {
+      //Sync operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function detachInstanceProfile(profileName){
+    console.log("Info: detaching profile " + profileName + " from instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(profileName) + "&action=detachInstanceProfile", function (data) {
+      //Sync operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function restoreInstanceSnapshot(snapshotName){
+    console.log("Info: restoring snapshot " + snapshotName + " to instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(snapshotName) + "&action=restoreInstanceSnapshot", function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function deleteInstanceSnapshot(snapshotName){
+    console.log("Info: deleting snapshot " + snapshotName + " from instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(snapshotName) + "&action=deleteInstanceSnapshot", function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+  
+  function publishInstance(){
+    var description = $("#publishInstanceDescriptionInput").val();
+    var publicDownload = $("#publishInstancePublicInput").val();
+    var os = $("#publishInstanceOsInput").val();
+    var release = $("#publishInstanceReleaseInput").val();
+    console.log("Info: publishing image " + description + " from instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&description=" + encodeURI(description) + "&public=" + encodeURI(publicDownload) + "&os=" + encodeURI(os) + "&release=" + encodeURI(release) + "&action=publishInstance", function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function loadInstanceLog(logPath){
+    console.log("Info: loading log " + logPath);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&path=" + encodeURI(logPath) + "&action=loadInstanceLog", function (data) {
+      $("#logNameInput").text(logPath);
+      $("#logDataInput").val(data);
+      $("#loadLogModal").modal('show');
+    });
+  }
+
+  function deleteInstanceLog(logPath){
+    console.log("Info: deleting log " + logPath);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&path=" + encodeURI(logPath) + "&action=deleteInstanceLog", function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function initializeCreateBackup(){
+
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1;
+    
+    var day = now.getDate();
+    var hour = now.getHours();
+    var min = now.getMinutes();
+    var sec = now.getSeconds();
+
+    if (month < 10) 
+      month = '0' + month;
+    if (day < 10) 
+      day = '0' + day;
+    if (hour < 10) 
+      hour = '0' + hour;
+    if (min < 10) 
+      min = '0' + min;
+    if (sec < 10) 
+      sec = '0' + sec;
+
+    var backupName = instanceName + "-" + year + month + day + hour + min + sec;
+    $("#backupName").val(backupName);
+    $("#backupInstanceModal").modal('show');
+  }
+
+  function createBackup(){
+    var backupName = $("#backupName").val();
+    var backupInstanceOnly = $("#backupInstanceOnly").val();
+    var backupOptimizedStorage = $("#backupOptimizedStorage").val();
+    var backupCompressionAlgorithm = $("#backupCompressionAlgorithm").val();
+    console.log("Info: backing up instance " + instanceName + " to " + backupName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(backupName) + "&instance_only=" + encodeURI(backupInstanceOnly) + "&optimized_storage=" + encodeURI(backupOptimizedStorage) + "&compression_algorithm=" + encodeURI(backupCompressionAlgorithm) + "&action=createInstanceBackup", function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function exportInstanceBackup(backupName){
+    console.log("Info: exporting backup " + backupName + " from instance " + instanceName + " to a file");
+    $('#spinner').show();
+    $('#notificationArea').show();
+    $('#notification').text('Exporting ' + backupName + ' to local file');
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(backupName) + "&action=exportInstanceBackup", function (data) {
+      $('#spinner').hide();
+      $('#notificationArea').hide();
+      $('#notification').text("");
+    });
+  }
+
+  function deleteInstanceBackup(backupName){
+    console.log("Info: deleting backup " + backupName + " from instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(backupName) + "&action=deleteInstanceBackup", function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function editInstanceJson(){
+    console.log("Info: viewing instance " + instanceName);
+    $.get("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=loadInstanceInformation", function (data) {
+      //Sync operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      $("#instanceNameEditInput").text("Name: " + instanceName);
+      $("#jsonEditInput").val(JSON.stringify(operationData.metadata, null, 2));
+      $("#editInstanceModal").modal('show');
+    });
+  }
+
+  function updateInstanceJson(){
+    var instanceUpdateJSON = $("#jsonEditInput").val();
+    console.log("Info: updating instance " + instanceName);
+    $.post("./php/lxd/instances.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=updateInstanceInformation", {json: instanceUpdateJSON},  function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  
+
+  }
+
+  function convertArrayBuffer2String(buf) {
+    var encoding = 'utf8';
+    var decoder = new TextDecoder(encoding);
+	  var str = decoder.decode(buf);
+    return str
+  }
+
+  function convertString2ArrayBuffer(str) {
+    var buf = new ArrayBuffer(str.length);
+    var bufView = new Uint8Array(buf);
+    for (var i=0, strLen=str.length; i < strLen; i++) {
+      bufView[i] = str.charCodeAt(i);
+    }
+    return buf;
+  }
+
+  function establishInstanceWebSocketConsoleConnection() {
+    $.get("./php/lxd/instances-single.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=retrieveHostAndPort", function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      host = operationData.host;
+      port = operationData.port;
+
+      //Check to see if we can connect to the LXD remote host over a secure connection
+      fetch('https://' + host + ':' + port + '/1.0', { mode: 'no-cors' })
+      .then(response => {
+        //If we made it here then the self-signed LXD certificate would have been already trusted by the user's browser we can setup a secure websocket connection
+        $.get("./php/lxd/instances-single.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=establishInstanceWebSocketConsoleConnection", function (data) {
+        var operationData = JSON.parse(data);
+        var operation = operationData.operation;
+        var secret = operationData.secret;
+
+        if(operation == "" && secret == ""){
+          alert("Unable to connect via websocket");
+          return;
+        }
+
+        var url = "wss://" + host + ":" + port + operation + "/websocket?secret=" + secret;
+        socket = new WebSocket(url);
+      
+        term.onData( (data) => {
+          if (socket.readyState === 1) {
+          socket.send(convertString2ArrayBuffer(data))
+          }
+        });
+
+        //Listen for websocket errors
+        socket.onerror = function (e) {
+          console.log("There was a WebSocket error: " + e);
+        }
+
+        //Listen for websocket opening connection
+        socket.onopen = function (e) {
+          //Set binaryType to ArrayBuffer. This should be default value
+          socket.binaryType = 'arraybuffer';
+          console.log( "WebSocket ReadyState: " + socket.readyState );
+          term.write("--- Encrypted Console Opened via WebSocket --- \r\n");
+          //Send Ctrl+d and return to show login screen on console connections
+          setTimeout(() => { socket.send(convertString2ArrayBuffer('\04 \r')); }, 1000);
+          //Switch console action buttons
+          $("#startConsoleButton").hide();
+          $("#stopConsoleButton").show();
+        };
+      
+        //Listen for websocket messages
+        socket.onmessage = function (e) {      
+          if (e.data instanceof ArrayBuffer) {
+            if (convertArrayBuffer2String(e.data) != null){
+              term.write(convertArrayBuffer2String(e.data));
+            }
+          }
+        };
+
+        //Listen for websocket closing
+        socket.onclose = function (e) {
+          term.dispose();
+          term = new Terminal({
+            cursorBlink: "block"
+          });
+          term.open(document.getElementById("terminal-console"));
+
+          console.log(e);
+        };
+
+        //Attempt to close websocket before the page unloads
+        window.onbeforeunload = function() {
+          socket.send(convertString2ArrayBuffer('\04 \r'))
+          socket.close();
+        };
+
+        //Add Event Listener for page unloading to close websocket
+        window.addEventListener("unload", function () {
+          if(socket.readyState == WebSocket.OPEN){
+            socket.send(convertString2ArrayBuffer('\04 \r'))
+            socket.close();
+          }
+        });
+
+      });
+
+      })
+      .catch((error) => {
+        console.log("Error: ", error)
+        //If we make it here then we had an error connection to LXD server. Most likely the Self-Signed Certificate is not yet trusted by the user's browser
+        data = 'There was an error connecting to your LXD server. <br />The LXD server may be using a self-signed certificate. <br />Visit <a href="https://' + host + ':' + port + '" target="_blank">https://' + host + ':' + port +'</a> to accept the certificate if not yet trusted.';
+        $("#webSocketConnectionError").html(data);
+        $('#webSocketConnectionErrorModal').modal('show');
+      })
+
+    });
+
+  }
+
+  function closeWebSocketConsoleConnection() {
+    socket.send(convertString2ArrayBuffer('\04 \r'))
+    socket.close();
+    $("#stopConsoleButton").hide();
+    $("#startConsoleButton").show();
+  }
+
+  function editBootConfiguration() {
+    $.get("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=displayInstanceInfo", function (data) {
+        data = JSON.parse(data);
+
+        $("#bootAutostartInput").val(data.bootAutostart)
+        $("#bootAutostartDelayInput").val(data.bootAutostartDelay)
+        $("#bootAutostartPriorityInput").val(data.bootAutostartPriority)
+        $("#bootHostShutdownTimeoutInput").val(data.bootHostShutdownTimeout)
+        $("#bootStopPriorityInput").val(data.bootStopPriority)
+
+        $("#editBootConfigurationModal").modal('show');
+
+    });
+
+  }
+
+  function updateBootConfiguration() {
+    bootAutostart = $("#bootAutostartInput").val()
+    bootAutostartDelay = $("#bootAutostartDelayInput").val()
+    bootAutostartPriority = $("#bootAutostartPriorityInput").val()
+    bootHostShutdownTimeout = $("#bootHostShutdownTimeoutInput").val()
+    bootStopPriority = $("#bootStopPriorityInput").val()
+    $.post("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=updateInstanceBootConfiguration", {boot_autostart: encodeURI(bootAutostart), boot_autostart_delay: encodeURI(bootAutostartDelay), boot_autostart_priority: encodeURI(bootAutostartPriority), boot_host_shutdown_timeout: encodeURI(bootHostShutdownTimeout), boot_stop_priority: encodeURI(bootStopPriority)}, function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+
+  }
+
+  function editCpuLimits() {
+    $.get("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=displayInstanceInfo", function (data) {
+        data = JSON.parse(data);
+
+        $("#limitsCpuInput").val(data.limitsCpu)
+        $("#limitsCpuAllowanceInput").val(data.limitsCpuAllowance)
+        $("#limitsCpuPriorityInput").val(data.limitsCpuPriority)
+
+        $("#editCpuLimitsModal").modal('show');
+
+    });
+
+  }
+
+  function updateCpuLimits() {
+    limitsCpu = $("#limitsCpuInput").val()
+    limitsCpuAllowance = $("#limitsCpuAllowanceInput").val()
+    limitsCpuPriority = $("#limitsCpuPriorityInput").val()
+    $.post("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=updateInstanceCpuLimits", {limits_cpu: encodeURI(limitsCpu), limits_cpu_allowance: encodeURI(limitsCpuAllowance), limits_cpu_priority: encodeURI(limitsCpuPriority)}, function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+
+  }
+
+  function editMemoryLimits() {
+    $.get("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=displayInstanceInfo", function (data) {
+        data = JSON.parse(data);
+
+        $("#limitsMemoryInput").val(data.limitsMemory)
+        $("#limitsMemoryEnforceInput").val(data.limitsMemoryEnforce)
+        $("#limitsMemoryHugepagesInput").val(data.limitsMemoryHugepages)
+        $("#limitsMemorySwapInput").val(data.limitsMemorySwap)
+        $("#limitsMemorySwapPriorityInput").val(data.limitsMemorySwapPriority)
+
+        $("#editMemoryLimitsModal").modal('show');
+
+    });
+
+  }
+
+  function updateMemoryLimits() {
+    limitsMemory = $("#limitsMemoryInput").val()
+    limitsMemoryEnforce = $("#limitsMemoryEnforceInput").val()
+    limitsMemoryHugepages = $("#limitsMemoryHugepagesInput").val()
+    limitsMemorySwap = $("#limitsMemorySwapInput").val()
+    limitsMemorySwapPriority = $("#limitsMemorySwapPriorityInput").val()
+    $.post("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=updateInstanceMemoryLimits", {limits_memory: encodeURI(limitsMemory), limits_memory_enforce: encodeURI(limitsMemoryEnforce), limits_memory_hugepages: encodeURI(limitsMemoryHugepages), limits_memory_swap: encodeURI(limitsMemorySwap), limits_memory_swap_priority: encodeURI(limitsMemorySwapPriority)}, function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+
+  }
+
+  function editSecurityConfiguration() {
+    $.get("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=displayInstanceInfo", function (data) {
+        data = JSON.parse(data);
+
+        $("#securityNestingInput").val(data.securityNesting)
+        $("#securityPrivilegedInput").val(data.securityPrivileged)
+        $("#securityProtectionDeleteInput").val(data.securityProtectionDelete)
+
+        $("#editSecurityConfigurationModal").modal('show');
+
+    });
+
+  }
+
+  function updateSecurityConfiguration() {
+    securityNesting = $("#securityNestingInput").val()
+    securityPrivileged = $("#securityPrivilegedInput").val()
+    securityProtectionDelete = $("#securityProtectionDeleteInput").val()
+    $.post("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=updateInstanceSecurityConfiguration", {security_nesting: encodeURI(securityNesting), security_privileged: encodeURI(securityPrivileged), security_protection_delete: encodeURI(securityProtectionDelete)}, function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+
+  }
+
+  function editSnapshotConfiguration() {
+    $.get("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=displayInstanceInfo", function (data) {
+        data = JSON.parse(data);
+
+        $("#snapshotsScheduleInput").val(data.snapshotsSchedule)
+        $("#snapshotsScheduleStoppedInput").val(data.snapshotsScheduleStopped)
+        $("#snapshotsPatternInput").val(data.snapshotsPattern)
+        $("#snapshotsExpiryInput").val(data.snapshotsExpiry)
+
+        $("#editSnapshotConfigurationModal").modal('show');
+    });
+
+  }
+
+  function updateSnapshotConfiguration() {
+    snapshotsSchedule = $("#snapshotsScheduleInput").val()
+    snapshotsScheduleStopped = $("#snapshotsScheduleStoppedInput").val()
+    snapshotsPattern = $("#snapshotsPatternInput").val()
+    snapshotsExpiry = $("#snapshotsExpiryInput").val()
+    $.post("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=updateInstanceSnapshotConfiguration",{snapshots_schedule: encodeURI(snapshotsSchedule), snapshots_schedule_stopped: encodeURI(snapshotsScheduleStopped), snapshots_pattern: encodeURI(snapshotsPattern), snapshots_expiry: encodeURI(snapshotsExpiry) }, function (data) {
+      //Async operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      operationStatusCheck();
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+
+  }
+
+  $(document).ready(function(){
+
+    //Check Authorization
+    $.get("./php/aaa/authentication.php?action=validateAuthentication", function (data) {
+      operationData = JSON.parse(data);
+      if (operationData.status_code != 200) {
+        console.log(operationData);
+        window.location = './index.html'
+      }
+    });
+    
+    //Load in the sidebar
+    $("#sidebarLinks").load("./sidebar.html");
+
+    //Setup Page Breadcrumb Links/Information
+    $('#remoteBreadCrumb').load("./php/lxd/remote-breadcrumb.php?remote=" + encodeURI(remoteId));
+    $('#remoteBreadCrumb').attr("href", "remotes-single.html?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName));
+    $('#instancesBreadCrumb').text("instances");
+    $('#instancesBreadCrumb').attr("href", "instances.html?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName));
+    $('#instanceBreadCrumb').text(instanceName);
+
+    //Load the card contents
+    loadPageContent();
+
+    $("#remoteListNav").load("./php/lxd/remotes.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listRemotesForTopNavigation");
+    $("#projectListNav").load("./php/lxd/projects.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listProjectsForTopNavigation");
+    
+    //Populate the select options fields used in modals
+    $("#selectProfileInput").load("./php/lxd/profiles.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listProfilesForSelectOption");
+    $("#selectClusterInput").load("./php/lxd/cluster-members.php?remote=" + encodeURI(remoteId) + "&action=listClusterMembersForSelectOption");
+
+    //Load the about info for the about modal
+    $.get("./about.html", function (data) {
+      $("#about").html(data);
+    });
+
+    //When tab changes, set active tab for content refresh
+    $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+      activeTab = $(e.target).attr("href") // activated tab
+    });
+
+
+    term = new Terminal({
+      cursorBlink: "block"
+    });
+
+    term.open(document.getElementById("terminal-console"));
+
+
+  });
+
+</script>
+
+</html>
