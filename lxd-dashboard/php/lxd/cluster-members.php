@@ -143,7 +143,7 @@ if (isset($_SESSION['username'])) {
 
       foreach ($cluster_hosts as $cluster_host){
 
-        if ($cluster_host['message'] != "fully operational")
+        if (strtolower($cluster_host['message']) != "fully operational")
           continue;
       
         echo '<option value="' . $cluster_host['server_name'] . '">' . htmlentities($cluster_host['server_name']) . '</option>';
