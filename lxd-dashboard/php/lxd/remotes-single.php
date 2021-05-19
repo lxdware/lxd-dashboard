@@ -238,17 +238,17 @@ if (isset($_SESSION['username'])) {
       if ($memory_total == 0)
         $arr['memoryPercentage'] = 0;
       else
-        $arr['memoryPercentage'] = round($memory_used / $memory_total, 2) * 100;
+        $arr['memoryPercentage'] = number_format($memory_used / $memory_total, 2) * 100;
 
       //Format memory values
       if ($memory_total < 1073741824) {
-        $memory_total = round($memory_total/1024/1024, 2); //total amount of memory available in MB
-        $memory_used = round($memory_used/1024/1024, 2); //current amount of memory used in MB
+        $memory_total = number_format($memory_total/1024/1024, 2); //total amount of memory available in MB
+        $memory_used = number_format($memory_used/1024/1024, 2); //current amount of memory used in MB
         $memory_unit = "MB";
       }
       else {
-        $memory_total = round($memory_total/1024/1024/1024, 2); //total amount of memory available in GB
-        $memory_used = round($memory_used/1024/1024/1024, 2); //current amount of memory used in GB
+        $memory_total = number_format($memory_total/1024/1024/1024, 2); //total amount of memory available in GB
+        $memory_used = number_format($memory_used/1024/1024/1024, 2); //current amount of memory used in GB
         $memory_unit = "GB";
       }
       

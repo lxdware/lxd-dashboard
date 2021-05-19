@@ -198,21 +198,21 @@ if (isset($_SESSION['username'])) {
 
       //Format memory output
       if ($memory < 1073741824){
-        $memory = round($memory/1024/1024, 2); //total amount of memory used in MB
+        $memory = number_format($memory/1024/1024, 2); //total amount of memory used in MB
         $memory_unit = "MB";
       }
       else {
-        $memory = round($memory/1024/1024/1024, 2); //total amount of memory used in GB
+        $memory = number_format($memory/1024/1024/1024, 2); //total amount of memory used in GB
         $memory_unit = "GB";
       }
 
       //Format swap memory output
       if ($swap < 1073741824){
-        $swap = round($swap/1024/1024, 2); //total amount of swap memory used in MB
+        $swap = number_format($swap/1024/1024, 2); //total amount of swap memory used in MB
         $swap_unit = "MB";
       }
       else {
-        $swap = round($swap/1024/1024/1024, 2); //total amount of swap memory used in GB
+        $swap = number_format($swap/1024/1024/1024, 2); //total amount of swap memory used in GB
         $swap_unit = "GB";
       }
 
@@ -341,7 +341,7 @@ if (isset($_SESSION['username'])) {
             $file_size = $file_size / 1024;
             $unit_size = "TB";
           }
-          //echo '"' . "<a href='./php/lxd/instances.php?remote=".$remote."&project=".$project."&instance=".$instance."&name=".$instance_backup['name']."&action=downloadInstanceExportFile'>".htmlentities(basename($file))."</a> (".round($file_size,1)." ".$unit_size.")" . '",';
+          //echo '"' . "<a href='./php/lxd/instances.php?remote=".$remote."&project=".$project."&instance=".$instance."&name=".$instance_backup['name']."&action=downloadInstanceExportFile'>".htmlentities(basename($file))."</a> (".number_format($file_size,1)." ".$unit_size.")" . '",';
           echo '"' . "<a href='./php/lxd/instances.php?remote=".$remote."&project=".$project."&instance=".$instance."&name=".$instance_backup['name']."&action=downloadInstanceExportFile'>".htmlentities(basename($file))."</a>" . '",';
         }
         else{
@@ -424,7 +424,7 @@ if (isset($_SESSION['username'])) {
                 $disk_usage = $disk_usage/1024;
                 $disk_unit = "TB";
               }
-              $disk_usage = round($disk_usage,2);
+              $disk_usage = number_format($disk_usage,2);
             }
           }
           
