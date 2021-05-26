@@ -1,3 +1,6 @@
+# v2.0.3
+- Bug Fix: Continuing the bug fix from previous version, used float type casting for memory variables on remote-single page rather than letting PHP automatically deciding on variable type.
+
 # v2.0.2
 - Bug Fix: Replaced PHP round() function with number_format() to force the format of two decimal places on instance-single and remote-single pages.
 

@@ -233,12 +233,12 @@ if (isset($_SESSION['username'])) {
       $arr['cpus'] = (isset($resource_data['cpu']['total'])) ? $resource_data['cpu']['total'] : "Unknown"; //example: 8
       $arr['sockets'] = (isset($resource_data['cpu']['sockets'])) ? $resource_data['cpu']['sockets'] : []; //array of cpu info per socket
       $arr['storageDisks'] = (isset($resource_data['storage']['disks'])) ? $resource_data['storage']['disks'] : []; //array of storage devices
-      $memory_total = (isset($resource_data['memory']['total'])) ? $resource_data['memory']['total'] : 0; //memory in bytes
-      $memory_used = (isset($resource_data['memory']['used'])) ? $resource_data['memory']['used'] : 0; //memory in bytes
+      $memory_total = (isset($resource_data['memory']['total'])) ? (float)$resource_data['memory']['total'] : 0; //memory in bytes
+      $memory_used = (isset($resource_data['memory']['used'])) ? (float)$resource_data['memory']['used'] : 0; //memory in bytes
       if ($memory_total == 0)
         $arr['memoryPercentage'] = 0;
       else
-        $arr['memoryPercentage'] = number_format($memory_used / $memory_total, 2) * 100;
+        $arr['memoryPercentage'] = number_format($memory_used / $memory_total* 100, 2);
 
       //Format memory values
       if ($memory_total < 1073741824) {
