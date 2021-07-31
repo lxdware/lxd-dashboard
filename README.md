@@ -1,5 +1,5 @@
 # lxd-dashboard
-LXDWARE is an open source LXD dashboard that provides a web-based user interface for controlling the entire LXD-based virtual infrastructure. Some of the features include:
+This open source LXD dashboard is developed by LXDWARE and provides a web-based user interface capable of managing multiple LXD servers from a single location. Some of the features include:
 
 - Connect and manage multiple LXD servers
 - Create LXD container and virtual machine instances from either a form or JSON input
@@ -12,7 +12,7 @@ LXDWARE is an open source LXD dashboard that provides a web-based user interface
 - Create, edit, apply, and remove LXD profiles
 - Create, edit, and delete networks, storage pools, storage volumes, and projects
 - Switch between projects on an LXD host
-- Interact with instances using web-based terminal console
+- Interact with instances using web-based terminal
 - Create and download backups of LXD instance to your local computer
 - Create local users and groups
 - Apply role based access control

@@ -158,6 +158,24 @@ if (isset($_SESSION['username'])) {
         echo '{ "data": [] }';
       }      
       break;
+    
+    case "listStorageVolumesForSelectOption":
+      if (validateAuthorization($action)) {
+        $url = $base_url . "/1.0/storage-pools/" . $pool . "/volumes?recursion=1&project=" . $project;
+        $results = sendCurlRequest($action, "GET", $url);
+        $results = json_decode($results, true);
+        $storage_volumes = (isset($results['metadata'])) ? $results['metadata'] : [];        
+
+        foreach ($storage_volumes as $storage_volume){
+          
+          if ($storage_volume['name'] == "")
+          continue;
+
+          echo '<option value="' . $storage_volume['name'] . '">' . htmlentities($storage_volume['name']) . '</option>';
+          
+        }
+      }    
+      break;
 
     case "loadStorageVolume":
       $url = $base_url . "/1.0/storage-pools/" . $storage_pool . "/volumes/" . $name . "?project=" . $project;

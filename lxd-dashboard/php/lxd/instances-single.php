@@ -27,9 +27,74 @@ if (isset($_SESSION['username'])) {
 
   //Declare and instantiate GET variables
   $action = (isset($_GET['action'])) ? filter_var(urldecode($_GET['action']), FILTER_SANITIZE_STRING) : "";
+  $bind = (isset($_GET['bind'])) ? filter_var(urldecode($_GET['bind']), FILTER_SANITIZE_STRING) : "";
+  $boot_priority = (isset($_GET['boot_priority'])) ? filter_var(urldecode($_GET['boot_priority']), FILTER_SANITIZE_NUMBER_INT) : "";
+  $ceph_cluster_name = (isset($_GET['ceph_cluster_name'])) ? filter_var(urldecode($_GET['ceph_cluster_name']), FILTER_SANITIZE_STRING) : "";
+  $ceph_user_name = (isset($_GET['ceph_user_name'])) ? filter_var(urldecode($_GET['ceph_user_name']), FILTER_SANITIZE_STRING) : "";
+  $connect = (isset($_GET['connect'])) ? filter_var(urldecode($_GET['connect']), FILTER_SANITIZE_STRING) : "";
+  $gid = (isset($_GET['gid'])) ? filter_var(urldecode($_GET['gid']), FILTER_SANITIZE_NUMBER_INT) : "";
+  $gvrp = (isset($_GET['gvrp'])) ? filter_var(urldecode($_GET['gvrp']), FILTER_SANITIZE_STRING) : "";
+  $hwaddr = (isset($_GET['hwaddr'])) ? filter_var(urldecode($_GET['hwaddr']), FILTER_SANITIZE_STRING) : "";
   $instance = (isset($_GET['instance'])) ? filter_var(urldecode($_GET['instance']), FILTER_SANITIZE_STRING) : "";
+  $interface_name = (isset($_GET['interface_name'])) ? filter_var(urldecode($_GET['interface_name']), FILTER_SANITIZE_STRING) : "";
+  $ipv4_address = (isset($_GET['ipv4_address'])) ? filter_var(urldecode($_GET['ipv4_address']), FILTER_SANITIZE_STRING) : "";
+  $ipv4_gateway = (isset($_GET['ipv4_gateway'])) ? filter_var(urldecode($_GET['ipv4_gateway']), FILTER_SANITIZE_STRING) : "";
+  $ipv4_host_address = (isset($_GET['ipv4_host_address'])) ? filter_var(urldecode($_GET['ipv4_host_address']), FILTER_SANITIZE_STRING) : "";
+  $ipv4_host_table = (isset($_GET['ipv4_host_table'])) ? filter_var(urldecode($_GET['ipv4_host_table']), FILTER_SANITIZE_NUMBER_INT) : "";
+  $ipv4_routes = (isset($_GET['ipv4_routes'])) ? filter_var(urldecode($_GET['ipv4_routes']), FILTER_SANITIZE_STRING) : "";
+  $ipv4_routes_external = (isset($_GET['ipv4_routes_external'])) ? filter_var(urldecode($_GET['ipv4_routes_external']), FILTER_SANITIZE_STRING) : "";
+  $ipv6_address = (isset($_GET['ipv6_address'])) ? filter_var(urldecode($_GET['ipv6_address']), FILTER_SANITIZE_STRING) : "";
+  $ipv6_gateway = (isset($_GET['ipv6_gateway'])) ? filter_var(urldecode($_GET['ipv6_gateway']), FILTER_SANITIZE_STRING) : "";
+  $ipv6_host_address = (isset($_GET['ipv6_host_address'])) ? filter_var(urldecode($_GET['ipv6_host_address']), FILTER_SANITIZE_STRING) : "";
+  $ipv6_host_table = (isset($_GET['ipv6_host_table'])) ? filter_var(urldecode($_GET['ipv6_host_table']), FILTER_SANITIZE_NUMBER_INT) : "";
+  $ipv6_routes = (isset($_GET['ipv6_routes'])) ? filter_var(urldecode($_GET['ipv6_routes']), FILTER_SANITIZE_STRING) : "";
+  $ipv6_routes_external = (isset($_GET['ipv6_routes_external'])) ? filter_var(urldecode($_GET['ipv6_routes_external']), FILTER_SANITIZE_STRING) : "";
+  $limits_ingress = (isset($_GET['limits_ingress'])) ? filter_var(urldecode($_GET['limits_ingress']), FILTER_SANITIZE_STRING) : "";
+  $limits_egress = (isset($_GET['limits_egress'])) ? filter_var(urldecode($_GET['limits_egress']), FILTER_SANITIZE_STRING) : "";
+  $limits_max = (isset($_GET['limits_max'])) ? filter_var(urldecode($_GET['limits_max']), FILTER_SANITIZE_STRING) : "";
+  $limits_read = (isset($_GET['limits_read'])) ? filter_var(urldecode($_GET['limits_read']), FILTER_SANITIZE_STRING) : "";
+  $limits_write = (isset($_GET['limits_write'])) ? filter_var(urldecode($_GET['limits_write']), FILTER_SANITIZE_STRING) : "";
+  $listen = (isset($_GET['listen'])) ? filter_var(urldecode($_GET['listen']), FILTER_SANITIZE_STRING) : "";
+  $maas_subnet_ipv4 = (isset($_GET['maas_subnet_ipv4'])) ? filter_var(urldecode($_GET['maas_subnet_ipv4']), FILTER_SANITIZE_STRING) : "";
+  $maas_subnet_ipv6 = (isset($_GET['maas_subnet_ipv6'])) ? filter_var(urldecode($_GET['maas_subnet_ipv6']), FILTER_SANITIZE_STRING) : "";
+  $mode = (isset($_GET['mode'])) ? filter_var(urldecode($_GET['mode']), FILTER_SANITIZE_NUMBER_INT) : "";
+  $mtu = (isset($_GET['mtu'])) ? filter_var(urldecode($_GET['mtu']), FILTER_SANITIZE_NUMBER_INT) : "";
+  $name = (isset($_GET['name'])) ? filter_var(urldecode($_GET['name']), FILTER_SANITIZE_STRING) : "";
+  $nat = (isset($_GET['nat'])) ? filter_var(urldecode($_GET['nat']), FILTER_SANITIZE_STRING) : "";
+  $network = (isset($_GET['network'])) ? filter_var(urldecode($_GET['network']), FILTER_SANITIZE_STRING) : "";
+  $nictype = (isset($_GET['nictype'])) ? filter_var(urldecode($_GET['nictype']), FILTER_SANITIZE_STRING) : "";
   $project = (isset($_GET['project'])) ? filter_var(urldecode($_GET['project']), FILTER_SANITIZE_STRING) : "";
   $remote = (isset($_GET['remote'])) ? filter_var(urldecode($_GET['remote']), FILTER_SANITIZE_NUMBER_INT) : "";
+  $pool = (isset($_GET['pool'])) ? filter_var(urldecode($_GET['pool']), FILTER_SANITIZE_STRING) : "";
+  $source = (isset($_GET['source'])) ? filter_var(urldecode($_GET['source']), FILTER_SANITIZE_STRING) : "";
+  $parent = (isset($_GET['parent'])) ? filter_var(urldecode($_GET['parent']), FILTER_SANITIZE_STRING) : "";
+  $parent_type = (isset($_GET['parent_type'])) ? filter_var(urldecode($_GET['parent_type']), FILTER_SANITIZE_STRING) : "";
+  $path = (isset($_GET['path'])) ? filter_var(urldecode($_GET['path']), FILTER_SANITIZE_STRING) : "";
+  $propagation = (isset($_GET['propagation'])) ? filter_var(urldecode($_GET['propagation']), FILTER_SANITIZE_STRING) : "";
+  $property_set = (isset($_GET['property_set'])) ? filter_var(urldecode($_GET['property_set']), FILTER_SANITIZE_STRING) : "";
+  $proxy_protocol = (isset($_GET['proxy_protocol'])) ? filter_var(urldecode($_GET['proxy_protocol']), FILTER_SANITIZE_STRING) : "";
+  $required = (isset($_GET['required'])) ? filter_var(urldecode($_GET['required']), FILTER_SANITIZE_STRING) : "";
+  $read_only = (isset($_GET['read_only'])) ? filter_var(urldecode($_GET['read_only']), FILTER_SANITIZE_STRING) : "";
+  $size = (isset($_GET['size'])) ? filter_var(urldecode($_GET['size']), FILTER_SANITIZE_STRING) : "";
+  $size_state = (isset($_GET['size_state'])) ? filter_var(urldecode($_GET['size_state']), FILTER_SANITIZE_STRING) : "";
+  $raw_mount_options = (isset($_GET['raw_mount_options'])) ? filter_var(urldecode($_GET['raw_mount_options']), FILTER_SANITIZE_STRING) : "";
+  $recursive = (isset($_GET['recursive'])) ? filter_var(urldecode($_GET['recursive']), FILTER_SANITIZE_STRING) : "";
+  $security_acls = (isset($_GET['security_acls'])) ? filter_var(urldecode($_GET['security_acls']), FILTER_SANITIZE_STRING) : "";
+  $security_acls_default_egress_action = (isset($_GET['security_acls_default_egress_action'])) ? filter_var(urldecode($_GET['security_acls_default_egress_action']), FILTER_SANITIZE_STRING) : "";
+  $security_acls_default_egress_logged = (isset($_GET['security_acls_default_egress_logged'])) ? filter_var(urldecode($_GET['security_acls_default_egress_logged']), FILTER_SANITIZE_STRING) : "";
+  $security_acls_default_ingress_action = (isset($_GET['security_acls_default_ingress_action'])) ? filter_var(urldecode($_GET['security_acls_default_ingress_action']), FILTER_SANITIZE_STRING) : "";
+  $security_acls_default_ingress_logged = (isset($_GET['security_acls_default_ingress_logged'])) ? filter_var(urldecode($_GET['security_acls_default_ingress_logged']), FILTER_SANITIZE_STRING) : "";
+  $security_gid = (isset($_GET['security_gid'])) ? filter_var(urldecode($_GET['security_gid']), FILTER_SANITIZE_NUMBER_INT) : "";
+  $security_ipv4_filtering = (isset($_GET['security_ipv4_filtering'])) ? filter_var(urldecode($_GET['security_ipv4_filtering']), FILTER_SANITIZE_STRING) : "";
+  $security_ipv6_filtering = (isset($_GET['security_ipv6_filtering'])) ? filter_var(urldecode($_GET['security_ipv6_filtering']), FILTER_SANITIZE_STRING) : "";
+  $security_mac_filtering = (isset($_GET['security_mac_filtering'])) ? filter_var(urldecode($_GET['security_mac_filtering']), FILTER_SANITIZE_STRING) : "";
+  $security_port_isolation = (isset($_GET['security_port_isolation'])) ? filter_var(urldecode($_GET['security_port_isolation']), FILTER_SANITIZE_STRING) : "";
+  $security_uid = (isset($_GET['security_uid'])) ? filter_var(urldecode($_GET['security_uid']), FILTER_SANITIZE_NUMBER_INT) : "";
+  $shell = (isset($_GET['shell'])) ? filter_var(urldecode($_GET['shell']), FILTER_SANITIZE_STRING) : "";
+  $shift = (isset($_GET['shift'])) ? filter_var(urldecode($_GET['shift']), FILTER_SANITIZE_STRING) : "";
+  $uid = (isset($_GET['uid'])) ? filter_var(urldecode($_GET['uid']), FILTER_SANITIZE_NUMBER_INT) : "";
+  $vlan = (isset($_GET['vlan'])) ? filter_var(urldecode($_GET['vlan']), FILTER_SANITIZE_NUMBER_INT) : "";
+  $vlan_tagged = (isset($_GET['vlan_tagged'])) ? filter_var(urldecode($_GET['vlan_tagged']), FILTER_SANITIZE_NUMBER_INT) : "";
 
   //Declare and instantiate POST variables
   $boot_autostart = (isset($_POST['boot_autostart'])) ? filter_var(urldecode($_POST['boot_autostart']), FILTER_SANITIZE_STRING) : "";
@@ -70,6 +135,301 @@ if (isset($_SESSION['username'])) {
   $base_url = retrieveHostURL($remote);
 
   switch ($action) {
+    case "addInstanceDiskDevice":
+      $url = $base_url . "/1.0/instances/" . $instance . "?project=" . $project;
+      $results = sendCurlRequest($action, "GET", $url);
+      $data = json_decode($results, true);
+      $data = $data['metadata'];
+
+      //Before applying PATCH, check to make sure device does not already exists.
+      if (isset($data['devices'][$name])){
+        echo '{"type": "error","error": "Unable to add new device. Device name already exists","error_code": 409,"metadata": {"error": "Unable to add new device. Device name already exists"}}';
+      }
+      else {
+        $url = $base_url . "/1.0/instances/" . $instance . "?project=" . $project;
+        $device_array = array();
+        $device_array['type'] = "disk";
+        $device_array['path'] = $path;
+        $device_array['source'] = $source;
+      
+        if (!empty($pool)){ $device_array['pool'] = $pool;}
+        if (!empty($limits_read)){ $device_array['limits.read'] = $limits_read;}
+        if (!empty($limits_write)){ $device_array['limits.write'] = $limits_write;}
+        if (!empty($limits_max)){ $device_array['limits.max'] = $limits_max;}
+        if (!empty($required)){ $device_array['required'] = $required;}
+        if (!empty($read_only)){ $device_array['readonly'] = $read_only;}
+        if (!empty($size)){ $device_array['size'] = $size;}
+        if (!empty($size_state)){ $device_array['size.state'] = $size_state;}
+        if (!empty($recursive)){ $device_array['recursive'] = $recursive;}
+        if (!empty($propagation)){ $device_array['propagation'] = $propagation;}
+        if (!empty($shift)){ $device_array['shift'] = $shift;}
+        if (!empty($raw_mount_options)){ $device_array['raw.mount.options'] = $raw_mount_options;}
+        if (!empty($ceph_user_name)){ $device_array['ceph.user_name'] = $ceph_user_name;}
+        if (!empty($ceph_cluster_name)){ $device_array['ceph.cluster_name'] = $ceph_cluster_name;}
+        if (!empty($boot_priority)){ $device_array['boot.priority'] = $boot_priority;}
+
+        $device_json = json_encode($device_array);
+        $data = '{"devices": {"'.$name.'": '.$device_json.'}}';
+        $results = sendCurlRequest($action, "PATCH", $url, $data);
+        echo $results;
+
+        //Send event to accounting
+        $event = json_decode($results, true);
+        $object = $instance . " - " . $name;
+        if ($event['error_code'] == 0){
+          logEvent($action, $remote, $project, $object, $event['status_code'], $event['status']);
+        }
+        else {
+          logEvent($action, $remote, $project, $object, $event['error_code'], $event['error']);
+        }
+
+      }
+    
+      break;
+
+    case "addInstanceNetworkDevice":
+      $url = $base_url . "/1.0/instances/" . $instance . "?project=" . $project;
+      $results = sendCurlRequest($action, "GET", $url);
+      $data = json_decode($results, true);
+      $data = $data['metadata'];
+
+      //Before applying PATCH, check to make sure device does not already exists.
+      if (isset($data['devices'][$name])){
+        echo '{"type": "error","error": "Unable to add new device. Device name already exists","error_code": 409,"metadata": {"error": "Unable to add new device. Device name already exists"}}';
+      }
+      else {
+        $url = $base_url . "/1.0/instances/" . $instance . "?project=" . $project;
+        $device_array = array();
+        $device_array['type'] = "nic";
+
+        if ($property_set == "network"){
+
+          if ($parent_type == "bridge"){
+            $device_array['network'] = $network;
+            if (!empty($interface_name)){ $device_array['name'] = $interface_name;}
+            if (!empty($hwaddr)){ $device_array['hwaddr'] = $hwaddr;}
+            if (!empty($host_name)){ $device_array['host_name'] = $host_name;}
+            if (!empty($limits_ingress)){ $device_array['limits.ingress'] = $limits_ingress;}
+            if (!empty($limits_egress)){ $device_array['limits.egress'] = $limits_egress;}
+            if (!empty($limits_max)){ $device_array['limits.max'] = $limits_max;}
+            if (!empty($ipv4_address)){ $device_array['ipv4.address'] = $ipv4_address;}
+            if (!empty($ipv4_routes)){ $device_array['ipv4.routes'] = $ipv4_routes;}
+            if (!empty($ipv6_address)){ $device_array['ipv6.address'] = $ipv6_address;}
+            if (!empty($ipv6_routes)){ $device_array['ipv6.routes'] = $ipv6_routes;}
+            if (!empty($security_mac_filtering)){ $device_array['security.mac_filtering'] = $security_mac_filtering;}
+            if (!empty($security_ipv4_filtering)){ $device_array['security.ipv4_filtering'] = $security_ipv4_filtering;}
+            if (!empty($security_ipv6_filtering)){ $device_array['security.ipv6_filtering'] = $security_ipv6_filtering;}
+            if (!empty($boot_priority)){ $device_array['boot.priority'] = $boot_priority;}
+            if (!empty($vlan)){ $device_array['vlan'] = $vlan;}
+            if (!empty($vlan_tagged)){ $device_array['vlan.tagged'] = $vlan_tagged;}
+            if (!empty($security_port_isolation)){ $device_array['security.port_isolation'] = $security_port_isolation;}
+          }
+          if ($parent_type == "macvlan"){
+            $device_array['network'] = $network;
+            if (!empty($interface_name)){ $device_array['name'] = $interface_name;}
+            if (!empty($hwaddr)){ $device_array['hwaddr'] = $hwaddr;}
+            if (!empty($boot_priority)){ $device_array['boot.priority'] = $boot_priority;}
+            if (!empty($vlan)){ $device_array['vlan'] = $vlan;}
+            if (!empty($gvrp)){ $device_array['gvrp'] = $gvrp;}
+          }
+          if ($parent_type == "ovn"){
+            $device_array['network'] = $network;
+            if (!empty($interface_name)){ $device_array['name'] = $interface_name;}
+            if (!empty($host_name)){ $device_array['host_name'] = $host_name;}
+            if (!empty($hwaddr)){ $device_array['hwaddr'] = $hwaddr;}
+            if (!empty($ipv4_address)){ $device_array['ipv4.address'] = $ipv4_address;}
+            if (!empty($ipv6_address)){ $device_array['ipv6.address'] = $ipv6_address;}
+            if (!empty($ipv4_routes)){ $device_array['ipv4.routes'] = $ipv4_routes;}
+            if (!empty($ipv4_routes_external)){ $device_array['ipv4.routes.external'] = $ipv4_routes_external;}
+            if (!empty($ipv6_routes)){ $device_array['ipv6.routes'] = $ipv6_routes;}
+            if (!empty($ipv6_routes_external)){ $device_array['ipv6.routes.external'] = $ipv6_routes_external;}
+            if (!empty($boot_priority)){ $device_array['boot.priority'] = $boot_priority;}
+            if (!empty($security_acls)){ $device_array['security.acls'] = $security_acls;}
+            if (!empty($security_acls_default_ingress_action)){ $device_array['security.acls.default.ingress.action'] = $security_acls_default_ingress_action;}
+            if (!empty($security_acls_default_egress_action)){ $device_array['security.acls.default.egress.action'] = $security_acls_default_egress_action;}
+            if (!empty($security_acls_default_ingress_logged)){ $device_array['security.acls.default.ingress.logged'] = $security_acls_default_ingress_logged;}
+            if (!empty($security_acls_default_egress_logged)){ $device_array['security.acls.default.egress.logged'] = $security_acls_default_egress_logged;}
+          }
+          if ($parent_type == "sriov"){
+            $device_array['network'] = $network;
+            if (!empty($interface_name)){ $device_array['name'] = $interface_name;}
+            if (!empty($hwaddr)){ $device_array['hwaddr'] = $hwaddr;}
+            if (!empty($boot_priority)){ $device_array['boot.priority'] = $boot_priority;}
+            if (!empty($vlan)){ $device_array['vlan'] = $vlan;}
+            if (!empty($security_mac_filtering)){ $device_array['security.mac_filtering'] = $security_mac_filtering;}
+          }
+        }
+
+        if ($property_set == "nictype"){
+          $device_array['nictype'] = $nictype;
+
+          if ($nictype == "bridged"){
+            $device_array['parent'] = $parent;
+            if (!empty($interface_name)){ $device_array['name'] = $interface_name;}
+            if (!empty($mtu)){ $device_array['mtu'] = $mtu;}
+            if (!empty($hwaddr)){ $device_array['hwaddr'] = $hwaddr;}
+            if (!empty($host_name)){ $device_array['host_name'] = $host_name;}
+            if (!empty($limits_ingress)){ $device_array['limits.ingress'] = $limits_ingress;}
+            if (!empty($limits_egress)){ $device_array['limits.egress'] = $limits_egress;}
+            if (!empty($limits_max)){ $device_array['limits.max'] = $limits_max;}
+            if (!empty($ipv4_address)){ $device_array['ipv4.address'] = $ipv4_address;}
+            if (!empty($ipv4_routes)){ $device_array['ipv4.routes'] = $ipv4_routes;}
+            if (!empty($ipv6_address)){ $device_array['ipv6.address'] = $ipv6_address;}
+            if (!empty($ipv6_routes)){ $device_array['ipv6.routes'] = $ipv6_routes;}
+            if (!empty($security_mac_filtering)){ $device_array['security.mac_filtering'] = $security_mac_filtering;}
+            if (!empty($security_ipv4_filtering)){ $device_array['security.ipv4_filtering'] = $security_ipv4_filtering;}
+            if (!empty($security_ipv6_filtering)){ $device_array['security.ipv6_filtering'] = $security_ipv6_filtering;}
+            if (!empty($maas_subnet_ipv4)){ $device_array['maas.subnet.ipv4'] = $maas_subnet_ipv4;}
+            if (!empty($maas_subnet_ipv6)){ $device_array['maas.subnet.ipv6'] = $maas_subnet_ipv6;}
+            if (!empty($boot_priority)){ $device_array['boot.priority'] = $boot_priority;}
+            if (!empty($vlan)){ $device_array['vlan'] = $vlan;}
+            if (!empty($vlan_tagged)){ $device_array['vlan.tagged'] = $vlan_tagged;}
+            if (!empty($security_port_isolation)){ $device_array['security.port_isolation'] = $security_port_isolation;}
+          }
+          if ($nictype == "ipvlan"){
+            $device_array['parent'] = $parent;
+            if (!empty($interface_name)){ $device_array['name'] = $interface_name;}
+            if (!empty($mtu)){ $device_array['mtu'] = $mtu;}
+            if (!empty($mode)){ $device_array['mode'] = $mode;}
+            if (!empty($hwaddr)){ $device_array['hwaddr'] = $hwaddr;}
+            if (!empty($ipv4_address)){ $device_array['ipv4.address'] = $ipv4_address;}
+            if (!empty($ipv4_gateway)){ $device_array['ipv4.gateway'] = $ipv4_gateway;}
+            if (!empty($ipv4_host_table)){ $device_array['ipv4.host_table'] = $ipv4_host_table;}
+            if (!empty($ipv6_address)){ $device_array['ipv6.address'] = $ipv6_address;}
+            if (!empty($ipv6_gateway)){ $device_array['ipv6.gateway'] = $ipv6_gateway;}
+            if (!empty($ipv6_host_table)){ $device_array['ipv6.host_table'] = $ipv6_host_table;}
+            if (!empty($vlan)){ $device_array['vlan'] = $vlan;}
+            if (!empty($gvrp)){ $device_array['gvrp'] = $gvrp;}
+          }
+          if ($nictype == "macvlan"){
+            $device_array['parent'] = $parent;
+            if (!empty($interface_name)){ $device_array['name'] = $interface_name;}
+            if (!empty($mtu)){ $device_array['mtu'] = $mtu;}
+            if (!empty($hwaddr)){ $device_array['hwaddr'] = $hwaddr;}
+            if (!empty($maas_subnet_ipv4)){ $device_array['maas.subnet.ipv4'] = $maas_subnet_ipv4;}
+            if (!empty($maas_subnet_ipv6)){ $device_array['maas.subnet.ipv6'] = $maas_subnet_ipv6;}
+            if (!empty($boot_priority)){ $device_array['boot.priority'] = $boot_priority;}
+            if (!empty($vlan)){ $device_array['vlan'] = $vlan;}
+            if (!empty($gvrp)){ $device_array['gvrp'] = $gvrp;}
+          }
+          if ($nictype == "p2p"){
+            if (!empty($interface_name)){ $device_array['name'] = $interface_name;}
+            if (!empty($mtu)){ $device_array['mtu'] = $mtu;}
+            if (!empty($hwaddr)){ $device_array['hwaddr'] = $hwaddr;}
+            if (!empty($host_name)){ $device_array['host_name'] = $host_name;}
+            if (!empty($limits_ingress)){ $device_array['limits.ingress'] = $limits_ingress;}
+            if (!empty($limits_egress)){ $device_array['limits.egress'] = $limits_egress;}
+            if (!empty($limits_max)){ $device_array['limits.max'] = $limits_max;}
+            if (!empty($ipv4_routes)){ $device_array['ipv4.routes'] = $ipv4_routes;}
+            if (!empty($ipv6_routes)){ $device_array['ipv6.routes'] = $ipv6_routes;}
+            if (!empty($boot_priority)){ $device_array['boot.priority'] = $boot_priority;}
+          }
+          if ($nictype == "physical"){
+            $device_array['parent'] = $parent;
+            if (!empty($interface_name)){ $device_array['name'] = $interface_name;}
+            if (!empty($mtu)){ $device_array['mtu'] = $mtu;}
+            if (!empty($hwaddr)){ $device_array['hwaddr'] = $hwaddr;}
+            if (!empty($maas_subnet_ipv4)){ $device_array['maas.subnet.ipv4'] = $maas_subnet_ipv4;}
+            if (!empty($maas_subnet_ipv6)){ $device_array['maas.subnet.ipv6'] = $maas_subnet_ipv6;}
+            if (!empty($boot_priority)){ $device_array['boot.priority'] = $boot_priority;}
+            if (!empty($vlan)){ $device_array['vlan'] = $vlan;}
+            if (!empty($gvrp)){ $device_array['gvrp'] = $gvrp;}
+          }
+          if ($nictype == "routed"){
+            $device_array['parent'] = $parent;
+            if (!empty($interface_name)){ $device_array['name'] = $interface_name;}
+            if (!empty($mtu)){ $device_array['mtu'] = $mtu;}
+            if (!empty($hwaddr)){ $device_array['hwaddr'] = $hwaddr;}
+            if (!empty($host_name)){ $device_array['host_name'] = $host_name;}
+            if (!empty($limits_ingress)){ $device_array['limits.ingress'] = $limits_ingress;}
+            if (!empty($limits_egress)){ $device_array['limits.egress'] = $limits_egress;}
+            if (!empty($limits_max)){ $device_array['limits.max'] = $limits_max;}
+            if (!empty($ipv4_address)){ $device_array['ipv4.address'] = $ipv4_address;}
+            if (!empty($ipv4_gateway)){ $device_array['ipv4.gateway'] = $ipv4_gateway;}
+            if (!empty($ipv4_host_table)){ $device_array['ipv4.host_table'] = $ipv4_host_table;}
+            if (!empty($ipv4_host_address)){ $device_array['ipv4.host_address'] = $ipv4_host_address;}
+            if (!empty($ipv6_address)){ $device_array['ipv6.address'] = $ipv6_address;}
+            if (!empty($ipv6_gateway)){ $device_array['ipv6.gateway'] = $ipv6_gateway;}
+            if (!empty($ipv6_host_table)){ $device_array['ipv6.host_table'] = $ipv6_host_table;}
+            if (!empty($ipv6_host_address)){ $device_array['ipv6.host_address'] = $ipv6_host_address;}
+            if (!empty($vlan)){ $device_array['vlan'] = $vlan;}
+            if (!empty($gvrp)){ $device_array['gvrp'] = $gvrp;}
+          }
+          if ($nictype == "sriov"){
+            $device_array['parent'] = $parent;
+            if (!empty($interface_name)){ $device_array['name'] = $interface_name;}
+            if (!empty($mtu)){ $device_array['mtu'] = $mtu;}
+            if (!empty($hwaddr)){ $device_array['hwaddr'] = $hwaddr;}
+            if (!empty($maas_subnet_ipv4)){ $device_array['maas.subnet.ipv4'] = $maas_subnet_ipv4;}
+            if (!empty($maas_subnet_ipv6)){ $device_array['maas.subnet.ipv6'] = $maas_subnet_ipv6;}
+            if (!empty($boot_priority)){ $device_array['boot.priority'] = $boot_priority;}
+            if (!empty($vlan)){ $device_array['vlan'] = $vlan;}
+            if (!empty($security_mac_filtering)){ $device_array['security.mac_filtering'] = $security_mac_filtering;}
+          }
+        }
+
+        $device_json = json_encode($device_array);
+        $data = '{"devices": {"'.$name.'": '.$device_json.'}}';
+        $results = sendCurlRequest($action, "PATCH", $url, $data);
+        echo $results;
+
+        //Send event to accounting
+        $event = json_decode($results, true);
+        $object = $instance . " - " . $name;
+        if ($event['error_code'] == 0){
+          logEvent($action, $remote, $project, $object, $event['status_code'], $event['status']);
+        }
+        else {
+          logEvent($action, $remote, $project, $object, $event['error_code'], $event['error']);
+        }
+      }
+
+      break;
+    
+    case "addInstanceProxyDevice":
+      $url = $base_url . "/1.0/instances/" . $instance . "?project=" . $project;
+      $results = sendCurlRequest($action, "GET", $url);
+      $data = json_decode($results, true);
+      $data = $data['metadata'];
+
+      //Before applying PATCH, check to make sure device does not already exists.
+      if (isset($data['devices'][$name])){
+        echo '{"type": "error","error": "Unable to add new device. Device name already exists","error_code": 409,"metadata": {"error": "Unable to add new device. Device name already exists"}}';
+      }
+      else {
+        $url = $base_url . "/1.0/instances/" . $instance . "?project=" . $project;
+        $device_array = array();
+        $device_array['type'] = "proxy";
+        $device_array['listen'] = $listen;
+        $device_array['connect'] = $connect;
+      
+        if (!empty($bind)){ $device_array['bind'] = $bind;}
+        if (!empty($uid)){ $device_array['uid'] = $uid;}
+        if (!empty($gid)){ $device_array['gid'] = $gid;}
+        if (!empty($mode)){ $device_array['mode'] = $mode;}
+        if (!empty($nat)){ $device_array['nat'] = $nat;}
+        if (!empty($proxy_protocol)){ $device_array['proxy_protocol'] = $proxy_protocol;}
+        if (!empty($security_uid)){ $device_array['security_uid'] = $security_uid;}
+        if (!empty($security_gid)){ $device_array['security_gid'] = $security_gid;}
+  
+        $device_json = json_encode($device_array);
+        $data = '{"devices": {"'.$name.'": '.$device_json.'}}';
+        $results = sendCurlRequest($action, "PATCH", $url, $data);
+        echo $results;
+  
+        //Send event to accounting
+        $event = json_decode($results, true);
+        $object = $instance . " - " . $name;
+        if ($event['error_code'] == 0){
+          logEvent($action, $remote, $project, $object, $event['status_code'], $event['status']);
+        }
+        else {
+          logEvent($action, $remote, $project, $object, $event['error_code'], $event['error']);
+        }
+      }
+      
+      break;
+
     case "displayInstanceInfo":
       $url = $base_url . "/1.0/instances/".$instance."?project=" . $project;
       $results = sendCurlRequest($action, "GET", $url);
@@ -265,10 +625,36 @@ if (isset($_SESSION['username'])) {
       $results = sendCurlRequest($action, "POST", $url, $data);
 
       $exec_api_data = json_decode($results, true);
-      $operation = $exec_api_data['operation']; //$operation = "/1.0/operations/d77f70b9-ae8d-4a47-9935-4d49d707f0aa";
-      $secret = $exec_api_data['metadata']['metadata']['fds']["0"]; //$secret = "64f5592ee1bc64b8b699e232371dd1286465bafa4a9e688ea7a9cc48f785e98e";
+      $operation = (isset($exec_api_data['operation'])) ? $exec_api_data['operation'] : ""; //$operation = "/1.0/operations/d77f70b9-ae8d-4a47-9935-4d49d707f0aa";
+      $secret = (isset($exec_api_data['metadata']['metadata']['fds']["0"])) ? $exec_api_data['metadata']['metadata']['fds']["0"] : ""; //$secret = "64f5592ee1bc64b8b699e232371dd1286465bafa4a9e688ea7a9cc48f785e98e";
+      $control = (isset($exec_api_data['metadata']['metadata']['fds']["control"])) ? $exec_api_data['metadata']['metadata']['fds']["control"] : ""; //used to close connection properly
 
-      $results = '{"operation": "'.$operation.'", "secret": "'.$secret.'"}';
+      $results = '{"operation": "'.$operation.'", "secret": "'.$secret.'", "control": "'.$control.'"}';
+      echo $results;
+
+      //Send event to accounting
+      $event = json_decode($results, true);
+      $object = $instance;
+      logEvent($action, $remote, $project, $object, '200', 'Ok');
+
+      break;
+
+    case "establishInstanceWebSocketExecConnection":
+      $url = $base_url . "/1.0/instances/".$instance."/exec?project=" . $project;
+      if ($shell == "sh"){
+        $data = '{ "command": ["/bin/sh"], "wait-for-websocket": true, "environment":{"HOME": "/root", "TERM": "xterm", "USER": "root"}, "interactive": true}';
+      }
+      else {
+        $data = '{ "command": ["/bin/bash"], "wait-for-websocket": true, "environment":{"HOME": "/root", "TERM": "xterm", "USER": "root"}, "interactive": true}';
+      }
+      $results = sendCurlRequest($action, "POST", $url, $data);
+
+      $exec_api_data = json_decode($results, true);
+      $operation = (isset($exec_api_data['operation'])) ? $exec_api_data['operation'] : ""; //$operation = "/1.0/operations/d77f70b9-ae8d-4a47-9935-4d49d707f0aa";
+      $secret = (isset($exec_api_data['metadata']['metadata']['fds']["0"])) ? $exec_api_data['metadata']['metadata']['fds']["0"] : ""; //$secret = "64f5592ee1bc64b8b699e232371dd1286465bafa4a9e688ea7a9cc48f785e98e";
+      $control = (isset($exec_api_data['metadata']['metadata']['fds']["control"])) ? $exec_api_data['metadata']['metadata']['fds']["control"] : ""; //used to close connection properly
+
+      $results = '{"operation": "'.$operation.'", "secret": "'.$secret.'", "control": "'.$control.'"}';
       echo $results;
 
       //Send event to accounting
@@ -396,13 +782,14 @@ if (isset($_SESSION['username'])) {
       $url = $base_url . "/1.0/instances/" . $instance . "?project=" . $project;
       $results = sendCurlRequest($action, "GET", $url);
       $results = json_decode($results, true);
-      $device_names = (isset($results['metadata']['expanded_devices'])) ? $results['metadata']['expanded_devices'] : [];
+      $device_names = (isset($results['metadata']['devices'])) ? $results['metadata']['devices'] : [];
+      $expanded_device_names = (isset($results['metadata']['expanded_devices'])) ? $results['metadata']['expanded_devices'] : [];
 
       $i = 0;
       echo '{ "data": [';
 
       //Loop through the expanded devices
-      foreach ($device_names as $device_name => $device_data){
+      foreach ($expanded_device_names as $expanded_device_name => $device_data){
         $disk_path = (isset($device_data['path'])) ? $device_data['path'] : "";
         $disk_type = $device_data['type'];
         $disk_usage = "";
@@ -413,7 +800,7 @@ if (isset($_SESSION['username'])) {
 
           //Determine if there is usage data available for disk device
           foreach ($disk_names as $disk_name => $disk_data){
-            if ($device_name == $disk_name){
+            if ($expanded_device_name == $disk_name){
               $disk_usage = $disk_data['usage']/1024/1024;
               $disk_unit = "MB";
               if ($disk_usage >= 1024){
@@ -439,11 +826,17 @@ if (isset($_SESSION['username'])) {
             echo "<i class='fas fa-hdd fa-lg' style='color:#4e73df'></i>";
           echo '",';
   
-          echo '"' . htmlentities($device_name) . '",';
+          echo '"' . htmlentities($expanded_device_name) . '",';
           echo '"' . htmlentities($disk_path) . '",';
           echo '"' . htmlentities($disk_usage) . " " . $disk_unit . '",';
-          echo '"' . htmlentities($disk_type) . '"';
+          echo '"' . htmlentities($disk_type) . '",';
 
+          echo '"';
+          if (array_key_exists($expanded_device_name, $device_names)){
+            echo "<a href='#' onclick=removeInstanceDevice('".$expanded_device_name."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Remove' aria-hidden='true'></i></a>";
+          } 
+          echo '"';
+   
           echo " ]";
 
         }
@@ -453,45 +846,7 @@ if (isset($_SESSION['username'])) {
       echo " ]}";
       break;
 
-    case "listInstanceLogs":
-      $url = $base_url . "/1.0/instances/" . $instance . "/logs?project=" . $project;
-      $results = sendCurlRequest($action, "GET", $url);
-      $results = json_decode($results, true);
-      $instance_logs = (isset($results['metadata'])) ? $results['metadata'] : [];
-
-      $i = 0;
-      echo '{ "data": [';
-
-      foreach ($instance_logs as $instance_log){
-
-        if ($i > 0){
-          echo ",";
-        }
-        $i++;
-
-        echo "[ ";
-
-        echo '"' . "<i class='fas fa-history fa-lg' style='color:#4e73df'></i>" . '",';
-
-        echo '"' . htmlentities($instance_log) . '",';
-
-        echo '"';
-       
-          echo "<a href='#' onclick=loadInstanceLog('".$instance_log."')><i class='fas fa-file fa-lg' style='color:#ddd' title='Display' aria-hidden='true'></i></a>";
-          echo " &nbsp ";
-        
-          echo "<a href='#' onclick=deleteInstanceLog('".$instance_log."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
-        
-        echo '"';
-
-        echo " ]";
-
-      }
-      
-      echo " ]}";
-      break;
-
-    case "listInstanceNetworkDevices":
+    case "listInstanceInterfaces":
       $url = $base_url . "/1.0/instances/" . $instance . "/state?recursion=1&project=" . $project;
       $results = sendCurlRequest($action, "GET", $url);
       $results = json_decode($results, true);
@@ -553,6 +908,93 @@ if (isset($_SESSION['username'])) {
   
       break;
 
+    case "listInstanceLogs":
+      $url = $base_url . "/1.0/instances/" . $instance . "/logs?project=" . $project;
+      $results = sendCurlRequest($action, "GET", $url);
+      $results = json_decode($results, true);
+      $instance_logs = (isset($results['metadata'])) ? $results['metadata'] : [];
+
+      $i = 0;
+      echo '{ "data": [';
+
+      foreach ($instance_logs as $instance_log){
+
+        if ($i > 0){
+          echo ",";
+        }
+        $i++;
+
+        echo "[ ";
+
+        echo '"' . "<i class='fas fa-history fa-lg' style='color:#4e73df'></i>" . '",';
+
+        echo '"' . htmlentities($instance_log) . '",';
+
+        echo '"';
+       
+          echo "<a href='#' onclick=loadInstanceLog('".$instance_log."')><i class='fas fa-file fa-lg' style='color:#ddd' title='Display' aria-hidden='true'></i></a>";
+          echo " &nbsp ";
+        
+          echo "<a href='#' onclick=deleteInstanceLog('".$instance_log."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
+        
+        echo '"';
+
+        echo " ]";
+
+      }
+      
+      echo " ]}";
+      break;
+
+    case "listInstanceNetworkDevices":
+      $url = $base_url . "/1.0/instances/" . $instance . "?project=" . $project;
+      $results = sendCurlRequest($action, "GET", $url);
+      $results = json_decode($results, true);
+      $device_names = (isset($results['metadata']['devices'])) ? $results['metadata']['devices'] : [];
+      $expanded_device_names = (isset($results['metadata']['expanded_devices'])) ? $results['metadata']['expanded_devices'] : [];
+    
+      $i = 0;
+      echo '{ "data": [';
+    
+      foreach ($expanded_device_names as $expanded_device_name => $device_data){
+        if ($device_data['type'] == "nic"){
+
+          $device_data_nictype = (isset($device_data['nictype'])) ? htmlentities($device_data['nictype']) : "";
+          $device_data_parent = (isset($device_data['parent'])) ? htmlentities($device_data['parent']) : "";
+          $device_data_network = (isset($device_data['network'])) ? htmlentities($device_data['network']) : "";
+          $device_data_name = (isset($device_data['name'])) ? htmlentities($device_data['name']) : "";
+
+          if ($i > 0){
+            echo ",";
+          }
+          $i++;
+
+          echo "[ ";
+
+          echo '"' . "<i class='fas fa-exchange-alt fa-lg' style='color:#4e73df'></i>" . '",';
+
+          echo '"' . htmlentities($expanded_device_name) . '",';
+          echo '"' . $device_data_nictype . '",';
+          echo '"' . $device_data_parent . '",';
+          echo '"' . $device_data_network . '",';
+          echo '"' . $device_data_name . '",';
+
+          echo '"';
+          if (array_key_exists($expanded_device_name, $device_names)){
+            echo "<a href='#' onclick=removeInstanceDevice('".$expanded_device_name."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Remove' aria-hidden='true'></i></a>";
+          } 
+          echo '"';
+
+          echo " ]";
+    
+        }
+
+      }
+      
+      echo " ]}";
+
+      break;
+
     case "listInstanceProfiles":
       $url = $base_url . "/1.0/instances/" . $instance . "?project=" . $project;
       $results = sendCurlRequest($action, "GET", $url);
@@ -605,13 +1047,18 @@ if (isset($_SESSION['username'])) {
       $url = $base_url . "/1.0/instances/" . $instance . "?project=" . $project;
       $results = sendCurlRequest($action, "GET", $url);
       $results = json_decode($results, true);
-      $device_names = (isset($results['metadata']['expanded_devices'])) ? $results['metadata']['expanded_devices'] : [];
+      $device_names = (isset($results['metadata']['devices'])) ? $results['metadata']['devices'] : [];
+      $expanded_device_names = (isset($results['metadata']['expanded_devices'])) ? $results['metadata']['expanded_devices'] : [];
     
       $i = 0;
       echo '{ "data": [';
     
-      foreach ($device_names as $device_name => $device_data){
+      foreach ($expanded_device_names as $expanded_device_name => $device_data){
         if ($device_data['type'] == "proxy"){
+
+          $device_data_connect = (isset($device_data['connect'])) ? htmlentities($device_data['connect']) : "";
+          $device_data_listen = (isset($device_data['listen'])) ? htmlentities($device_data['listen']) : "";
+          $device_data_type = (isset($device_data['type'])) ? htmlentities($device_data['type']) : "";
 
           if ($i > 0){
             echo ",";
@@ -622,10 +1069,16 @@ if (isset($_SESSION['username'])) {
 
           echo '"' . "<i class='fas fa-exchange-alt fa-lg' style='color:#4e73df'></i>" . '",';
 
-          echo '"' . htmlentities($device_name) . '",';
-          echo '"' . htmlentities($device_data['connect']) . '",';
-          echo '"' . htmlentities($device_data['listen']) . '",';
-          echo '"' . htmlentities($device_data['type']) . '"';
+          echo '"' . htmlentities($expanded_device_name) . '",';
+          echo '"' . $device_data_connect . '",';
+          echo '"' . $device_data_listen . '",';
+          echo '"' . $device_data_type . '",';
+
+          echo '"';
+          if (array_key_exists($expanded_device_name, $device_names)){
+            echo "<a href='#' onclick=removeInstanceDevice('".$expanded_device_name."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Remove' aria-hidden='true'></i></a>";
+          } 
+          echo '"';
 
           echo " ]";
     
@@ -708,6 +1161,35 @@ if (isset($_SESSION['username'])) {
       }
       
       echo " ]}";
+      break;
+
+  case "removeInstanceDevice":
+      $url = $base_url . "/1.0/instances/" . $instance . "?project=" . $project;
+      $results = sendCurlRequest($action, "GET", $url);
+      $data = json_decode($results, true);
+      $data = $data['metadata'];
+
+      if (isset($data['devices'][$name])){
+        unset($data['devices'][$name]);
+        if (empty($data['devices'])){
+          unset($data['devices']);
+        }
+        $data = json_encode($data);
+        $url = $base_url . "/1.0/instances/" . $instance . "?project=" . $project;
+        $results = sendCurlRequest($action, "PUT", $url, $data);
+        echo $results;
+  
+        //Send event to accounting
+        $event = json_decode($results, true);
+        $object = $instance . " - " . $name;
+        if ($event['error_code'] == 0){
+          logEvent($action, $remote, $project, $object, $event['status_code'], $event['status']);
+        }
+        else {
+          logEvent($action, $remote, $project, $object, $event['error_code'], $event['error']);
+        }
+      }
+
       break;
 
     case "retrieveInstanceState":

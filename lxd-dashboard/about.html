@@ -19,9 +19,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <!DOCTYPE html>
 <html lang="en">
 <body class="">
-  <p><strong>About</strong>: LXDWARE is an open source LXD dashboard that provides a web-based user interface for controlling the entire LXD-based virtual infrastructure.</p>
-  <p><strong>Version</strong>: 2.0.3</p>
-  <p><strong>License</strong>: AGPL-3.0</p>
-  <p><strong>URL</strong>: https://lxdware.com</p>
+  <p>This open source LXD dashboard is developed by LXDWARE and provides a web-based user interface capable of managing multiple LXD servers from a single location.</p>
+  <p>
+    <strong>Version</strong>: <span id="versionNumber">v2.1.0</span> <br />
+    <strong>License</strong>: AGPL-3.0 <br />
+    <strong>URL</strong>: https://lxdware.com <br />
+</p>
+  
+  <div class="text-center">
+    <p class="text-primary" id="updateMessage"></p>
+    <button class="btn btn-primary" type="button" onclick="checkForNewerRelease()">Check for updates</button>
+  </div>
+
 </body>
+<script>
+  function checkForNewerRelease(){
+    var versionNumber = $("#versionNumber").text();
+    $.get("https://api.github.com/repos/lxdware/lxd-dashboard/releases", function( data ) {
+      console.log("Local version: " + versionNumber)
+      console.log("Latest GitHub version: " + data[0].tag_name);
+      if (data[0].tag_name == versionNumber){
+        $("#updateMessage").text("You are using the lastest release");
+      }
+      else {
+        $("#updateMessage").text("There is a newer release " + data[0].tag_name + " available");
+      }
+    });
+  }
+</script>
 </html>

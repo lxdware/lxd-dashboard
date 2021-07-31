@@ -234,18 +234,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                   <label class="col-3 col-form-label text-right">Name: </label>
                   <div class="col-7">
                     <div class="form-group">
-                      <input type="text" id="networkAclNameCreate" class="form-control" placeholder="Network ACL Name" name="network_acl_name">
+                      <input type="text" id="networkAclNameCreate" class="form-control" placeholder="" name="network_acl_name">
                     </div>
+                  </div>
+                  <div class="col-1">
+                    <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Enter a name for the Network ACL'></i>
                   </div>
                 </div>
                 <div class="row">
                   <label class="col-3 col-form-label text-right">Description: </label>
                   <div class="col-7">
                     <div class="form-group">
-                      <input type="text" id="networkAclDescriptionCreate" class="form-control" placeholder="Enter Description" name="network_acl_description">
+                      <input type="text" id="networkAclDescriptionCreate" class="form-control" placeholder="" name="network_acl_description">
                     </div>
                   </div>
+                  <div class="col-1">
+                    <i class="far fa-sm fa-question-circle" title='Enter a description for the Network ACL'></i>
+                  </div>
                 </div>
+                <p class="text-center pt-2">Egress and Ingress rules can be defined once the Network ACL is created.</p>
                 <div class="modal-footer">
                   <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                   <a class="btn btn-primary" href="#" onclick="createNetworkAclUsingForm()" data-dismiss="modal">Submit</a>
@@ -320,6 +327,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <div class="form-group">
                   <input type="text" id="newNetworkAclName" class="form-control" placeholder="">
                 </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Enter in a new name for the Network ACL'></i>
               </div>
             </div>
             <input type="hidden" id ="networkAclToRename" name="networkAclToRename">
@@ -437,8 +447,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         {},
         { title: "Name" },
         { title: "Description" },
-        { title: "Ingress Configured" },
-        { title: "Egress Configured" },
+        { title: "Ingress Rules" },
+        { title: "Egress Rules" },
         { title: "Used By" },
         { title: "Action" }
       ],

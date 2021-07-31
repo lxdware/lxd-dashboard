@@ -1,3 +1,11 @@
+# v2.1.0
+- Feature: Users can now add network, disk, and proxy devices directly to an instance from a form
+- Feature: Users can now remove network, disk, and proxy devices from an instance using the dashboard
+- Feature: Additional configuration properties have been added to the web form for creating Networks
+- Feature: Users can add/remove Network ACL egress/ingress rules using the dashboard
+- Feature: The Exec terminal experience has been added to instances
+- Feature: Users can click on the "Check for updates" button in the About modal to get a version status
+
 # v2.0.3
 - Bug Fix: Continuing the bug fix from previous version, used float type casting for memory variables on remote-single page rather than letting PHP automatically deciding on variable type.
 

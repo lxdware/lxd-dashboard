@@ -148,7 +148,7 @@ if (isset($_SESSION['username'])) {
 
         if (!empty($operations_data['failure'])){
           foreach ($operations_data['failure'] as $failed_task){
-            $results =  htmlentities($failed_task['description']) . " Error: " . htmlentities($failed_task['err']);
+            $results =  $failed_task['description'] . " Error: " . $failed_task['err'];
           }
         }
       

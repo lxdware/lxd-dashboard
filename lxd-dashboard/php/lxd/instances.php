@@ -192,10 +192,6 @@ if (isset($_SESSION['username'])) {
       break;
 
     case "createInstanceUsingForm":
-      //None is not a valid instance type, change it to "" if none is selected.
-      if ($instance_type == "none"){
-        $instance_type = "";
-      } 
       //If location == none let LXD determine where the instance is created        
       if ($location == "none"){
         $url = $base_url . "/1.0/instances?project=" . $project; 

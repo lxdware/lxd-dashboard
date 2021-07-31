@@ -221,20 +221,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div class="modal-body">
 
           <div class="row">
-            <label class="col-2 col-form-label text-right">URL: </label>
-            <div class="col-9">
+            <label class="col-3 col-form-label text-right">URL: </label>
+            <div class="col-7">
               <div class="form-group">
-                <input type="text" class="form-control" id="hostInput" required="required" placeholder="URL" name="host">
+                <input type="text" class="form-control" id="hostInput" required="required" placeholder="" name="host">
               </div>
+            </div>
+            <div class="col-1">
+              <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Enter in the URL of the simplestreams server. For example, https://images.linuxcontainers.org'></i>
             </div>
           </div>
 
           <div class="row">
-            <label class="col-2 col-form-label text-right">Alias: </label>
-            <div class="col-9">
+            <label class="col-3 col-form-label text-right">Alias: </label>
+            <div class="col-7">
               <div class="form-group">
-                <input type="text" class="form-control"  id="aliasInput" placeholder="Alias" name="alias">
+                <input type="text" class="form-control"  id="aliasInput" placeholder="" name="alias">
               </div>
+            </div>
+            <div class="col-1">
+              <i class="far fa-sm fa-question-circle" title='Enter in an alias that will be used to select the simplestreams location when downloading an image.'></i>
             </div>
           </div>
 

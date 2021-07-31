@@ -100,16 +100,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           </div>
 
 
-           <!-- Topbar Navbar -->
-           <ul class="navbar-nav ml-auto"> 
+         <!-- Topbar Navbar -->
+         <ul class="navbar-nav ml-auto"> 
 
-            <li class="nav-item dropdown" id="remoteListNav">
-            </li>
+          <li class="nav-item dropdown" id="remoteListNav">
+          </li>
 
-            <li class="nav-item dropdown" id="projectListNav">
-            </li>
+          <li class="nav-item dropdown" id="projectListNav">
+          </li>
 
-            <div class="topbar-divider d-none d-sm-block"></div>
+          <div class="topbar-divider d-none d-sm-block"></div>
 
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
@@ -151,32 +151,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="#" id="remoteBreadCrumb"></a></li>
-              <li class="breadcrumb-item active" aria-current="page" id="profilesBreadCrumb"></li>
+              <li class="breadcrumb-item"><a href="#" id="networkAclsBreadCrumb"></a></li>
+              <li class="breadcrumb-item active" aria-current="page" id="networkAclBreadCrumb"></li>
             </ol>
           </nav>
 
           <div class="row">
 
             <div class="col-12">
-              <!-- Profile List -->
+              <!-- Ingress Rules -->
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Profiles</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">Ingress Rules</h6>
                   <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle mr-2" href="#" data-toggle="modal" data-target="#createProfileModal" title="New Profile" aria-hidden="true">
-                      <i class="fas fa-plus fa-sm fa-fw"></i> Profile</a>
+                    <a class="dropdown-toggle mr-2" href="#" data-toggle="modal" data-target="#addTrafficRuleModal" title="Add Traffic Rule" aria-hidden="true">
+                      <i class="fas fa-plus fa-sm fa-fw"></i> Rule</a>
                   </div>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
                   <div class="table-responsive">
-                    <table class="table" id="profileListTable" width="100%" cellspacing="0">
+                    <table class="table" id="ingressListTable" width="100%" cellspacing="0">
                     </table>
                   </div>
                 </div>
               </div>
-              <!-- End Profile List -->
+              <!-- End Ingress Rules -->
             </div>
 
           </div>
@@ -208,134 +209,156 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <i class="fas fa-angle-up"></i>
   </a>
 
-  <!-- Create Profile Modal-->
-  <div class="modal fade" id="createProfileModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <!-- Add Traffic Rule Modal-->
+  <div class="modal fade" id="addTrafficRuleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Create Profile</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Add Traffic Rule</h5>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
           </div>
           <div class="modal-body">
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link active" id="form-tab" data-toggle="tab" href="#form" role="tab" aria-controls="form" aria-selected="true">Form</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" id="json-tab" data-toggle="tab" href="#json" role="tab" aria-controls="json" aria-selected="false">JSON</a>
-              </li>
-            </ul>
-            <div class="tab-content" id="myTabContent">
-              <div class="tab-pane fade show active" id="form" role="tabpanel" aria-labelledby="form-tab">
-                <br />
-                <div class="row">
-                  <label class="col-3 col-form-label text-right">Name: </label>
-                  <div class="col-7">
-                    <div class="form-group">
-                      <input type="text" id="profileNameCreate" class="form-control" placeholder="" name="profile_name">
-                    </div>
-                  </div>
-                  <div class="col-1">
-                    <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Enter in a name for the profile.'></i>
-                  </div>
-                </div>
-                <div class="row">
-                  <label class="col-3 col-form-label text-right">Description: </label>
-                  <div class="col-7">
-                    <div class="form-group">
-                      <input type="text" id="profileDescriptionCreate" class="form-control" placeholder="" name="profile_description">
-                    </div>
-                  </div>
-                  <div class="col-1">
-                    <i class="far fa-sm fa-question-circle" title='Enter in a description for the profile.'></i>
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                  <a class="btn btn-primary" href="#" onclick="createProfileUsingForm()" data-dismiss="modal">Submit</a>
-                </div>
-              </div>
-              <div class="tab-pane fade" id="json" role="tabpanel" aria-labelledby="json-tab">
-                <br />
-                <div class="row">
-                  <div class="col-12">
-                    <div class="form-group text-right">
-                      <pre>
-                        <textarea name="json" class="form-control" id="jsonCreateInput" rows="16" placeholder="Enter JSON data"></textarea>
-                      </pre>
-                    </div>
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                  <a class="btn btn-primary" href="#" onclick="createProfileUsingJSON()" data-dismiss="modal">Submit</a>
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Edit Profile Modal-->
-  <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-          <div class="modal-body">
             <div class="row">
-              <label class="col-12 col-form-label" id="profileNameEditInput"></label>
-              <div class="col-12">
-                <div class="form-group text-right">
-                  <pre>
-                    <textarea name="json" class="form-control" id="jsonEditInput" rows="16" ></textarea>
-                  </pre>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="#" onclick="updateProfile()" data-dismiss="modal">Submit</a>
-          </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Rename Profile Modal-->
-  <div class="modal fade" id="renameProfileModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="renameProfileModalLabel">Rename Profile</h5>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <label class="col-3 col-form-label text-right" id="newProfileNameLabel">Name:</label>
+              <label class="col-3 col-form-label text-right">Action: </label>
               <div class="col-7">
                 <div class="form-group">
-                  <input type="text" id="newProfileName" class="form-control" placeholder="">
+                  <select id="actionTrafficRuleInput" onchange="" class="form-control" name="actionTrafficRuleInput">
+                    <option value="allow">allow</option>
+                    <option value="reject">reject</option>
+                    <option value="drop">drop</option>
+                  </select>
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Enter in a new name for the profile.'></i>
+                <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Select the action to be applied to this rule.'></i>
               </div>
             </div>
-            <input type="hidden" id ="profileToRename" name="profileToRename">
+
+            <div class="row">
+              <label class="col-3 col-form-label text-right">State: </label>
+              <div class="col-7">
+                <div class="form-group">
+                  <select id="stateTrafficRuleInput" onchange="" class="form-control" name="stateTrafficRuleInput">
+                    <option value="enabled">enabled</option>
+                    <option value="disabled">disabled</option>
+                    <option value="logged">logged</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Select the state to be applied to this rule.'></i>
+              </div>
+            </div>
+
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Description: </label>
+              <div class="col-7">
+                <div class="form-group">
+                  <input type="text" id="descriptionTrafficRuleInput" class="form-control" placeholder="" name="descriptionTrafficRuleInput">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Enter in a description for this rule.'></i>
+              </div>
+            </div>
+
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Source: </label>
+              <div class="col-7">
+                <div class="form-group">
+                  <input type="text" id="sourceTrafficRuleInput" class="form-control" placeholder="" name="sourceTrafficRuleInput">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Enter in a comma separated list of CIDR address, IP ranges, source ACL names, @external, or @internal. Leaving this unset will default to any.'></i>
+              </div>
+            </div> 
+
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Destination: </label>
+              <div class="col-7">
+                <div class="form-group">
+                  <input type="text" id="destinationTrafficRuleInput" class="form-control" placeholder="" name="destinationTrafficRuleInput">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Enter in a comma separated list of CIDR address, IP ranges, source ACL names, @external, or @internal. Leaving this unset will default to any.'></i>
+              </div>
+            </div>
+            
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Protocol: </label>
+              <div class="col-7">
+                <div class="form-group">
+                  <select id="protocolTrafficRuleInput" onchange="" class="form-control" name="protocolTrafficRuleInput">
+                    <option value="">(not set)</option>
+                    <option value="icmp4">icmp4</option>
+                    <option value="icmp6">icmp6</option>
+                    <option value="tcp">tcp</option>
+                    <option value="udp">udp</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Select the traffic protocl for this rule. Leaving this unset will default to any.'></i>
+              </div>
+            </div>
+
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Source Port: </label>
+              <div class="col-7">
+                <div class="form-group">
+                  <input type="text" id="sourcePortTrafficRuleInput" class="form-control" placeholder="" name="sourcePortTrafficRuleInput">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Used with TCP or UDP rules. Enter in a comma seperated list of ports or port ranges. Leaving this unset will default to any.'></i>
+              </div>
+            </div>
+
+            <div class="row">
+              <label class="col-3 col-form-label text-right">Destination Port: </label>
+              <div class="col-7">
+                <div class="form-group">
+                  <input type="text" id="destinationPortTrafficRuleInput" class="form-control" placeholder="" name="destinationPortTrafficRuleInput">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Used with TCP or UDP rules. Enter in a comma seperated list of ports or port ranges. Leaving this unset will default to any.'></i>
+              </div>
+            </div>
+
+            <div class="row">
+              <label class="col-3 col-form-label text-right">ICMP Type: </label>
+              <div class="col-7">
+                <div class="form-group">
+                  <input type="text" id="icmpTypeTrafficRuleInput" class="form-control" placeholder="" name="icmpTypeTrafficRuleInput">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Used with ICMP rules. Enter in an ICMP type number. Leaving this unset will default to any.'></i>
+              </div>
+            </div>
+
+            <div class="row">
+              <label class="col-3 col-form-label text-right">ICMP Code: </label>
+              <div class="col-7">
+                <div class="form-group">
+                  <input type="text" id="icmpCodeTrafficRuleInput" class="form-control" placeholder="" name="icmpCodeTrafficRuleInput">
+                </div>
+              </div>
+              <div class="col-1">
+                <i class="far fa-sm fa-question-circle" title='Used with ICMP rules. Enter in an ICMP code number. Leaving this unset will default to any.'></i>
+              </div>
+            </div>
+
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="#" onclick="renameProfile()" data-dismiss="modal">Ok</a>
+            <a class="btn btn-primary" href="#" onclick="addTrafficRule()" data-dismiss="modal">Submit</a>
           </div>
       </div>
     </div>
@@ -385,8 +408,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const remoteId = urlParams.get('remote'); 
-  const projectName = urlParams.get('project'); 
-  var profileToUpdate = "";
+  const projectName = urlParams.get('project');
+  const networkAcl = urlParams.get('network_acl');
 
   function logout(){
     $.get("./php/aaa/authentication.php?action=deauthenticateUser", function (data) {
@@ -421,7 +444,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     });
   }
 
-  function reloadPageContent(){
+  function reloadPageContent() {
 
     //Check Authorization
     $.get("./php/aaa/authentication.php?action=validateAuthentication", function (data) {
@@ -432,22 +455,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       }
     });
 
-    $('#profileListTable').DataTable().ajax.reload(null, false);
+    $('#ingressListTable').DataTable().ajax.reload(null, false);
   }
-  
+
   function loadPageContent(){
 
     //Display current logged in username
     $("#username").load("./php/admin/settings.php?action=displayUsername");
 
-    $('#profileListTable').DataTable( {
-      ajax: "./php/lxd/profiles.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listProfiles",
+    $('#ingressListTable').DataTable( {
+      ajax: "./php/lxd/network-acls.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&network_acl=" + encodeURI(networkAcl) + "&action=listIngressRules",
       columns: [
         {},
-        { title: "Name" },
+        { title: "Action" },
+        { title: "State" },
         { title: "Description" },
-        { title: "Devices" },
-        { title: "Action" }
+        { title: "Source" },
+        { title: "Destination" },
+        { title: "Protocol" },
+        { title: "Source Port" },
+        { title: "Destination Port" },
+        { title: "ICMP Type" },
+        { title: "ICMP Code" },
+        { title: "Actions" }
       ],
       order: [],
       columnDefs: [
@@ -462,11 +492,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     setInterval(() => { reloadPageContent(); }, 5000);
   }
 
-  function createProfileUsingForm(){
-    var profileNameCreate = $("#profileNameCreate").val();
-    var profileDescriptionCreate = $("#profileDescriptionCreate").val();
-    console.log("Info: creating profile");
-    $.get("./php/lxd/profiles.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&name=" + encodeURI(profileNameCreate) + "&description=" + encodeURI(profileDescriptionCreate) + "&action=createProfileUsingForm", function (data) {
+  function addTrafficRule(){
+    var typeTrafficRuleInput = "ingress";
+    var actionTrafficRuleInput = $("#actionTrafficRuleInput").val();
+    var stateTrafficRuleInput = $("#stateTrafficRuleInput").val();
+    var descriptionTrafficRuleInput = $("#descriptionTrafficRuleInput").val();
+    var sourceTrafficRuleInput = $("#sourceTrafficRuleInput").val();
+    var destinationTrafficRuleInput = $("#destinationTrafficRuleInput").val();
+    var protocolTrafficRuleInput = $("#protocolTrafficRuleInput").val();
+    var sourcePortTrafficRuleInput = $("#sourcePortTrafficRuleInput").val();
+    var destinationPortTrafficRuleInput = $("#destinationPortTrafficRuleInput").val();
+    var icmpTypeTrafficRuleInput = $("#icmpTypeTrafficRuleInput").val();
+    var icmpCodeTrafficRuleInput = $("#icmpCodeTrafficRuleInput").val();
+    console.log("Info: adding " + typeTrafficRuleInput + " rule ");
+    $.get("./php/lxd/network-acls.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&network_acl=" + encodeURI(networkAcl) + "&type=" + encodeURI(typeTrafficRuleInput) + "&traffic_action=" + encodeURI(actionTrafficRuleInput) + "&state=" + encodeURI(stateTrafficRuleInput) + "&description=" + encodeURI(descriptionTrafficRuleInput) + "&source=" + encodeURI(sourceTrafficRuleInput) + "&destination=" + encodeURI(destinationTrafficRuleInput) + "&protocol=" + encodeURI(protocolTrafficRuleInput) + "&source_port=" + encodeURI(sourcePortTrafficRuleInput) + "&destination_port=" + encodeURI(destinationPortTrafficRuleInput) + "&icmp_type=" + encodeURI(icmpTypeTrafficRuleInput) + "&icmp_code=" + encodeURI(icmpCodeTrafficRuleInput) + "&action=addTrafficRule",  function (data) {
       //Sync operation type
       var operationData = JSON.parse(data);
       console.log(operationData);
@@ -477,11 +516,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     });
   }
 
-  function createProfileUsingJSON(){
-    var profileCreateJSON = $("#jsonCreateInput").val();
-    console.log("Info: creating profile");
-    $.post("./php/lxd/profiles.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=createProfileUsingJSON", {json: profileCreateJSON},  function (data) {
-      //Sync operation type
+  function deleteIngressRule(ingressRuleToDelete){
+    console.log("Info: deleting ingress rule " + ingressRuleToDelete);
+    $.get("./php/lxd/network-acls.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&network_acl=" + encodeURI(networkAcl) + "&rule=" + encodeURI(ingressRuleToDelete) + "&action=deleteIngressRule",  function (data) {
+      //Sync type
       var operationData = JSON.parse(data);
       console.log(operationData);
       if (operationData.error_code >= 400){
@@ -491,70 +529,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     });
   }
 
-  function loadProfileJson(profileToLoad){
-    console.log("Info: loading profile " + profileToLoad);
-    profileToUpdate = profileToLoad;
-    $.get("./php/lxd/profiles.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&profile=" + encodeURI(profileToLoad) + "&action=loadProfile", function (data) {
-      //Sync operation type
-      var operationData = JSON.parse(data);
-      console.log(operationData);
-      if (operationData.error_code >= 400){
-        alert(operationData.error);
-      }
-      $("#profileNameEditInput").text("Name: " + profileToLoad);
-      $("#jsonEditInput").val(JSON.stringify(operationData.metadata, null, 2));
-      $("#editProfileModal").modal('show');
-    });
-  }
-
-  function loadRenameProfile(profileToRename){
-    console.log("Loading rename modal for profile " + profileToRename)
-    $("#renameProfileModalLabel").text("Rename profile: " + profileToRename);
-    $("#profileToRename").val(profileToRename);
-    $("#renameProfileModal").modal('show');
-  }
-
-  function updateProfile(){
-    var profileUpdateJSON = $("#jsonEditInput").val();
-    console.log("Info: updating profile " + profileToUpdate);
-    $.post("./php/lxd/profiles.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&profile=" + encodeURI(profileToUpdate) + "&action=updateProfile", {json: profileUpdateJSON},  function (data) {
-      //Sync operation type
-      var operationData = JSON.parse(data);
-      console.log(operationData);
-      if (operationData.error_code >= 400){
-        alert(operationData.error);
-      }
-      setTimeout(() => { reloadPageContent(); }, 1000);
-    });
-  }
-
-  function renameProfile(){
-    var profileName = $("#newProfileName").val();
-    var profile = $("#profileToRename").val();
-    console.log("Info: renaming profile " + profile);
-    $.get("./php/lxd/profiles.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&profile=" + encodeURI(profile) + "&name=" + encodeURI(profileName) + "&action=renameProfile",  function (data) {
-      //Sync operation type
-      var operationData = JSON.parse(data);
-      console.log(operationData);
-      if (operationData.error_code >= 400){
-        alert(operationData.error);
-      }
-      setTimeout(() => { reloadPageContent(); }, 2000);
-    });
-  }
-
-  function deleteProfile(profileToDelete){
-    console.log("Info: deleting profile " + profileToDelete);
-    $.get("./php/lxd/profiles.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&profile=" + encodeURI(profileToDelete) + "&action=deleteProfile",  function (data) {
-      //Sync operation type
-      var operationData = JSON.parse(data);
-      console.log(operationData);
-      if (operationData.error_code >= 400){
-        alert(operationData.error);
-      }
-      setTimeout(() => { reloadPageContent(); }, 1000);
-    });
-  }
 
   $(document).ready(function(){
 
@@ -573,7 +547,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     //Setup Page Breadcrumb Links/Information
     $('#remoteBreadCrumb').load("./php/lxd/remote-breadcrumb.php?remote=" + encodeURI(remoteId));
     $('#remoteBreadCrumb').attr("href", "remotes-single.html?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName));
-    $('#profilesBreadCrumb').text("profiles");
+    $('#networkAclsBreadCrumb').text("network-acls");
+    $('#networkAclsBreadCrumb').attr("href", "network-acls.html?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName));
+    $('#networkAclBreadCrumb').text(networkAcl);
 
     //Load the card contents
     loadPageContent();

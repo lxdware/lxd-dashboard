@@ -194,6 +194,26 @@ if (isset($_SESSION['username'])) {
       }      
       break;
 
+    case "listStoragePoolsForSelectOption":
+      if (validateAuthorization($action)) {
+        $url = $base_url . "/1.0/storage-pools?recursion=1&project=" . $project;
+        $results = sendCurlRequest($action, "GET", $url);
+        $results = json_decode($results, true);
+        $storage_pools = (isset($results['metadata'])) ? $results['metadata'] : [];
+      
+        echo '<option value="">(not set)</option>';
+        
+        foreach ($storage_pools as $storage_pool){
+          
+          if ($storage_pool['name'] == "")
+          continue;
+      
+          echo '<option value="' . $storage_pool['name'] . '">' . htmlentities($storage_pool['name']) . '</option>';
+
+        }
+      }
+      break;
+
     case "loadStoragePool":
       $url = $base_url . "/1.0/storage-pools/" . $storage_pool . "?project=" . $project;
       $results = sendCurlRequest($action, "GET", $url);

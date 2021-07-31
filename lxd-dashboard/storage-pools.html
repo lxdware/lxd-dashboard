@@ -234,29 +234,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                   <label class="col-3 col-form-label text-right">Name: </label>
                   <div class="col-7">
                     <div class="form-group">
-                      <input type="text" id="storagePoolNameCreate" class="form-control" placeholder="Storage Pool Name" name="storage_pool_name">
+                      <input type="text" id="storagePoolNameCreate" class="form-control" placeholder="" name="storage_pool_name">
                     </div>
+                  </div>
+                  <div class="col-1">
+                    <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Enter in the name of the storage pool.'></i>
                   </div>
                 </div>
                 <div class="row">
                   <label class="col-3 col-form-label text-right">Description: </label>
                   <div class="col-7">
                     <div class="form-group">
-                      <input type="text" id="storagePoolDescriptionCreate" class="form-control" placeholder="Enter Description" name="storage_pool_description">
+                      <input type="text" id="storagePoolDescriptionCreate" class="form-control" placeholder="" name="storage_pool_description">
                     </div>
+                  </div>
+                  <div class="col-1">
+                    <i class="far fa-sm fa-question-circle" title='Enter in a description for the storage pool.'></i>
                   </div>
                 </div>
                 <div class="row">
                   <label class="col-3 col-form-label text-right">Size (GB): </label>
-                  <div class="col-4">
+                  <div class="col-7">
                     <div class="form-group">
                       <input type="number" id="storagePoolSizeCreate" class="form-control" name="storage_pool_size">
                     </div>
                   </div>
+                  <div class="col-1">
+                    <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Enter in the size in GB of the storage pool.'></i>
+                  </div>
                 </div>
                 <div class="row">
                   <label class="col-3 col-form-label text-right">Driver: </label>
-                  <div class="col-4">
+                  <div class="col-7">
                     <div class="form-group">
                       <select id="storagePoolDriverCreate" class="form-control" name="storage_pool_driver">
                         <option value="btrfs">btrfs</option>
@@ -266,6 +275,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <option value="zfs" selected>zfs</option>
                       </select>
                     </div>
+                  </div>
+                  <div class="col-1">
+                    <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Select the storage pool driver.'></i>
                   </div>
                 </div>
                 <div class="modal-footer">

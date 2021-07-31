@@ -72,16 +72,22 @@ if (!isset($_SESSION)) {
     -- updateImage
     
 - /admin/php/lxd/instances-single.php
+    -- addInstanceDiskDevice
+    -- addInstanceNetworkDevice
+    -- addInstanceProxyDevice
     -- displayInstanceInfo
     -- displayInstanceStateInfo
     -- establishInstanceWebSocketConsoleConnection
+    -- establishInstanceWebSocketExecConnection
     -- listInstanceBackups
     -- listInstanceDiskDevices
+    -- listInstanceInterfaces
     -- listInstanceLogs
     -- listInstanceNetworkDevices
     -- listInstanceProfiles
     -- listInstanceProxyDevices
     -- listInstanceSnapshots
+    -- removeInstanceDevice
     -- retrieveInstanceState
     -- retrieveHostAndPort
     -- updateInstanceBootConfiguration
@@ -123,9 +129,14 @@ if (!isset($_SESSION)) {
     -- updateInstanceInformation
 
 - /admin/php/lxd/network-acls.php
+    -- addTrafficRule
     -- createNetworkAclUsingForm
     -- createNetworkAclUsingJSON
+    -- deleteEgressRule
+    -- deleteIngressRule
     -- deleteNetworkAcl
+    -- listEgressRules
+    -- listIngressRules
     -- listNetworkAcls
     -- loadNetworkAcl
     -- renameNetworkAcl
@@ -136,6 +147,7 @@ if (!isset($_SESSION)) {
     -- createNetworkUsingJSON
     -- deleteNetwork
     -- listNetworks
+    -- listNetworksForSelectOption
     -- loadNetwork
     -- renameNetwork
     -- updateNetwork
@@ -183,20 +195,18 @@ if (!isset($_SESSION)) {
     -- listRemotes
     -- listRemotesForTopNavigation  
 
-
-
 - /admin/php/lxd/simplestreams.php
     -- addSimplestreams
     -- deleteSimplestreams
     -- listSimplestreams
     -- listSimplestreamsForSelectOption
 
-
 - /admin/php/lxd/storage-pools.php
     -- createStoragePoolUsingForm
     -- createStoragePoolUsingJSON
     -- deleteStoragePool
     -- listStoragePools
+    -- listStoragePoolsForSelectOption
     -- loadStoragePool
     -- updateStoragePool
 
@@ -205,6 +215,7 @@ if (!isset($_SESSION)) {
     -- createStorageVolumeUsingJSON
     -- deleteStorageVolume
     -- listStorageVolumes
+    -- listStorageVolumesForSelectOption
     -- loadStorageVolume
     -- updateStorageVolume
 
@@ -274,16 +285,22 @@ function getControls($roles){
             "loadImage",
             "refreshImage",
             "updateImage",
+            "addInstanceDiskDevice",
+            "addInstanceNetworkDevice",
+            "addInstanceProxyDevice",
             "displayInstanceInfo",
             "displayInstanceStateInfo",
             "establishInstanceWebSocketConsoleConnection",
+            "establishInstanceWebSocketExecConnection",
             "listInstanceBackups",
             "listInstanceDiskDevices",
+            "listInstanceInterfaces",
             "listInstanceLogs",
             "listInstanceNetworkDevices",
             "listInstanceProfiles",
             "listInstanceProxyDevices",
             "listInstanceSnapshots",
+            "removeInstanceDevice",
             "retrieveInstanceState",
             "retrieveHostAndPort",
             "updateInstanceBootConfiguration",
@@ -321,9 +338,14 @@ function getControls($roles){
             "stopInstanceForcefully",
             "unfreezeInstance",
             "updateInstanceInformation",
+            "addTrafficRule",
             "createNetworkAclUsingForm",
             "createNetworkAclUsingJSON",
+            "deleteEgressRule",
+            "deleteIngressRule",
             "deleteNetworkAcl",
+            "listEgressRules",
+            "listIngressRules",
             "listNetworkAcls",
             "loadNetworkAcl",
             "renameNetworkAcl",
@@ -332,6 +354,7 @@ function getControls($roles){
             "createNetworkUsingJSON",
             "deleteNetwork",
             "listNetworks",
+            "listNetworksForSelectOption",
             "loadNetwork",
             "renameNetwork",
             "updateNetwork",
@@ -376,12 +399,14 @@ function getControls($roles){
             "createStoragePoolUsingJSON",
             "deleteStoragePool",
             "listStoragePools",
+            "listStoragePoolsForSelectOption",
             "loadStoragePool",
             "updateStoragePool",
             "createStorageVolumeUsingForm",
             "createStorageVolumeUsingJSON",
             "deleteStorageVolume",
             "listStorageVolumes",
+            "listStorageVolumesForSelectOption",
             "loadStorageVolume",
             "updateStorageVolume"
         );
@@ -416,16 +441,22 @@ function getControls($roles){
             "loadImage",
             "refreshImage",
             "updateImage",
+            "addInstanceDiskDevice",
+            "addInstanceNetworkDevice",
+            "addInstanceProxyDevice",
             "displayInstanceInfo",
             "displayInstanceStateInfo",
             "establishInstanceWebSocketConsoleConnection",
+            "establishInstanceWebSocketExecConnection",
             "listInstanceBackups",
             "listInstanceDiskDevices",
+            "listInstanceInterfaces",
             "listInstanceLogs",
             "listInstanceNetworkDevices",
             "listInstanceProfiles",
             "listInstanceProxyDevices",
             "listInstanceSnapshots",
+            "removeInstanceDevice",
             "retrieveInstanceState",
             "retrieveHostAndPort",
             "updateInstanceBootConfiguration",
@@ -463,9 +494,14 @@ function getControls($roles){
             "stopInstanceForcefully",
             "unfreezeInstance",
             "updateInstanceInformation",
+            "addTrafficRule",
             "createNetworkAclUsingForm",
             "createNetworkAclUsingJSON",
+            "deleteEgressRule",
+            "deleteIngressRule",
             "deleteNetworkAcl",
+            "listEgressRules",
+            "listIngressRules",
             "listNetworkAcls",
             "loadNetworkAcl",
             "renameNetworkAcl",
@@ -474,6 +510,7 @@ function getControls($roles){
             "createNetworkUsingJSON",
             "deleteNetwork",
             "listNetworks",
+            "listNetworksForSelectOption",
             "loadNetwork",
             "renameNetwork",
             "updateNetwork",
@@ -518,12 +555,14 @@ function getControls($roles){
             "createStoragePoolUsingJSON",
             "deleteStoragePool",
             "listStoragePools",
+            "listStoragePoolsForSelectOption",
             "loadStoragePool",
             "updateStoragePool",
             "createStorageVolumeUsingForm",
             "createStorageVolumeUsingJSON",
             "deleteStorageVolume",
             "listStorageVolumes",
+            "listStorageVolumesForSelectOption",
             "loadStorageVolume",
             "updateStorageVolume"
         );
@@ -555,6 +594,7 @@ function getControls($roles){
             "establishInstanceWebSocketConsoleConnection",
             "listInstanceBackups",
             "listInstanceDiskDevices",
+            "listInstanceInterfaces",
             "listInstanceLogs",
             "listInstanceNetworkDevices",
             "listInstanceProfiles",
@@ -579,9 +619,12 @@ function getControls($roles){
             "stopInstance",
             "stopInstanceForcefully",
             "unfreezeInstance",
+            "listEgressRules",
+            "listIngressRules",
             "listNetworkAcls",
             "loadNetworkAcl",
             "listNetworks",
+            "listNetworksForSelectOption",
             "loadNetwork",
             "displayOperationStatus",
             "listOperations",
@@ -607,8 +650,10 @@ function getControls($roles){
             "listSimplestreams",
             "listSimplestreamsForSelectOption",
             "listStoragePools",
+            "listStoragePoolsForSelectOption",
             "loadStoragePool",
             "listStorageVolumes",
+            "listStorageVolumesForSelectOption",
             "loadStorageVolume"
         );
         $controls = array_merge($controls, $user_controls);
@@ -636,6 +681,7 @@ function getControls($roles){
             "displayInstanceStateInfo",
             "listInstanceBackups",
             "listInstanceDiskDevices",
+            "listInstanceInterfaces",
             "listInstanceLogs",
             "listInstanceNetworkDevices",
             "listInstanceProfiles",
@@ -649,9 +695,12 @@ function getControls($roles){
             "listInstancesForSelectOption",
             "loadInstanceInformation",
             "loadInstanceLog",
+            "listEgressRules",
+            "listIngressRules",
             "listNetworkAcls",
             "loadNetworkAcl",
             "listNetworks",
+            "listNetworksForSelectOption",
             "loadNetwork",
             "displayOperationStatus",
             "listOperations",
@@ -677,8 +726,10 @@ function getControls($roles){
             "listSimplestreams",
             "listSimplestreamsForSelectOption",
             "listStoragePools",
+            "listStoragePoolsForSelectOption",
             "loadStoragePool",
             "listStorageVolumes",
+            "listStorageVolumesForSelectOption",
             "loadStorageVolume"
         );
         $controls = array_merge($controls, $auditor_controls);

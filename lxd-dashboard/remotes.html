@@ -229,7 +229,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
               </div>
             </div>
           <div class="col-1">
-            <i class="far fa-sm fa-question-circle" title='IP address or FQDN of the LXD server'></i>
+            <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Enter in the IP address or FQDN of the LXD server'></i>
           </div>
           </div>
 
@@ -241,7 +241,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
               </div>
             </div>
             <div class="col-1">
-              <i class="far fa-sm fa-question-circle" title='Default LXD port is 8443'></i>
+              <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Enter in the listening network port to connect to the LXD server. Default: 8443'></i>
             </div>
           </div>
 
@@ -253,7 +253,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
               </div>
             </div>
             <div class="col-1">
-              <i class="far fa-sm fa-question-circle" title='Friendly name for the LXD server'></i>
+              <i class="far fa-sm fa-question-circle" title='Enter in a friendly name to identify the LXD server in the dashboard.'></i>
             </div>
           </div>
 
@@ -285,11 +285,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <pre id="instructionsClientCert"></pre>
               </p> 
               <p>Import the certificate file on your remote LXD server by running the command:<br /> 
-                <code style="color: #ff0000;">lxc config trust add lxdware.crt</code>
+                <code class="text-danger">lxc config trust add lxdware.crt</code>
               </p>
               <p>
                 For LXD hosts that are not part of a cluster, use the following command to listen for incoming connections:<br />
-                <code style="color: #ff0000;">lxc config set core.https_address [::]</code> 
+                <code class="text-danger">lxc config set core.https_address [::]</code> 
               </p>
             </div>
           </div>

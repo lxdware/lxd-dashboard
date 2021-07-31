@@ -235,8 +235,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                   <label class="col-3 col-form-label text-right">Name: </label>
                   <div class="col-7">
                     <div class="form-group">
-                      <input type="text" id="storageVolumeNameCreate" class="form-control" placeholder="Storage Volume Name" name="storage_volume_name">
+                      <input type="text" id="storageVolumeNameCreate" class="form-control" placeholder="" name="storage_volume_name">
                     </div>
+                  </div>
+                  <div class="col-1">
+                    <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Enter in the name of the storage volume.'></i>
                   </div>
                 </div>
                 <div class="row">
@@ -249,13 +252,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                       </select>
                     </div>
                   </div>
+                  <div class="col-1">
+                    <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Select the content type.'></i>
+                  </div>
                 </div>
                 <div class="row">
                   <label class="col-3 col-form-label text-right">Size (GB): </label>
-                  <div class="col-4">
+                  <div class="col-7">
                     <div class="form-group">
                       <input type="number" id="storageVolumeSizeCreate" class="form-control" value="10" name="storage_volume_size">
                     </div>
+                  </div>
+                  <div class="col-1">
+                    <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Enter in the size in GB for the storage volume..'></i>
                   </div>
                 </div>
                 <div class="modal-footer">
