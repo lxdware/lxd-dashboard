@@ -19,3 +19,9 @@
     color: #ff0000 !important;
     word-break: break-word;
   }
+
+  .sidebar.toggled .nav-item .nav-link {
+    text-align: center;
+    padding: 0.5rem 1rem;
+    width: 6.5rem;
+}

@@ -169,7 +169,8 @@ if (!isset($_SESSION)) {
     -- updateProfile
 
 - /admin/php/lxd/projects.php
-    -- createProject
+    -- createProjectUsingForm
+    -- createProjectUsingJSON
     -- deleteProject
     -- listProjects
     -- listProjectsForTopNavigation
@@ -370,7 +371,8 @@ function getControls($roles){
             "loadProfile",
             "renameProfile",
             "updateProfile",
-            "createProject",
+            "createProjectUsingForm",
+            "createProjectUsingJSON",
             "deleteProject",
             "listProjects",
             "listProjectsForTopNavigation",
@@ -526,7 +528,8 @@ function getControls($roles){
             "loadProfile",
             "renameProfile",
             "updateProfile",
-            "createProject",
+            "createProjectUsingForm",
+            "createProjectUsingJSON",
             "deleteProject",
             "listProjects",
             "listProjectsForTopNavigation",

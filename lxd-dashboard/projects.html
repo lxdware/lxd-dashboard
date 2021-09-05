@@ -210,7 +210,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
   <!-- Create Project Modal-->
   <div class="modal fade" id="createProjectModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Create Project</h5>
@@ -218,23 +218,651 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
               <span aria-hidden="true">×</span>
             </button>
           </div>
+
           <div class="modal-body">
-            <div class="row">
-              <label class="col-3 col-form-label text-right">Name: </label>
-              <div class="col-7">
-                <div class="form-group text-right">
-                  <input type="text" class="form-control" id="projectNameInput" required="required" placeholder="" name="name">
+
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="form-tab" data-toggle="tab" href="#form" role="tab" aria-controls="form" aria-selected="true">Form</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="json-tab" data-toggle="tab" href="#json" role="tab" aria-controls="json" aria-selected="false">JSON</a>
+              </li>
+            </ul>
+
+            <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade show active" id="form" role="tabpanel" aria-labelledby="form-tab">
+                <br />
+
+                <div class="row">
+                  <label class="col-3 col-form-label text-right">Name: </label>
+                  <div class="col-7">
+                    <div class="form-group text-right">
+                      <input type="text" class="form-control" id="projectNameInput" required="required" placeholder="" name="projectNameInput">
+                    </div>
+                  </div>
+                  <div class="col-1">
+                    <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Enter in a name for the project.'></i>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <label class="col-3 col-form-label text-right">Description: </label>
+                  <div class="col-7">
+                    <div class="form-group text-right">
+                      <input type="text" class="form-control" id="projectDescriptionInput" required="required" placeholder="" name="projectDescriptionInput">
+                    </div>
+                  </div>
+                  <div class="col-1">
+                    <i class="far fa-sm fa-question-circle" title='Enter in a description for the project.'></i>
+                  </div>
+                </div>
+
+                <div class="row" id="projectFeaturesImagesRow">
+                  <label class="col-3 col-form-label text-right">features.images: </label>
+                  <div class="col-7">
+                    <div class="form-group">
+                      <select id="projectFeaturesImagesInput" onchange="" class="form-control" name="projectFeaturesImagesInput">
+                        <option value="">(not set)</option>
+                        <option value="true">true</option>
+                        <option value="false">false</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-1">
+                    <i class="far fa-sm fa-question-circle" title='Select whether or not to seperate images and image aliases for this project. Default: true.'></i>
+                  </div>
+                </div>
+
+                <div class="row" id="projectFeaturesNetworksRow">
+                  <label class="col-3 col-form-label text-right">features.networks: </label>
+                  <div class="col-7">
+                    <div class="form-group">
+                      <select id="projectFeaturesNetworksInput" onchange="" class="form-control" name="projectFeaturesNetworksInput ">
+                        <option value="">(not set)</option>
+                        <option value="true">true</option>
+                        <option value="false">false</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-1">
+                    <i class="far fa-sm fa-question-circle" title='Select whether or not to seperate networks for this project. Default: false.'></i>
+                  </div>
+                </div>
+
+                <div class="row" id="projectFeaturesProfilesRow">
+                  <label class="col-3 col-form-label text-right">features.profiles: </label>
+                  <div class="col-7">
+                    <div class="form-group">
+                      <select id="projectFeaturesProfilesInput" onchange="" class="form-control" name="projectFeaturesProfilesInput">
+                        <option value="">(not set)</option>
+                        <option value="true">true</option>
+                        <option value="false">false</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-1">
+                    <i class="far fa-sm fa-question-circle" title='Select whether or not to seperate profiles for this project. Default: true.'></i>
+                  </div>
+                </div>
+
+                <div class="row" id="projectFeaturesStorageVolumesRow">
+                  <label class="col-3 col-form-label text-right">features.storage.volumes: </label>
+                  <div class="col-7">
+                    <div class="form-group">
+                      <select id="projectFeaturesStorageVolumesInput" onchange="" class="form-control" name="projectFeaturesStorageVolumesInput">
+                        <option value="">(not set)</option>
+                        <option value="true">true</option>
+                        <option value="false">false</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-1">
+                    <i class="far fa-sm fa-question-circle" title='Select whether or not to seperate storage volumes for this project. Default: true.'></i>
+                  </div>
+                </div>
+
+                <hr>
+
+                <div id="accordionConfigurationProperties">
+                  <h2>
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#configurationProperties" aria-expanded="false" aria-controls="configurationProperties">
+                      Configuration Properties
+                    </button>
+                  </h2> 
+                  <div id="configurationProperties" class="collapse" aria-labelledby="configurationProperties">
+
+                    <div class="row" id="projectBackupsCompressionAlgorithmRow">
+                      <label class="col-4 col-form-label text-right">backups.compression_algorithm: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectBackupsCompressionAlgorithmInput" onchange="" class="form-control" name="projectBackupsCompressionAlgorithmInput">
+                            <option value="">(not set)</option>
+                            <option value="bzip2">bzip2</option>
+                            <option value="gzip">gzip</option>
+                            <option value="lzma">lzma</option>
+                            <option value="none">none</option>
+                            <option value="xz">xz</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select the compression algorithm to use for backups in the project. Default: (not set)'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectImagesAutoUpdateCachedRow">
+                      <label class="col-4 col-form-label text-right">images.auto_update_cached: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectImagesAutoUpdateCachedInput" onchange="" class="form-control" name="projectImagesAutoUpdateCachedInput">
+                            <option value="">(not set)</option>
+                            <option value="true">true</option>
+                            <option value="false">false</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to automatically update images that LXD caches. Default: (not set).'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectImagesAutoUpdateIntervalRow">
+                      <label class="col-4 col-form-label text-right">images.auto_update_interval: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="number" id="projectImagesAutoUpdateIntervalInput" class="form-control" placeholder="" name="projectImagesAutoUpdateIntervalInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the hourly interval for the system to look for updates on cached images. Use 0 to disable.'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectImagesCompressionAlgorithmRow">
+                      <label class="col-4 col-form-label text-right">images.compression_algorithm: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectImagesCompressionAlgorithmInput" onchange="" class="form-control" name="projectImagesCompressionAlgorithmInput">
+                            <option value="">(not set)</option>
+                            <option value="bzip2">bzip2</option>
+                            <option value="gzip">gzip</option>
+                            <option value="lzma">lzma</option>
+                            <option value="none">none</option>
+                            <option value="xz">xz</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select the compression algorithm to use for images in the project. Default: (not set)'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectImagesDefaultArchitectureRow">
+                      <label class="col-4 col-form-label text-right">images.default_architecture: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="projectImagesDefaultArchitectureInput" class="form-control" placeholder="" name="projectImagesDefaultArchitectureInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the default architecture that should be used in a mixed architecture cluster.'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectImagesRemoteCacheExpiryRow">
+                      <label class="col-4 col-form-label text-right">images.remote_cache_expiry: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="number" id="projectImagesRemoteCacheExpiryInput" class="form-control" placeholder="" name="projectImagesRemoteCacheExpiryInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the number of days unused cached remote images will be flushed from the project.'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectLimitsContainersRow">
+                      <label class="col-4 col-form-label text-right">limits.containers: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="number" id="projectLimitsContainersInput" class="form-control" placeholder="" name="projectLimitsContainersInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the maximum number of containers that can be created within the project. Default: (not set)'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectLimitsCpuRow">
+                      <label class="col-4 col-form-label text-right">limits.cpu: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="number" id="projectLimitsCpuInput" class="form-control" placeholder="" name="projectLimitsCpuInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the maximum value for the total sum of all individual "limits.cpu" configs set on instances within the project. Default: (not set)'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectLimitsDiskRow">
+                      <label class="col-4 col-form-label text-right">limits.disk: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="projectLimitsDiskInput" class="form-control" placeholder="" name="projectLimitsDiskInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the maximum value of total disk space used by all volumes and images within the project. Default: (not set)'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectLimitsInstancesRow">
+                      <label class="col-4 col-form-label text-right">limits.instances: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="number" id="projectLimitsInstancesInput" class="form-control" placeholder="" name="projectLimitsInstancesInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the maximum number of instances that can be created within the project. Default: (not set)'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectLimitsMemoryRow">
+                      <label class="col-4 col-form-label text-right">limits.memory: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="projectLimitsMemoryInput" class="form-control" placeholder="" name="projectLimitsMemoryInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the maximum value for the total sum of all individual "limits.memory" configs set on instances within the project. Default: (not set)'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectLimitsNetworksRow">
+                      <label class="col-4 col-form-label text-right">limits.networks: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="number" id="projectLimitsNetworksInput" class="form-control" placeholder="" name="projectLimitsNetworksInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the maximum number of networks within the project. Default: (not set)'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectLimitsProcessesRow">
+                      <label class="col-4 col-form-label text-right">limits.processes: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="number" id="projectLimitsProcessesInput" class="form-control" placeholder="" name="projectLimitsProcessesInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the maximum value for the total sum of all individual "limits.processes" configs set on instances within the project. Default: (not set)'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectLimitsVirtualMachinesRow">
+                      <label class="col-4 col-form-label text-right">limits.virtual-machines: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="number" id="projectLimitsVirtualMachinesInput" class="form-control" placeholder="" name="projectLimitsVirtualMachinesInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the maximum number of virtual machines that can be created within the project. Default: (not set)'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedRow">
+                      <label class="col-4 col-form-label text-right">restricted: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectRestrictedInput" onchange="changeRestrictedOptionsDisplay()" class="form-control" name="projectRestrictedInput">
+                            <option value="">(not set)</option>
+                            <option value="true">true</option>
+                            <option value="false">false</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether to block access to security-sensitive LXD features. Default: false'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedBackupsRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.backups: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectRestrictedBackupsInput" onchange="" class="form-control" name="projectRestrictedBackupsInput">
+                            <option value="">(not set)</option>
+                            <option value="allow">allow</option>
+                            <option value="block">block</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to prevent the creation of instances or volume backups within the project. Default: block'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedClusterTargetRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.cluster.target: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectRestrictedClusterTargetInput" onchange="" class="form-control" name="projectRestrictedClusterTargetInput">
+                            <option value="">(not set)</option>
+                            <option value="allow">allow</option>
+                            <option value="block">block</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to prevent the use of low-level container options like raw.lxc, raw.idmap, volatile, etc. within the project. Default: block'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedContainersLowlevelRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.containers.lowlevel: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectRestrictedContainersLowlevelInput" onchange="" class="form-control" name="projectRestrictedContainersLowlevelInput">
+                            <option value="">(not set)</option>
+                            <option value="allow">allow</option>
+                            <option value="block">block</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to prevent the use of low-level container options like raw.lxc, raw.idmap, volatile, etc. within the project. Default: block'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedContainersNestingRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.containers.nesting: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectRestrictedContainersNestingInput" onchange="" class="form-control" name="projectRestrictedContainersNestingInput">
+                            <option value="">(not set)</option>
+                            <option value="allow">allow</option>
+                            <option value="block">block</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to prevent setting "security.nesting=true" within the project. Default: block'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedContainersPrivilegeRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.containers.privilege: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectRestrictedContainersPrivilegeInput" onchange="" class="form-control" name="projectRestrictedContainersPrivilegeInput">
+                            <option value="">(not set)</option>
+                            <option value="allow">allow</option>
+                            <option value="isolated">isolated</option>
+                            <option value="unprivileged">unprivileged</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select "allow" for no restrictions, "isolated" to prevent setting both "security.privileged=true" and "security.idmap.isolated=true", and select "unprivileged" to prevent setting "security.privileged=true". Default: unprivileged'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedDevicesDiskRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.devices.disk: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectRestrictedDevicesDiskInput" onchange="" class="form-control" name="projectRestrictedDevicesDiskInput">
+                            <option value="">(not set)</option>
+                            <option value="allow">allow</option>
+                            <option value="block">block</option>
+                            <option value="managed">managed</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select "allow" for no restrictions, "block" to prevent using disk devices except root, and "managed" to allow the use of disk devices if "pool=" is set. Default: managed'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedDevicesGpuRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.devices.gpu: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectRestrictedDevicesGpuInput" onchange="" class="form-control" name="projectRestrictedDevicesGpuInput">
+                            <option value="">(not set)</option>
+                            <option value="allow">allow</option>
+                            <option value="block">block</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to allow the use of "gpu" type devices. Default: blocked'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedDevicesInfinibandRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.devices.infiniband: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectRestrictedDevicesInfinibandInput" onchange="" class="form-control" name="projectRestrictedDevicesInfinibandInput">
+                            <option value="">(not set)</option>
+                            <option value="allow">allow</option>
+                            <option value="block">block</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to allow the use of "infiniband" type devices. Default: blocked'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedDevicesNicRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.devices.nic: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectRestrictedDevicesNicInput" onchange="" class="form-control" name="projectRestrictedDevicesNicInput">
+                            <option value="">(not set)</option>
+                            <option value="allow">allow</option>
+                            <option value="block">block</option>
+                            <option value="managed">managed</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select "allow" for no restrictions, "block" to prevent using all network devices, and "managed" to allow the use of network devices if "network=" is set. Default: managed'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedDevicesPciRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.devices.pci: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectRestrictedDevicesPciInput" onchange="" class="form-control" name="projectRestrictedDevicesPciInput">
+                            <option value="">(not set)</option>
+                            <option value="allow">allow</option>
+                            <option value="block">block</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to allow the use of "pci" type devices. Default: blocked'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedDevicesProxyRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.devices.proxy: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectRestrictedDevicesProxyInput" onchange="" class="form-control" name="projectRestrictedDevicesProxyInput">
+                            <option value="">(not set)</option>
+                            <option value="allow">allow</option>
+                            <option value="block">block</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to allow the use of "proxy" type devices. Default: blocked'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedDevicesUnixBlockRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.devices.unix-block: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectRestrictedDevicesUnixBlockInput" onchange="" class="form-control" name="projectRestrictedDevicesUnixBlockInput">
+                            <option value="">(not set)</option>
+                            <option value="allow">allow</option>
+                            <option value="block">block</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to allow the use of "unix-block" type devices. Default: blocked'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedDevicesUnixCharRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.devices.unix-char: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectRestrictedDevicesUnixCharInput" onchange="" class="form-control" name="projectRestrictedDevicesUnixCharInput">
+                            <option value="">(not set)</option>
+                            <option value="allow">allow</option>
+                            <option value="block">block</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to allow the use of "unix-char" type devices. Default: blocked'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedDevicesUnixHotplugRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.devices.unix-hotplug: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectRestrictedDevicesUnixHotplugInput" onchange="" class="form-control" name="projectRestrictedDevicesUnixHotplugInput">
+                            <option value="">(not set)</option>
+                            <option value="allow">allow</option>
+                            <option value="block">block</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to allow the use of "unix-hotplug" type devices. Default: blocked'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedDevicesUsbRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.devices.usb: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectRestrictedDevicesUsbInput" onchange="" class="form-control" name="projectRestrictedDevicesUsbInput">
+                            <option value="">(not set)</option>
+                            <option value="allow">allow</option>
+                            <option value="block">block</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to allow the use of "usb" type devices. Default: blocked'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedNetworksSubnetsRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.networks.subnets: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="projectRestrictedNetworksSubnetsInput" class="form-control" placeholder="" name="projectRestrictedNetworksSubnetsInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in a comma seperated list of network subnets allocated for use in this project. Use the format <uplink>:<subnet>. Default: blocked'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedNetworksUplinksRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.networks.uplinks: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="projectRestrictedNetworksUplinksInput" class="form-control" placeholder="" name="projectRestrictedNetworksUplinksInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in a comma seperated list of network names that can be used as uplinks for this project. Default: blocked'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedSnapshotsRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.snapshots: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectRestrictedSnapshotsInput" onchange="" class="form-control" name="projectRestrictedSnapshotsInput">
+                            <option value="">(not set)</option>
+                            <option value="allow">allow</option>
+                            <option value="block">block</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to allow the creation of instance and volume snaphots. Default: blocked'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="projectRestrictedVirtualMachinesLowlevelRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">restricted.virtual-machines.lowlevel: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="projectRestrictedVirtualMachinesLowlevelInput" onchange="" class="form-control" name="projectRestrictedVirtualMachinesLowlevelInput">
+                            <option value="">(not set)</option>
+                            <option value="allow">allow</option>
+                            <option value="block">block</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to allow the use of low-level virtual-machine options like raw.qemu, volatile, etc. Default: blocked'></i>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                  <a class="btn btn-primary" href="#" onclick="createProjectUsingForm()" data-dismiss="modal">Submit</a>
                 </div>
               </div>
-              <div class="col-1">
-                <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Enter in a name for the project.'></i>
+
+              <div class="tab-pane fade" id="json" role="tabpanel" aria-labelledby="json-tab">
+                <br />
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group text-right">
+                      <pre>
+                        <textarea name="json" class="form-control" id="jsonCreateInput" rows="16" placeholder="Enter JSON data"></textarea>
+                      </pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                  <a class="btn btn-primary" href="#" onclick="createProjectUsingJSON()" data-dismiss="modal">Submit</a>
+                </div>
               </div>
             </div>
+
           </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="#" onclick="createProject()" data-dismiss="modal">Ok</a>
-          </div>
+  
       </div>
     </div>
   </div>
@@ -407,6 +1035,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         { title: "Name" },
         { title: "Description" },
         { title: "Features Images" },
+        { title: "Features Networks" },
         { title: "Features Profiles" },
         { title: "Features Storage Volumes" },
         { title: "Action" }
@@ -424,10 +1053,105 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     setInterval(() => { reloadPageContent(); }, 5000);
   }
 
-  function createProject(){
-    var projectToCreate = $("#projectNameInput").val();
-    console.log("Info: creating project " + projectToCreate);
-    $.get("./php/lxd/projects.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&name=" + encodeURI(projectToCreate) + "&action=createProject",  function (data) {
+  function createProjectUsingForm(){
+    var projectNameInput = $("#projectNameInput").val();
+    var projectDescriptionInput = $("#projectDescriptionInput").val();
+    var projectFeaturesImagesInput = $("#projectFeaturesImagesInput").val();
+    var projectFeaturesNetworksInput = $("#projectFeaturesNetworksInput").val();
+    var projectFeaturesProfilesInput = $("#projectFeaturesProfilesInput").val();
+    var projectFeaturesStorageVolumesInput = $("#projectFeaturesStorageVolumesInput").val();
+    var projectBackupsCompressionAlgorithmInput = $("#projectBackupsCompressionAlgorithmInput").val();
+    var projectImagesAutoUpdateCachedInput = $("#projectImagesAutoUpdateCachedInput").val();
+    var projectImagesAutoUpdateIntervalInput = $("#projectImagesAutoUpdateIntervalInput").val();
+    var projectImagesCompressionAlgorithmInput = $("#projectImagesCompressionAlgorithmInput").val();
+    var projectImagesDefaultArchitectureInput = $("#projectImagesDefaultArchitectureInput").val();
+    var projectImagesRemoteCacheExpiryInput = $("#projectImagesRemoteCacheExpiryInput").val();
+    var projectLimitsContainersInput = $("#projectLimitsContainersInput").val();
+    var projectLimitsCpuInput = $("#projectLimitsCpuInput").val();
+    var projectLimitsDiskInput = $("#projectLimitsDiskInput").val();
+    var projectLimitsInstancesInput = $("#projectLimitsInstancesInput").val();
+    var projectLimitsMemoryInput = $("#projectLimitsMemoryInput").val();
+    var projectLimitsNetworksInput = $("#projectLimitsNetworksInput").val();
+    var projectLimitsProcessesInput = $("#projectLimitsProcessesInput").val();
+    var projectLimitsVirtualMachinesInput = $("#projectLimitsVirtualMachinesInput").val();
+    var projectRestrictedInput = $("#projectRestrictedInput").val();
+    var projectRestrictedBackupsInput = $("#projectRestrictedBackupsInput").val();
+    var projectRestrictedClusterTargetInput = $("#projectRestrictedClusterTargetInput").val();
+    var projectRestrictedContainersLowlevelInput = $("#projectRestrictedContainersLowlevelInput").val();
+    var projectRestrictedContainersNestingInput = $("#projectRestrictedContainersNestingInput").val();
+    var projectRestrictedContainersPrivilegeInput = $("#projectRestrictedContainersPrivilegeInput").val();
+    var projectRestrictedDevicesDiskInput = $("#projectRestrictedDevicesDiskInput").val();
+    var projectRestrictedDevicesGpuInput = $("#projectRestrictedDevicesGpuInput").val();
+    var projectRestrictedDevicesInfinibandInput = $("#projectRestrictedDevicesInfinibandInput").val();
+    var projectRestrictedDevicesNicInput = $("#projectRestrictedDevicesNicInput").val();
+    var projectRestrictedDevicesPciInput = $("#projectRestrictedDevicesPciInput").val();
+    var projectRestrictedDevicesProxyInput = $("#projectRestrictedDevicesProxyInput").val();
+    var projectRestrictedDevicesUnixBlockInput = $("#projectRestrictedDevicesUnixBlockInput").val();
+    var projectRestrictedDevicesUnixCharInput = $("#projectRestrictedDevicesUnixCharInput").val();
+    var projectRestrictedDevicesUnixHotplugInput = $("#projectRestrictedDevicesUnixHotplugInput").val();
+    var projectRestrictedDevicesUsbInput = $("#projectRestrictedDevicesUsbInput").val();
+    var projectRestrictedNetworksSubnetsInput = $("#projectRestrictedNetworksSubnetsInput").val();
+    var projectRestrictedNetworksUplinksInput = $("#projectRestrictedNetworksUplinksInput").val();
+    var projectRestrictedSnapshotsInput = $("#projectRestrictedSnapshotsInput").val();
+    var projectRestrictedVirtualMachinesLowlevelInput = $("#projectRestrictedVirtualMachinesLowlevelInput").val();
+    
+    console.log("Info: creating project " + projectNameInput);
+    $.get("./php/lxd/projects.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + 
+    "&name=" + encodeURI(projectNameInput) + 
+    "&description=" + encodeURI(projectDescriptionInput) + 
+    "&features_images=" + encodeURI(projectFeaturesImagesInput) + 
+    "&features_networks=" + encodeURI(projectFeaturesNetworksInput) + 
+    "&features_profiles=" + encodeURI(projectFeaturesProfilesInput) + 
+    "&features_storage_volumes=" + encodeURI(projectFeaturesStorageVolumesInput) + 
+    "&backups_compression_algorithm=" + encodeURI(projectBackupsCompressionAlgorithmInput) + 
+    "&images_auto_update_cached=" + encodeURI(projectImagesAutoUpdateCachedInput) + 
+    "&images_auto_update_interval=" + encodeURI(projectImagesAutoUpdateIntervalInput) + 
+    "&images_compression_algorithm=" + encodeURI(projectImagesCompressionAlgorithmInput) + 
+    "&images_default_architecture=" + encodeURI(projectImagesDefaultArchitectureInput) + 
+    "&images_remote_cache_expiry=" + encodeURI(projectImagesRemoteCacheExpiryInput) + 
+    "&limits_containers=" + encodeURI(projectLimitsContainersInput) + 
+    "&limits_cpu=" + encodeURI(projectLimitsCpuInput) + 
+    "&limits_disk=" + encodeURI(projectLimitsDiskInput) + 
+    "&limits_instances=" + encodeURI(projectLimitsInstancesInput) + 
+    "&limits_memory=" + encodeURI(projectLimitsMemoryInput) + 
+    "&limits_networks=" + encodeURI(projectLimitsNetworksInput) + 
+    "&limits_processes=" + encodeURI(projectLimitsProcessesInput) + 
+    "&limits_virtual_machines=" + encodeURI(projectLimitsVirtualMachinesInput) + 
+    "&restricted=" + encodeURI(projectRestrictedInput) + 
+    "&restricted_backups=" + encodeURI(projectRestrictedBackupsInput) + 
+    "&restricted_cluster_target=" + encodeURI(projectRestrictedClusterTargetInput) + 
+    "&restricted_containers_lowlevel=" + encodeURI(projectRestrictedContainersLowlevelInput) + 
+    "&restricted_containers_nesting=" + encodeURI(projectRestrictedContainersNestingInput) + 
+    "&restricted_containers_privilege=" + encodeURI(projectRestrictedContainersPrivilegeInput) + 
+    "&restricted_devices_disk=" + encodeURI(projectRestrictedDevicesDiskInput) + 
+    "&restricted_devices_gpu=" + encodeURI(projectRestrictedDevicesGpuInput) + 
+    "&restricted_devices_infiniband=" + encodeURI(projectRestrictedDevicesInfinibandInput) + 
+    "&restricted_devices_nic=" + encodeURI(projectRestrictedDevicesNicInput) + 
+    "&restricted_devices_pci=" + encodeURI(projectRestrictedDevicesPciInput) + 
+    "&restricted_devices_proxy=" + encodeURI(projectRestrictedDevicesProxyInput) + 
+    "&restricted_devices_unix_block=" + encodeURI(projectRestrictedDevicesUnixBlockInput) + 
+    "&restricted_devices_unix_char=" + encodeURI(projectRestrictedDevicesUnixCharInput) + 
+    "&restricted_devices_unix_hotplug=" + encodeURI(projectRestrictedDevicesUnixHotplugInput) + 
+    "&restricted_devices_usb=" + encodeURI(projectRestrictedDevicesUsbInput) + 
+    "&restricted_networks_subnets=" + encodeURI(projectRestrictedNetworksSubnetsInput) + 
+    "&restricted_networks_uplinks=" + encodeURI(projectRestrictedNetworksUplinksInput) + 
+    "&restricted_snapshots=" + encodeURI(projectRestrictedSnapshotsInput) + 
+    "&restricted_virtual_machines_lowlevel=" + encodeURI(projectRestrictedVirtualMachinesLowlevelInput) + 
+    "&action=createProjectUsingForm",  function (data) {
+      //Sync operation type
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.error_code >= 400){
+        alert(operationData.error);
+      }
+      setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function createProjectUsingJSON(){
+    var projectCreateJSON = $("#jsonCreateInput").val();
+    console.log("Info: creating project");
+    $.post("./php/lxd/projects.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=createProjectUsingJSON", {json: projectCreateJSON},  function (data) {
       //Sync operation type
       var operationData = JSON.parse(data);
       console.log(operationData);
@@ -503,6 +1227,52 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     });
   }
 
+  function changeRestrictedOptionsDisplay(){
+    var projectRestrictedInput = $("#projectRestrictedInput").val();
+
+    if (projectRestrictedInput == "true"){
+      $("#projectRestrictedBackupsRow").show();
+      $("#projectRestrictedClusterTargetRow").show();
+      $("#projectRestrictedContainersLowlevelRow").show();
+      $("#projectRestrictedContainersNestingRow").show();
+      $("#projectRestrictedContainersPrivilegeRow").show();
+      $("#projectRestrictedDevicesDiskRow").show();
+      $("#projectRestrictedDevicesGpuRow").show();
+      $("#projectRestrictedDevicesInfinibandRow").show();
+      $("#projectRestrictedDevicesNicRow").show();
+      $("#projectRestrictedDevicesPciRow").show();
+      $("#projectRestrictedDevicesProxyRow").show();
+      $("#projectRestrictedDevicesUnixBlockRow").show();
+      $("#projectRestrictedDevicesUnixCharRow").show();
+      $("#projectRestrictedDevicesUnixHotplugRow").show();
+      $("#projectRestrictedDevicesUsbRow").show();
+      $("#projectRestrictedNetworksSubnetsRow").show();
+      $("#projectRestrictedNetworksUplinksRow").show();
+      $("#projectRestrictedSnapshotsRow").show();
+      $("#projectRestrictedVirtualMachinesLowlevelRow").show();
+    }
+    else {
+      $("#projectRestrictedBackupsRow").hide();
+      $("#projectRestrictedClusterTargetRow").hide();
+      $("#projectRestrictedContainersLowlevelRow").hide();
+      $("#projectRestrictedContainersNestingRow").hide();
+      $("#projectRestrictedContainersPrivilegeRow").hide();
+      $("#projectRestrictedDevicesDiskRow").hide();
+      $("#projectRestrictedDevicesGpuRow").hide();
+      $("#projectRestrictedDevicesInfinibandRow").hide();
+      $("#projectRestrictedDevicesNicRow").hide();
+      $("#projectRestrictedDevicesPciRow").hide();
+      $("#projectRestrictedDevicesProxyRow").hide();
+      $("#projectRestrictedDevicesUnixBlockRow").hide();
+      $("#projectRestrictedDevicesUnixCharRow").hide();
+      $("#projectRestrictedDevicesUnixHotplugRow").hide();
+      $("#projectRestrictedDevicesUsbRow").hide();
+      $("#projectRestrictedNetworksSubnetsRow").hide();
+      $("#projectRestrictedNetworksUplinksRow").hide();
+      $("#projectRestrictedSnapshotsRow").hide();
+      $("#projectRestrictedVirtualMachinesLowlevelRow").hide();
+    }
+  }
 
   $(document).ready(function(){
 

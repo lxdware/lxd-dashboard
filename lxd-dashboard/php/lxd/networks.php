@@ -102,95 +102,238 @@ if (isset($_SESSION['username'])) {
   switch ($action) {
 
     case "createNetworkUsingForm":
-      $url = $base_url . "/1.0/networks?project=" . $project;
-      $device_array = array();
-      $device_array['name'] = $name;
-      $device_array['type'] = $type;
-      $device_array['description'] = $description;
 
-      if ($type == "bridge"){
-        if (!empty($bridge_driver)){ $device_array['config']['bridge.driver'] = $bridge_driver;}
-        if (!empty($bridge_external_interfaces)){ $device_array['config']['bridge.external_interfaces'] = $bridge_external_interfaces;}
-        if (!empty($bridge_hwaddr)){ $device_array['config']['bridge.hwaddr'] = $bridge_hwaddr;}
-        if (!empty($bridge_mode)){ $device_array['config']['bridge.mode'] = $bridge_mode;}
-        if (!empty($bridge_mtu)){ $device_array['config']['bridge.mtu'] = $bridge_mtu;}
-        if (!empty($dns_domain)){ $device_array['config']['dns.domain'] = $dns_domain;}
-        if (!empty($dns_mode)){ $device_array['config']['dns.mode'] = $dns_mode;}
-        if (!empty($dns_search)){ $device_array['config']['dns.search'] = $dns_search;}
-        if (!empty($fan_overlay_subnet)){ $device_array['config']['fan.overlay_subnet'] = $fan_overlay_subnet;}
-        if (!empty($fan_type)){ $device_array['config']['fan.type'] = $fan_type;}
-        if (!empty($fan_underlay_subnet)){ $device_array['config']['fan.underlay_subnet'] = $fan_underlay_subnet;}
-        if (!empty($ipv4_address)){ $device_array['config']['ipv4.address'] = $ipv4_address;}
-        if (!empty($ipv4_dhcp)){ $device_array['config']['ipv4.dhcp'] = $ipv4_dhcp;}
-        if (!empty($ipv4_dhcp_expiry)){ $device_array['config']['ipv4.dhcp.expiry'] = $ipv4_dhcp_expiry;}
-        if (!empty($ipv4_dhcp_gateway)){ $device_array['config']['ipv4.dhcp.gateway'] = $ipv4_dhcp_gateway;}
-        if (!empty($ipv4_dhcp_ranges)){ $device_array['config']['ipv4.dhcp.ranges'] = $ipv4_dhcp_ranges;}
-        if (!empty($ipv4_firewall)){ $device_array['config']['ipv4.firewall'] = $ipv4_firewall;}
-        if (!empty($ipv4_nat_address)){ $device_array['config']['ipv4.nat.address'] = $ipv4_nat_address;}
-        if (!empty($ipv4_nat)){ $device_array['config']['ipv4.nat'] = $ipv4_nat;}
-        if (!empty($ipv4_nat_order)){ $device_array['config']['ipv4.nat.order'] = $ipv4_nat_order;}
-        if (!empty($ipv4_ovn_ranges)){ $device_array['config']['ipv4.ovn.ranges'] = $ipv4_ovn_ranges;}
-        if (!empty($ipv4_routes)){ $device_array['config']['ipv4.routes'] = $ipv4_routes;}
-        if (!empty($ipv4_routing)){ $device_array['config']['ipv4.routing'] = $ipv4_routing;}
-        if (!empty($ipv6_address)){ $device_array['config']['ipv6.address'] = $ipv6_address;}
-        if (!empty($ipv6_dhcp)){ $device_array['config']['ipv6.dhcp'] = $ipv6_dhcp;}
-        if (!empty($ipv6_dhcp_expiry)){ $device_array['config']['ipv6.dhcp.expiry'] = $ipv6_dhcp_expiry;}
-        if (!empty($ipv6_dhcp_ranges)){ $device_array['config']['ipv6.dhcp.ranges'] = $ipv6_dhcp_ranges;}
-        if (!empty($ipv6_dhcp_stateful)){ $device_array['config']['ipv6.dhcp.stateful'] = $ipv6_dhcp_stateful;}
-        if (!empty($ipv6_firewall)){ $device_array['config']['ipv6.firewall'] = $ipv6_firewall;}
-        if (!empty($ipv6_nat_address)){ $device_array['config']['ipv6.nat.address'] = $ipv6_nat_address;}
-        if (!empty($ipv6_nat)){ $device_array['config']['ipv6.nat'] = $ipv6_nat;}
-        if (!empty($ipv6_nat_order)){ $device_array['config']['ipv6.nat.order'] = $ipv6_nat_order;}
-        if (!empty($ipv6_ovn_ranges)){ $device_array['config']['ipv6.ovn.ranges'] = $ipv6_ovn_ranges;}
-        if (!empty($ipv6_routes)){ $device_array['config']['ipv6.routes'] = $ipv6_routes;}
-        if (!empty($ipv6_routing)){ $device_array['config']['ipv6.routing'] = $ipv6_routing;}
-        if (!empty($maas_subnet_ipv4)){ $device_array['config']['maas.subnet.ipv4'] = $maas_subnet_ipv4;}
-        if (!empty($maas_subnet_ipv6)){ $device_array['config']['maas.subnet.ipv6'] = $maas_subnet_ipv6;}
-        if (!empty($raw_dnsmasq)){ $device_array['config']['raw.dnsmasq'] = $raw_dnsmasq;}
+      //Check to see if host is part of a cluster. Clusted hosts need network created first on each of the hosts
+      $url = $base_url . "/1.0/cluster";
+      $remote_data = sendCurlRequest($action, "GET", $url);
+      $remote_data = json_decode($remote_data, true);
+      $cluster_status = $remote_data['metadata'];
+
+      if ($cluster_status['enabled'] == true){
+        //Get a list of cluster members
+        $url = $base_url . "/1.0/cluster/members?recursion=1";
+        $cluster_api_data = sendCurlRequest($action, "GET", $url);
+        $cluster_api_data = json_decode($cluster_api_data, true);
+        $cluster_api_data = $cluster_api_data['metadata'];
+
+        //Setup Network data for REST API
+        $target_device_array = array();
+        $target_device_array['config'] = new ArrayObject();
+        $target_device_array['name'] = $name;
+        $target_device_array['type'] = $type;
+        $target_device_array['description'] = $description;
+        
+        if ($type == "bridge"){
+          if (!empty($bridge_external_interfaces)){ $target_device_array['config']['bridge.external_interfaces'] = $bridge_external_interfaces;}
+        }
+        if ($type == "macvlan" || $type == "sriov"){
+          if (!empty($parent)){ $target_device_array['config']['parent'] = $parent;}
+        }
+  
+        if ($type == "ovn"){
+        }
+  
+        if ($type == "physical"){
+          if (!empty($parent)){ $target_device_array['config']['parent'] = $parent;}
+        }
+
+        $target_data = json_encode($target_device_array);
+
+        //Loop through each cluster member to create the network, this will put the network in pending status
+        foreach ($cluster_api_data as $cluster_data){
+          $url = $base_url . "/1.0/networks?project=" . $project . "&target=".$cluster_data['server_name'];
+          $results = sendCurlRequest($action, "POST", $url, $target_data);
+        }
+
+        //Now lets create the network without target config options, moving the pending status to created
+        $url = $base_url . "/1.0/networks?project=" . $project;
+
+        //Setup Storage Pool data for REST API
+        $device_array = array();
+        $device_array['config'] = new ArrayObject();
+        $device_array['name'] = $name;
+        $device_array['type'] = $type;
+        $device_array['description'] = $description;
+        
+        if ($type == "bridge"){
+          if (!empty($bridge_driver)){ $device_array['config']['bridge.driver'] = $bridge_driver;}
+          //if (!empty($bridge_external_interfaces)){ $device_array['config']['bridge.external_interfaces'] = $bridge_external_interfaces;} //This is a target node specific setting
+          if (!empty($bridge_hwaddr)){ $device_array['config']['bridge.hwaddr'] = $bridge_hwaddr;}
+          if (!empty($bridge_mode)){ $device_array['config']['bridge.mode'] = $bridge_mode;}
+          if (!empty($bridge_mtu)){ $device_array['config']['bridge.mtu'] = $bridge_mtu;}
+          if (!empty($dns_domain)){ $device_array['config']['dns.domain'] = $dns_domain;}
+          if (!empty($dns_mode)){ $device_array['config']['dns.mode'] = $dns_mode;}
+          if (!empty($dns_search)){ $device_array['config']['dns.search'] = $dns_search;}
+          if (!empty($fan_overlay_subnet)){ $device_array['config']['fan.overlay_subnet'] = $fan_overlay_subnet;}
+          if (!empty($fan_type)){ $device_array['config']['fan.type'] = $fan_type;}
+          if (!empty($fan_underlay_subnet)){ $device_array['config']['fan.underlay_subnet'] = $fan_underlay_subnet;}
+          if (!empty($ipv4_address)){ $device_array['config']['ipv4.address'] = $ipv4_address;}
+          if (!empty($ipv4_dhcp)){ $device_array['config']['ipv4.dhcp'] = $ipv4_dhcp;}
+          if (!empty($ipv4_dhcp_expiry)){ $device_array['config']['ipv4.dhcp.expiry'] = $ipv4_dhcp_expiry;}
+          if (!empty($ipv4_dhcp_gateway)){ $device_array['config']['ipv4.dhcp.gateway'] = $ipv4_dhcp_gateway;}
+          if (!empty($ipv4_dhcp_ranges)){ $device_array['config']['ipv4.dhcp.ranges'] = $ipv4_dhcp_ranges;}
+          if (!empty($ipv4_firewall)){ $device_array['config']['ipv4.firewall'] = $ipv4_firewall;}
+          if (!empty($ipv4_nat_address)){ $device_array['config']['ipv4.nat.address'] = $ipv4_nat_address;}
+          if (!empty($ipv4_nat)){ $device_array['config']['ipv4.nat'] = $ipv4_nat;}
+          if (!empty($ipv4_nat_order)){ $device_array['config']['ipv4.nat.order'] = $ipv4_nat_order;}
+          if (!empty($ipv4_ovn_ranges)){ $device_array['config']['ipv4.ovn.ranges'] = $ipv4_ovn_ranges;}
+          if (!empty($ipv4_routes)){ $device_array['config']['ipv4.routes'] = $ipv4_routes;}
+          if (!empty($ipv4_routing)){ $device_array['config']['ipv4.routing'] = $ipv4_routing;}
+          if (!empty($ipv6_address)){ $device_array['config']['ipv6.address'] = $ipv6_address;}
+          if (!empty($ipv6_dhcp)){ $device_array['config']['ipv6.dhcp'] = $ipv6_dhcp;}
+          if (!empty($ipv6_dhcp_expiry)){ $device_array['config']['ipv6.dhcp.expiry'] = $ipv6_dhcp_expiry;}
+          if (!empty($ipv6_dhcp_ranges)){ $device_array['config']['ipv6.dhcp.ranges'] = $ipv6_dhcp_ranges;}
+          if (!empty($ipv6_dhcp_stateful)){ $device_array['config']['ipv6.dhcp.stateful'] = $ipv6_dhcp_stateful;}
+          if (!empty($ipv6_firewall)){ $device_array['config']['ipv6.firewall'] = $ipv6_firewall;}
+          if (!empty($ipv6_nat_address)){ $device_array['config']['ipv6.nat.address'] = $ipv6_nat_address;}
+          if (!empty($ipv6_nat)){ $device_array['config']['ipv6.nat'] = $ipv6_nat;}
+          if (!empty($ipv6_nat_order)){ $device_array['config']['ipv6.nat.order'] = $ipv6_nat_order;}
+          if (!empty($ipv6_ovn_ranges)){ $device_array['config']['ipv6.ovn.ranges'] = $ipv6_ovn_ranges;}
+          if (!empty($ipv6_routes)){ $device_array['config']['ipv6.routes'] = $ipv6_routes;}
+          if (!empty($ipv6_routing)){ $device_array['config']['ipv6.routing'] = $ipv6_routing;}
+          if (!empty($maas_subnet_ipv4)){ $device_array['config']['maas.subnet.ipv4'] = $maas_subnet_ipv4;}
+          if (!empty($maas_subnet_ipv6)){ $device_array['config']['maas.subnet.ipv6'] = $maas_subnet_ipv6;}
+          if (!empty($raw_dnsmasq)){ $device_array['config']['raw.dnsmasq'] = $raw_dnsmasq;}
+        }
+
+        if ($type == "macvlan" || $type == "sriov"){
+          if (!empty($maas_subnet_ipv4)){ $device_array['config']['maas.subnet.ipv4'] = $maas_subnet_ipv4;}
+          if (!empty($maas_subnet_ipv6)){ $device_array['config']['maas.subnet.ipv6'] = $maas_subnet_ipv6;}
+          if (!empty($mtu)){ $device_array['config']['mtu'] = $mtu;}
+          //if (!empty($parent)){ $device_array['config']['parent'] = $parent;} //This is a target node specific setting
+          if (!empty($vlan)){ $device_array['config']['vlan'] = $vlan;}
+        }
+  
+        if ($type == "ovn"){
+          if (!empty($bridge_hwaddr)){ $device_array['config']['bridge.hwaddr'] = $bridge_hwaddr;}
+          if (!empty($bridge_mtu)){ $device_array['config']['bridge.mtu'] = $bridge_mtu;}
+          if (!empty($dns_domain)){ $device_array['config']['dns.domain'] = $dns_domain;}
+          if (!empty($dns_search)){ $device_array['config']['dns.search'] = $dns_search;}
+          if (!empty($ipv4_address)){ $device_array['config']['ipv4.address'] = $ipv4_address;}
+          if (!empty($ipv4_dhcp)){ $device_array['config']['ipv4.dhcp'] = $ipv4_dhcp;}
+          if (!empty($ipv4_nat)){ $device_array['config']['ipv4.nat'] = $ipv4_nat;}
+          if (!empty($ipv6_address)){ $device_array['config']['ipv6.address'] = $ipv6_address;}
+          if (!empty($ipv6_dhcp)){ $device_array['config']['ipv6.dhcp'] = $ipv6_dhcp;}
+          if (!empty($ipv6_dhcp_stateful)){ $device_array['config']['ipv6.dhcp.stateful'] = $ipv6_dhcp_stateful;}
+          if (!empty($ipv6_nat)){ $device_array['config']['ipv6.nat'] = $ipv6_nat;}
+          if (!empty($network)){ $device_array['config']['network'] = $network;}
+        }
+  
+        if ($type == "physical"){
+          if (!empty($maas_subnet_ipv4)){ $device_array['config']['maas.subnet.ipv4'] = $maas_subnet_ipv4;}
+          if (!empty($maas_subnet_ipv6)){ $device_array['config']['maas.subnet.ipv6'] = $maas_subnet_ipv6;}
+          if (!empty($mtu)){ $device_array['config']['mtu'] = $mtu;}
+          //if (!empty($parent)){ $device_array['config']['parent'] = $parent;} //This is a target node specific setting
+          if (!empty($vlan)){ $device_array['config']['vlan'] = $vlan;}
+          if (!empty($ipv4_gateway)){ $device_array['config']['ipv4.gateway'] = $ipv4_gateway;}
+          if (!empty($ipv4_ovn_ranges)){ $device_array['config']['ipv4.ovn.ranges'] = $ipv4_ovn_ranges;}
+          if (!empty($ipv4_routes)){ $device_array['config']['ipv4.routes'] = $ipv4_routes;}
+          if (!empty($ipv4_routes_anycast)){ $device_array['config']['ipv4.routes.anycast'] = $ipv4_routes_anycast;}
+          if (!empty($ipv6_gateway)){ $device_array['config']['ipv6.gateway'] = $ipv6_gateway;}
+          if (!empty($ipv6_ovn_ranges)){ $device_array['config']['ipv6.ovn.ranges'] = $ipv6_ovn_ranges;}
+          if (!empty($ipv6_routes)){ $device_array['config']['ipv6.routes'] = $ipv6_routes;}
+          if (!empty($ipv6_routes_anycast)){ $device_array['config']['ipv6.routes.anycast'] = $ipv6_routes_anycast;}
+          if (!empty($dns_nameservers)){ $device_array['config']['dns.nameservers'] = $dns_nameservers;}
+          if (!empty($ovn_ingress_mode)){ $device_array['config']['ovn.ingress_mode'] = $ovn_ingress_mode;}
+        }
+
+        $data = json_encode($device_array);
+        $results = sendCurlRequest($action, "POST", $url, $data);
       }
-      if ($type == "macvlan" || $type == "sriov"){
-        if (!empty($maas_subnet_ipv4)){ $device_array['config']['maas.subnet.ipv4'] = $maas_subnet_ipv4;}
-        if (!empty($maas_subnet_ipv6)){ $device_array['config']['maas.subnet.ipv6'] = $maas_subnet_ipv6;}
-        if (!empty($mtu)){ $device_array['config']['mtu'] = $mtu;}
-        if (!empty($parent)){ $device_array['config']['parent'] = $parent;}
-        if (!empty($vlan)){ $device_array['config']['vlan'] = $vlan;}
+      else {
+        $url = $base_url . "/1.0/networks?project=" . $project;
+        $device_array = array();
+        $device_array['config'] = new ArrayObject();
+        $device_array['name'] = $name;
+        $device_array['type'] = $type;
+        $device_array['description'] = $description;
+  
+        if ($type == "bridge"){
+          if (!empty($bridge_driver)){ $device_array['config']['bridge.driver'] = $bridge_driver;}
+          if (!empty($bridge_external_interfaces)){ $device_array['config']['bridge.external_interfaces'] = $bridge_external_interfaces;}
+          if (!empty($bridge_hwaddr)){ $device_array['config']['bridge.hwaddr'] = $bridge_hwaddr;}
+          if (!empty($bridge_mode)){ $device_array['config']['bridge.mode'] = $bridge_mode;}
+          if (!empty($bridge_mtu)){ $device_array['config']['bridge.mtu'] = $bridge_mtu;}
+          if (!empty($dns_domain)){ $device_array['config']['dns.domain'] = $dns_domain;}
+          if (!empty($dns_mode)){ $device_array['config']['dns.mode'] = $dns_mode;}
+          if (!empty($dns_search)){ $device_array['config']['dns.search'] = $dns_search;}
+          if (!empty($fan_overlay_subnet)){ $device_array['config']['fan.overlay_subnet'] = $fan_overlay_subnet;}
+          if (!empty($fan_type)){ $device_array['config']['fan.type'] = $fan_type;}
+          if (!empty($fan_underlay_subnet)){ $device_array['config']['fan.underlay_subnet'] = $fan_underlay_subnet;}
+          if (!empty($ipv4_address)){ $device_array['config']['ipv4.address'] = $ipv4_address;}
+          if (!empty($ipv4_dhcp)){ $device_array['config']['ipv4.dhcp'] = $ipv4_dhcp;}
+          if (!empty($ipv4_dhcp_expiry)){ $device_array['config']['ipv4.dhcp.expiry'] = $ipv4_dhcp_expiry;}
+          if (!empty($ipv4_dhcp_gateway)){ $device_array['config']['ipv4.dhcp.gateway'] = $ipv4_dhcp_gateway;}
+          if (!empty($ipv4_dhcp_ranges)){ $device_array['config']['ipv4.dhcp.ranges'] = $ipv4_dhcp_ranges;}
+          if (!empty($ipv4_firewall)){ $device_array['config']['ipv4.firewall'] = $ipv4_firewall;}
+          if (!empty($ipv4_nat_address)){ $device_array['config']['ipv4.nat.address'] = $ipv4_nat_address;}
+          if (!empty($ipv4_nat)){ $device_array['config']['ipv4.nat'] = $ipv4_nat;}
+          if (!empty($ipv4_nat_order)){ $device_array['config']['ipv4.nat.order'] = $ipv4_nat_order;}
+          if (!empty($ipv4_ovn_ranges)){ $device_array['config']['ipv4.ovn.ranges'] = $ipv4_ovn_ranges;}
+          if (!empty($ipv4_routes)){ $device_array['config']['ipv4.routes'] = $ipv4_routes;}
+          if (!empty($ipv4_routing)){ $device_array['config']['ipv4.routing'] = $ipv4_routing;}
+          if (!empty($ipv6_address)){ $device_array['config']['ipv6.address'] = $ipv6_address;}
+          if (!empty($ipv6_dhcp)){ $device_array['config']['ipv6.dhcp'] = $ipv6_dhcp;}
+          if (!empty($ipv6_dhcp_expiry)){ $device_array['config']['ipv6.dhcp.expiry'] = $ipv6_dhcp_expiry;}
+          if (!empty($ipv6_dhcp_ranges)){ $device_array['config']['ipv6.dhcp.ranges'] = $ipv6_dhcp_ranges;}
+          if (!empty($ipv6_dhcp_stateful)){ $device_array['config']['ipv6.dhcp.stateful'] = $ipv6_dhcp_stateful;}
+          if (!empty($ipv6_firewall)){ $device_array['config']['ipv6.firewall'] = $ipv6_firewall;}
+          if (!empty($ipv6_nat_address)){ $device_array['config']['ipv6.nat.address'] = $ipv6_nat_address;}
+          if (!empty($ipv6_nat)){ $device_array['config']['ipv6.nat'] = $ipv6_nat;}
+          if (!empty($ipv6_nat_order)){ $device_array['config']['ipv6.nat.order'] = $ipv6_nat_order;}
+          if (!empty($ipv6_ovn_ranges)){ $device_array['config']['ipv6.ovn.ranges'] = $ipv6_ovn_ranges;}
+          if (!empty($ipv6_routes)){ $device_array['config']['ipv6.routes'] = $ipv6_routes;}
+          if (!empty($ipv6_routing)){ $device_array['config']['ipv6.routing'] = $ipv6_routing;}
+          if (!empty($maas_subnet_ipv4)){ $device_array['config']['maas.subnet.ipv4'] = $maas_subnet_ipv4;}
+          if (!empty($maas_subnet_ipv6)){ $device_array['config']['maas.subnet.ipv6'] = $maas_subnet_ipv6;}
+          if (!empty($raw_dnsmasq)){ $device_array['config']['raw.dnsmasq'] = $raw_dnsmasq;}
+        }
+        
+        if ($type == "macvlan" || $type == "sriov"){
+          if (!empty($maas_subnet_ipv4)){ $device_array['config']['maas.subnet.ipv4'] = $maas_subnet_ipv4;}
+          if (!empty($maas_subnet_ipv6)){ $device_array['config']['maas.subnet.ipv6'] = $maas_subnet_ipv6;}
+          if (!empty($mtu)){ $device_array['config']['mtu'] = $mtu;}
+          if (!empty($parent)){ $device_array['config']['parent'] = $parent;}
+          if (!empty($vlan)){ $device_array['config']['vlan'] = $vlan;}
+        }
+  
+        if ($type == "ovn"){
+          if (!empty($bridge_hwaddr)){ $device_array['config']['bridge.hwaddr'] = $bridge_hwaddr;}
+          if (!empty($bridge_mtu)){ $device_array['config']['bridge.mtu'] = $bridge_mtu;}
+          if (!empty($dns_domain)){ $device_array['config']['dns.domain'] = $dns_domain;}
+          if (!empty($dns_search)){ $device_array['config']['dns.search'] = $dns_search;}
+          if (!empty($ipv4_address)){ $device_array['config']['ipv4.address'] = $ipv4_address;}
+          if (!empty($ipv4_dhcp)){ $device_array['config']['ipv4.dhcp'] = $ipv4_dhcp;}
+          if (!empty($ipv4_nat)){ $device_array['config']['ipv4.nat'] = $ipv4_nat;}
+          if (!empty($ipv6_address)){ $device_array['config']['ipv6.address'] = $ipv6_address;}
+          if (!empty($ipv6_dhcp)){ $device_array['config']['ipv6.dhcp'] = $ipv6_dhcp;}
+          if (!empty($ipv6_dhcp_stateful)){ $device_array['config']['ipv6.dhcp.stateful'] = $ipv6_dhcp_stateful;}
+          if (!empty($ipv6_nat)){ $device_array['config']['ipv6.nat'] = $ipv6_nat;}
+          if (!empty($network)){ $device_array['config']['network'] = $network;}
+        }
+  
+        if ($type == "physical"){
+          if (!empty($maas_subnet_ipv4)){ $device_array['config']['maas.subnet.ipv4'] = $maas_subnet_ipv4;}
+          if (!empty($maas_subnet_ipv6)){ $device_array['config']['maas.subnet.ipv6'] = $maas_subnet_ipv6;}
+          if (!empty($mtu)){ $device_array['config']['mtu'] = $mtu;}
+          if (!empty($parent)){ $device_array['config']['parent'] = $parent;}
+          if (!empty($vlan)){ $device_array['config']['vlan'] = $vlan;}
+          if (!empty($ipv4_gateway)){ $device_array['config']['ipv4.gateway'] = $ipv4_gateway;}
+          if (!empty($ipv4_ovn_ranges)){ $device_array['config']['ipv4.ovn.ranges'] = $ipv4_ovn_ranges;}
+          if (!empty($ipv4_routes)){ $device_array['config']['ipv4.routes'] = $ipv4_routes;}
+          if (!empty($ipv4_routes_anycast)){ $device_array['config']['ipv4.routes.anycast'] = $ipv4_routes_anycast;}
+          if (!empty($ipv6_gateway)){ $device_array['config']['ipv6.gateway'] = $ipv6_gateway;}
+          if (!empty($ipv6_ovn_ranges)){ $device_array['config']['ipv6.ovn.ranges'] = $ipv6_ovn_ranges;}
+          if (!empty($ipv6_routes)){ $device_array['config']['ipv6.routes'] = $ipv6_routes;}
+          if (!empty($ipv6_routes_anycast)){ $device_array['config']['ipv6.routes.anycast'] = $ipv6_routes_anycast;}
+          if (!empty($dns_nameservers)){ $device_array['config']['dns.nameservers'] = $dns_nameservers;}
+          if (!empty($ovn_ingress_mode)){ $device_array['config']['ovn.ingress_mode'] = $ovn_ingress_mode;}
+        }
+  
+        $data = json_encode($device_array);
+        $results = sendCurlRequest($action, "POST", $url, $data);
       }
 
-      if ($type == "ovn"){
-        if (!empty($bridge_hwaddr)){ $device_array['config']['bridge.hwaddr'] = $bridge_hwaddr;}
-        if (!empty($bridge_mtu)){ $device_array['config']['bridge.mtu'] = $bridge_mtu;}
-        if (!empty($dns_domain)){ $device_array['config']['dns.domain'] = $dns_domain;}
-        if (!empty($dns_search)){ $device_array['config']['dns.search'] = $dns_search;}
-        if (!empty($ipv4_address)){ $device_array['config']['ipv4.address'] = $ipv4_address;}
-        if (!empty($ipv4_dhcp)){ $device_array['config']['ipv4.dhcp'] = $ipv4_dhcp;}
-        if (!empty($ipv4_nat)){ $device_array['config']['ipv4.nat'] = $ipv4_nat;}
-        if (!empty($ipv6_address)){ $device_array['config']['ipv6.address'] = $ipv6_address;}
-        if (!empty($ipv6_dhcp)){ $device_array['config']['ipv6.dhcp'] = $ipv6_dhcp;}
-        if (!empty($ipv6_dhcp_stateful)){ $device_array['config']['ipv6.dhcp.stateful'] = $ipv6_dhcp_stateful;}
-        if (!empty($ipv6_nat)){ $device_array['config']['ipv6.nat'] = $ipv6_nat;}
-        if (!empty($network)){ $device_array['config']['network'] = $network;}
-      }
-
-      if ($type == "physical"){
-        if (!empty($maas_subnet_ipv4)){ $device_array['config']['maas.subnet.ipv4'] = $maas_subnet_ipv4;}
-        if (!empty($maas_subnet_ipv6)){ $device_array['config']['maas.subnet.ipv6'] = $maas_subnet_ipv6;}
-        if (!empty($mtu)){ $device_array['config']['mtu'] = $mtu;}
-        if (!empty($parent)){ $device_array['config']['parent'] = $parent;}
-        if (!empty($vlan)){ $device_array['config']['vlan'] = $vlan;}
-        if (!empty($ipv4_gateway)){ $device_array['config']['ipv4.gateway'] = $ipv4_gateway;}
-        if (!empty($ipv4_ovn_ranges)){ $device_array['config']['ipv4.ovn.ranges'] = $ipv4_ovn_ranges;}
-        if (!empty($ipv4_routes)){ $device_array['config']['ipv4.routes'] = $ipv4_routes;}
-        if (!empty($ipv4_routes_anycast)){ $device_array['config']['ipv4.routes.anycast'] = $ipv4_routes_anycast;}
-        if (!empty($ipv6_gateway)){ $device_array['config']['ipv6.gateway'] = $ipv6_gateway;}
-        if (!empty($ipv6_ovn_ranges)){ $device_array['config']['ipv6.ovn.ranges'] = $ipv6_ovn_ranges;}
-        if (!empty($ipv6_routes)){ $device_array['config']['ipv6.routes'] = $ipv6_routes;}
-        if (!empty($ipv6_routes_anycast)){ $device_array['config']['ipv6.routes.anycast'] = $ipv6_routes_anycast;}
-        if (!empty($dns_nameservers)){ $device_array['config']['dns.nameservers'] = $dns_nameservers;}
-        if (!empty($ovn_ingress_mode)){ $device_array['config']['ovn.ingress_mode'] = $ovn_ingress_mode;}
-      }
-
-      $data = json_encode($device_array);
-      $results = sendCurlRequest($action, "POST", $url, $data);
       echo $results;
 
       //Send event to accounting

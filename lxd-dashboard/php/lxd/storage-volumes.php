@@ -27,13 +27,25 @@ if (isset($_SESSION['username'])) {
 
   //Declare and instantiate GET variables
   $action = (isset($_GET['action'])) ? filter_var(urldecode($_GET['action']), FILTER_SANITIZE_STRING) : "";
+  $block_filesystem = (isset($_GET['block_filesystem'])) ? filter_var(urldecode($_GET['block_filesystem']), FILTER_SANITIZE_STRING) : "";
+  $block_mount_options = (isset($_GET['block_mount_options'])) ? filter_var(urldecode($_GET['block_mount_options']), FILTER_SANITIZE_STRING) : "";
   $content_type = (isset($_GET['content_type'])) ? filter_var(urldecode($_GET['content_type']), FILTER_SANITIZE_STRING) : "";
+  $lvm_stripes = (isset($_GET['lvm_stripes'])) ? filter_var(urldecode($_GET['lvm_stripes']), FILTER_SANITIZE_STRING) : "";
+  $lvm_stripes_size = (isset($_GET['lvm_stripes_size'])) ? filter_var(urldecode($_GET['lvm_stripes_size']), FILTER_SANITIZE_STRING) : "";
   $name = (isset($_GET['name'])) ? filter_var(urldecode($_GET['name']), FILTER_SANITIZE_STRING) : "";
   $pool = (isset($_GET['pool'])) ? filter_var(urldecode($_GET['pool']), FILTER_SANITIZE_STRING) : "";
   $project = (isset($_GET['project'])) ? filter_var(urldecode($_GET['project']), FILTER_SANITIZE_STRING) : "";
   $remote = (isset($_GET['remote'])) ? filter_var(urldecode($_GET['remote']), FILTER_SANITIZE_NUMBER_INT) : "";
+  $security_shifted = (isset($_GET['security_shifted'])) ? filter_var(urldecode($_GET['security_shifted']), FILTER_SANITIZE_STRING) : "";
+  $security_unmapped = (isset($_GET['security_unmapped'])) ? filter_var(urldecode($_GET['security_unmapped']), FILTER_SANITIZE_STRING) : "";
   $size = (isset($_GET['size'])) ? filter_var(urldecode($_GET['size']), FILTER_SANITIZE_STRING) : "";
+  $snapshots_expiry = (isset($_GET['snapshots_expiry'])) ? filter_var(urldecode($_GET['snapshots_expiry']), FILTER_SANITIZE_STRING) : "";
+  $snapshots_schedule = (isset($_GET['snapshots_schedule'])) ? filter_var(urldecode($_GET['snapshots_schedule']), FILTER_SANITIZE_STRING) : "";
+  $snapshots_pattern = (isset($_GET['snapshots_pattern'])) ? filter_var(urldecode($_GET['snapshots_pattern']), FILTER_SANITIZE_STRING) : "";
   $storage_pool = (isset($_GET['storage_pool'])) ? filter_var(urldecode($_GET['storage_pool']), FILTER_SANITIZE_STRING) : "";
+  $type = (isset($_GET['type'])) ? filter_var(urldecode($_GET['type']), FILTER_SANITIZE_STRING) : "";
+  $zfs_remote_snapshots = (isset($_GET['zfs_remote_snapshots'])) ? filter_var(urldecode($_GET['zfs_remote_snapshots']), FILTER_SANITIZE_STRING) : "";
+  $zfs_use_refquota = (isset($_GET['zfs_use_refquota'])) ? filter_var(urldecode($_GET['zfs_use_refquota']), FILTER_SANITIZE_STRING) : "";
   
   //Declare and instantiate POST variables
   $json = (isset($_POST['json'])) ? $_POST['json'] : "";
@@ -55,8 +67,27 @@ if (isset($_SESSION['username'])) {
 
     case "createStorageVolumeUsingForm":
       $url = $base_url . "/1.0/storage-pools/" . $storage_pool . "/volumes?project=" . $project;
-      $data = '{"config": {"size": "'.$size.'GB"}, "name": "'.$name.'", "type": "custom", "content_type": "'.$content_type.'"}';
+
+      $device_array = array();
+      $device_array['name'] = $name;
+      $device_array['type'] = "custom"; //Currently not allowed to create storage volumes of types: container, virtual-machine, or image
+      $device_array['content_type'] = $content_type;
+      if (!empty($size)){ $device_array['config']['size'] = $size;}
+      if (!empty($block_filesystem)){ $device_array['config']['block.filesystem'] = $block_filesystem;}
+      if (!empty($block_mount_options)){ $device_array['config']['block.mount_options'] = $block_mount_options;}
+      if (!empty($security_shifted)){ $device_array['config']['security.shifted'] = $security_shifted;}
+      if (!empty($security_unmapped)){ $device_array['config']['security.unmapped'] = $security_unmapped;}
+      if (!empty($lvm_stripes)){ $device_array['config']['lvm.stripes'] = $lvm_stripes;}
+      if (!empty($lvm_stripes_size)){ $device_array['config']['lvm.stripes.size'] = $lvm_stripes_size;}
+      if (!empty($snapshots_expiry)){ $device_array['config']['snapshots.expiry'] = $snapshots_expiry;}
+      if (!empty($snapshots_schedule)){ $device_array['config']['snapshots.schedule'] = $snapshots_schedule;}
+      if (!empty($snapshots_pattern)){ $device_array['config']['snapshots.pattern'] = $snapshots_pattern;}
+      if (!empty($zfs_remote_snapshots)){ $device_array['config']['zfs.remove_snapshots'] = $zfs_remote_snapshots;}
+      if (!empty($zfs_use_refquota)){ $device_array['config']['zfs.use_refquota'] = $zfs_use_refquota;}
+
+      $data = json_encode($device_array);
       $results = sendCurlRequest($action, "POST", $url, $data);
+
       echo $results;
 
       //Send event to accounting
@@ -115,8 +146,8 @@ if (isset($_SESSION['username'])) {
 
         foreach ($storage_volumes as $storage_volume){
           
-          if ($storage_volume['name'] == "")
-          continue;
+          if ($type == "custom" && $storage_volume['type'] != $type)
+            continue;
 
           if ($i > 0){
             echo ",";

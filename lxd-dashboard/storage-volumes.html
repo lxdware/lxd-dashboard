@@ -171,6 +171,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
+                  <div class="text-right mb-3">
+                    <a class="text-primary" id="allVolumeTypesLink">View all volume types</a>
+                  </div>
                   <div class="table-responsive">
                     <table class="table" id="storageVolumeListTable" width="100%" cellspacing="0">
                     </table>
@@ -235,7 +238,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                   <label class="col-3 col-form-label text-right">Name: </label>
                   <div class="col-7">
                     <div class="form-group">
-                      <input type="text" id="storageVolumeNameCreate" class="form-control" placeholder="" name="storage_volume_name">
+                      <input type="text" id="storageVolumeNameInput" class="form-control" placeholder="" name="storage_volume_name">
                     </div>
                   </div>
                   <div class="col-1">
@@ -246,7 +249,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                   <label class="col-3 col-form-label text-right">Content Type: </label>
                   <div class="col-7">
                     <div class="form-group">
-                      <select id="storageVolumeContentTypeCreate" class="form-control" name="content_type">
+                      <select id="storageVolumeContentTypeInput" class="form-control" name="content_type">
                         <option value="block" selected>block</option>
                         <option value="filesystem">filesystem</option>
                       </select>
@@ -257,16 +260,178 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                   </div>
                 </div>
                 <div class="row">
-                  <label class="col-3 col-form-label text-right">Size (GB): </label>
+                  <label class="col-3 col-form-label text-right">Size: </label>
                   <div class="col-7">
                     <div class="form-group">
-                      <input type="number" id="storageVolumeSizeCreate" class="form-control" value="10" name="storage_volume_size">
+                      <input type="text" id="storageVolumeSizeInput" class="form-control" value="" name="storage_volume_size">
                     </div>
                   </div>
                   <div class="col-1">
-                    <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Enter in the size in GB for the storage volume..'></i>
+                    <i class="far fa-sm fa-question-circle" title='Enter in the size for the storage volume. Include a suffix for units other than bytes.'></i>
                   </div>
                 </div>
+
+                <hr>
+
+                <div id="accordionConfigurationProperties">
+                  <h2>
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#configurationProperties" aria-expanded="false" aria-controls="configurationProperties">
+                      Configuration Properties
+                    </button>
+                  </h2> 
+                  <div id="configurationProperties" class="collapse" aria-labelledby="configurationProperties">
+
+                    <div class="row" id="storageVolumeBlockFilesystemRow">
+                      <label class="col-4 col-form-label text-right">block.filesystem: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storageVolumeBlockFilesystemInput" class="form-control" placeholder="" name="storageVolumeBlockFilesystemInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the filesystem of the storage volume. Used in LVM based storage pools.'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storageVolumeBlockMountOptionsRow">
+                      <label class="col-4 col-form-label text-right">block.mount_options: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storageVolumeBlockMountOptionsInput" class="form-control" placeholder="" name="storageVolumeBlockMountOptionsInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in mount options for the block devices. Used in LVM based storage pools.'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storageVolumeSecurityShiftedRow">
+                      <label class="col-4 col-form-label text-right">security.shifted: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="storageVolumeSecurityShiftedInput" onchange="" class="form-control" name="storageVolumeSecurityShiftedInput ">
+                            <option value="">(not set)</option>
+                            <option value="true">true</option>
+                            <option value="false">false</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to enable id shifting overlay. Default: false.'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storageVolumeSecurityUnmappedRow">
+                      <label class="col-4 col-form-label text-right">security.unmapped: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="storageVolumeSecurityUnmappedInput" onchange="" class="form-control" name="storageVolumeSecurityUnmappedInput ">
+                            <option value="">(not set)</option>
+                            <option value="true">true</option>
+                            <option value="false">false</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to disable id mapping. Default: false.'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storageVolumeLvmStripesRow">
+                      <label class="col-4 col-form-label text-right">lvm.stripes: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storageVolumeLvmStripesInput" class="form-control" placeholder="" name="storageVolumeLvmStripesInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the number of stripes to use for the volume.'></i>
+                      </div>
+                    </div>
+                    
+                    <div class="row" id="storageVolumeLvmStripesSizeRow">
+                      <label class="col-4 col-form-label text-right">lvm.stripes.size: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storageVolumeLvmStripesSizeInput" class="form-control" placeholder="" name="storageVolumeLvmStripesSizeInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the size of stripes to use. Be sure to use at least 4096 bytes. Value must be a multiple of 512.'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storageVolumeSnapshotsExpiryRow">
+                      <label class="col-4 col-form-label text-right">snapshots.expiry: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storageVolumeSnapshotsExpiryInput" class="form-control" placeholder="" name="storageVolumeSnapshotsExpiryInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the time length when snapshots are to be deleted. For example, 1M, 2H, 3d, 4w, 5m, or 6y.'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storageVolumeSnapshotsScheduleRow">
+                      <label class="col-4 col-form-label text-right">snapshots.schedule: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storageVolumeSnapshotsScheduleInput" class="form-control" placeholder="" name="storageVolumeSnapshotsScheduleInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in a cron expression or a comma separated list of schedule aliases. For example, <minute> <hour> <dom> <month> <dow> or  <@hourly> <@daily> <@midnight> <@weekly> <@monthly> <@annually> <@yearly>.'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storageVolumeSnapshotsPatternRow">
+                      <label class="col-4 col-form-label text-right">snapshots.pattern: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storageVolumeSnapshotsPatternInput" class="form-control" placeholder="" name="storageVolumeSnapshotsPatternInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in a Pongo2 template string to represent the snapshot name. Default: snap%d'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storageVolumeZfsRemoveSnapshotsRow">
+                      <label class="col-4 col-form-label text-right">zfs.remove_snapshots: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="storageVolumeZfsRemoveSnapshotsInput" onchange="" class="form-control" name="storageVolumeZfsRemoveSnapshotsInput ">
+                            <option value="">(not set)</option>
+                            <option value="true">true</option>
+                            <option value="false">false</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to remove snapshots as needed. Default: (same as parent storage pool) '></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storageVolumeZfsUseRefquotaRow">
+                      <label class="col-4 col-form-label text-right">zfs.use_refquota: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="storageVolumeZfsUseRefquotaInput" onchange="" class="form-control" name="storageVolumeZfsUseRefquotaInput ">
+                            <option value="">(not set)</option>
+                            <option value="true">true</option>
+                            <option value="false">false</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to use refquota instead of quota. Default: (same as parent storage pool) '></i>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
                 <div class="modal-footer">
                   <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                   <a class="btn btn-primary" href="#" onclick="createStorageVolumeUsingForm()" data-dismiss="modal">Submit</a>
@@ -371,6 +536,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   const projectName = urlParams.get('project');
   const storagePoolName = urlParams.get('pool');  
   var storageVolumeToUpdate = "";
+  var volumeType = urlParams.get('type'); 
 
   function logout(){
     $.get("./php/aaa/authentication.php?action=deauthenticateUser", function (data) {
@@ -425,7 +591,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     $("#username").load("./php/admin/settings.php?action=displayUsername");
 
     $('#storageVolumeListTable').DataTable( {
-      ajax: "./php/lxd/storage-volumes.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&pool=" + encodeURI(storagePoolName) + "&action=listStorageVolumes",
+      ajax: "./php/lxd/storage-volumes.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&pool=" + encodeURI(storagePoolName) + "&type=" + encodeURI(volumeType) + "&action=listStorageVolumes",
       columns: [
         {},
         { title: "Name" },
@@ -449,11 +615,43 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   }
 
   function createStorageVolumeUsingForm(){
-    var storageVolumeName = $("#storageVolumeNameCreate").val();
-    var storageVolumeContentType = $("#storageVolumeContentTypeCreate").val();
-    var storageVolumeSize = $("#storageVolumeSizeCreate").val();
-    console.log("Info: creating storage volume " + storageVolumeName + " in " + storagePoolName);
-    $.get("./php/lxd/storage-volumes.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&name=" + encodeURI(storageVolumeName) + "&content_type=" + encodeURI(storageVolumeContentType) + "&size=" + encodeURI(storageVolumeSize) + "&storage_pool=" + encodeURI(storagePoolName) + "&action=createStorageVolumeUsingForm", function (data) {
+    var storageVolumeNameInput = $("#storageVolumeNameInput").val();
+    var storageVolumeContentTypeInput = $("#storageVolumeContentTypeInput").val();
+    var storageVolumeSizeInput = $("#storageVolumeSizeInput").val();
+
+    var storageVolumeBlockFilesystemInput = $("#storageVolumeBlockFilesystemInput").val();
+    var storageVolumeBlockMountOptionsInput = $("#storageVolumeBlockMountOptionsInput").val();
+    var storageVolumeSecurityShiftedInput = $("#storageVolumeSecurityShiftedInput").val();
+    var storageVolumeSecurityUnmappedInput = $("#storageVolumeSecurityUnmappedInput").val();
+    var storageVolumeLvmStripesInput = $("#storageVolumeLvmStripesInput").val();
+    var storageVolumeLvmStripesSizeInput = $("#storageVolumeLvmStripesSizeInput").val();
+    var storageVolumeSnapshotsExpiryInput = $("#storageVolumeSnapshotsExpiryInput").val();
+    var storageVolumeSnapshotsScheduleInput = $("#storageVolumeSnapshotsScheduleInput").val();
+    var storageVolumeSnapshotsPatternInput = $("#storageVolumeSnapshotsPatternInput").val();
+    var storageVolumeZfsRemoveSnapshotsInput = $("#storageVolumeZfsRemoveSnapshotsInput").val();
+    var storageVolumeZfsUseRefquotaInput = $("#storageVolumeZfsUseRefquotaInput").val();
+
+    console.log("Info: creating storage volume " + storageVolumeNameInput + " in " + storagePoolName);
+    $.get("./php/lxd/storage-volumes.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + 
+    "&name=" + encodeURI(storageVolumeNameInput) + 
+    "&content_type=" + encodeURI(storageVolumeContentTypeInput) + 
+    "&size=" + encodeURI(storageVolumeSizeInput) + 
+    "&storage_pool=" + encodeURI(storagePoolName) + 
+
+    "&block_filesystem=" + encodeURI(storageVolumeBlockFilesystemInput) + 
+    "&block_mount_options=" + encodeURI(storageVolumeBlockMountOptionsInput) + 
+    "&security_shifted=" + encodeURI(storageVolumeSecurityShiftedInput) + 
+    "&security_unmapped=" + encodeURI(storageVolumeSecurityUnmappedInput) + 
+    "&lvm_stripes=" + encodeURI(storageVolumeLvmStripesInput) + 
+    "&lvm_stripes_size=" + encodeURI(storageVolumeLvmStripesSizeInput) + 
+    "&snapshots_expiry=" + encodeURI(storageVolumeSnapshotsExpiryInput) + 
+    "&snapshots_schedule=" + encodeURI(storageVolumeSnapshotsScheduleInput) + 
+    "&snapshots_pattern=" + encodeURI(storageVolumeSnapshotsPatternInput) + 
+    "&zfs_remote_snapshots=" + encodeURI(storageVolumeZfsRemoveSnapshotsInput) + 
+    "&zfs_use_refquota=" + encodeURI(storageVolumeZfsUseRefquotaInput) + 
+
+    
+    "&action=createStorageVolumeUsingForm", function (data) {
       //Sync operation type
       var operationData = JSON.parse(data);
       console.log(operationData);
@@ -552,6 +750,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     $.get("./about.html", function (data) {
       $("#about").html(data);
     });
+
+    //Setup hyperlink to show all volume types
+    if (volumeType != "custom"){
+      $('#allVolumeTypesLink').hide()
+    }
+    else{
+      $('#allVolumeTypesLink').attr("href", "storage-volumes.html?pool=" + encodeURI(storagePoolName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName));
+      $('#allVolumeTypesLink').show() 
+    }
 
   });
 

@@ -1299,7 +1299,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   }
 
   function loadCreateNetworkModal(){
-    console.log("Info: loading network device modal");
+    console.log("Info: loading create network modal");
     $("#networkParentInput").load("./php/lxd/networks.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listNetworksForSelectOption");
     $("#networkNetworkInput").load("./php/lxd/networks.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&managed_only=true" + "&action=listNetworksForSelectOption");
     changeNetworkTypeInput();

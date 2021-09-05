@@ -164,7 +164,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Storage Pools</h6>
                   <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle mr-2" href="#" data-toggle="modal" data-target="#createStoragePoolModal" title="New Storage Pool" aria-hidden="true">
+                    <a class="dropdown-toggle mr-2" href="#" onclick="loadCreateStoragePoolModal()" title="New Storage Pool" aria-hidden="true">
                       <i class="fas fa-plus fa-sm fa-fw"></i> Storage Pool</a>
                   </div>
                 </div>
@@ -234,45 +234,37 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                   <label class="col-3 col-form-label text-right">Name: </label>
                   <div class="col-7">
                     <div class="form-group">
-                      <input type="text" id="storagePoolNameCreate" class="form-control" placeholder="" name="storage_pool_name">
+                      <input type="text" id="storagePoolNameInput" class="form-control" placeholder="" name="storage_pool_name">
                     </div>
                   </div>
                   <div class="col-1">
                     <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Enter in the name of the storage pool.'></i>
                   </div>
                 </div>
+
                 <div class="row">
                   <label class="col-3 col-form-label text-right">Description: </label>
                   <div class="col-7">
                     <div class="form-group">
-                      <input type="text" id="storagePoolDescriptionCreate" class="form-control" placeholder="" name="storage_pool_description">
+                      <input type="text" id="storagePoolDescriptionInput" class="form-control" placeholder="" name="storage_pool_description">
                     </div>
                   </div>
                   <div class="col-1">
                     <i class="far fa-sm fa-question-circle" title='Enter in a description for the storage pool.'></i>
                   </div>
                 </div>
-                <div class="row">
-                  <label class="col-3 col-form-label text-right">Size (GB): </label>
-                  <div class="col-7">
-                    <div class="form-group">
-                      <input type="number" id="storagePoolSizeCreate" class="form-control" name="storage_pool_size">
-                    </div>
-                  </div>
-                  <div class="col-1">
-                    <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Enter in the size in GB of the storage pool.'></i>
-                  </div>
-                </div>
+
                 <div class="row">
                   <label class="col-3 col-form-label text-right">Driver: </label>
                   <div class="col-7">
                     <div class="form-group">
-                      <select id="storagePoolDriverCreate" class="form-control" name="storage_pool_driver">
+                      <select id="storagePoolDriverInput" class="form-control" onclick="changeStoragePoolDriverInput()"name="storage_pool_driver">
                         <option value="btrfs">btrfs</option>
                         <option value="ceph">ceph</option>
-                        <option value="dir">dir</option>
+                        <option value="cephfs">cephfs</option>
+                        <option value="dir" selected>dir</option>
                         <option value="lvm">lvm</option>
-                        <option value="zfs" selected>zfs</option>
+                        <option value="zfs">zfs</option>
                       </select>
                     </div>
                   </div>
@@ -280,6 +272,429 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <i class="far fa-sm fa-question-circle text-danger" title='(Required) - Select the storage pool driver.'></i>
                   </div>
                 </div>
+
+                <div class="row" id="storagePoolSizeRow">
+                  <label class="col-3 col-form-label text-right">Size: </label>
+                  <div class="col-7">
+                    <div class="form-group">
+                      <input type="text" id="storagePoolSizeInput" class="form-control" name="storage_pool_size">
+                    </div>
+                  </div>
+                  <div class="col-1">
+                    <i class="far fa-sm fa-question-circle" title='Enter in the size of the storage pool. Including the suffix for units other than bytes. Default: 30GB'></i>
+                  </div>
+                </div>
+
+                <div class="row" id="storagePoolSourceRow">
+                  <label class="col-3 col-form-label text-right">Source: </label>
+                  <div class="col-7">
+                    <div class="form-group">
+                      <input type="text" id="storagePoolSourceInput" class="form-control" placeholder="" name="storagePoolSourceInput">
+                    </div>
+                  </div>
+                  <div class="col-1">
+                    <i id="storagePoolSourceHint" class="far fa-sm fa-question-circle" title='Required for the cephfs driver type. Enter in a filepath to the block device, loop file, or filesystem entry. Default: (not set)'></i>
+                  </div>
+                </div>
+
+                <hr>
+
+                <div id="accordionConfigurationProperties">
+                  <h2>
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#configurationProperties" aria-expanded="false" aria-controls="configurationProperties">
+                      Configuration Properties
+                    </button>
+                  </h2> 
+                  <div id="configurationProperties" class="collapse" aria-labelledby="configurationProperties">
+
+                    <div class="row" id="storagePoolBtrfsMountOptionsRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">btrfs.mount_options: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolBtrfsMountOptionsInput" class="form-control" placeholder="" name="storagePoolBtrfsMountOptionsInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the btrfs mount options for block devices. Default: user_subvol_rm_allowed'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolCephClusterNameRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">ceph.cluster_name: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolCephClusterNameInput" class="form-control" placeholder="" name="storagePoolCephClusterNameInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the name of the ceph cluster where new storage pools are created. Default: ceph'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolCephOsdForceReuseRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">ceph.osd.force_reuse: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="storagePoolCephOsdForceReuseInput" onchange="" class="form-control" name="storagePoolCephOsdForceReuseInput">
+                            <option value="">(not set)</option>
+                            <option value="true">true</option>
+                            <option value="false">false</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to force using an osd storage pool that is already in use by another LXD instance. Default: false'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolCephOsdPgNumRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">ceph.osd.pg_num: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="number" id="storagePoolCephOsdPgNumInput" class="form-control" placeholder="" name="storagePoolCephOsdPgNumInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the number of placement groups for the osd storage pool. Default: 32'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolCephOsdPoolNameRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">ceph.osd.pool_name: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolCephOsdPoolNameInput" class="form-control" placeholder="" name="storagePoolCephOsdPoolNameInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the name of the osd storage pool. Default: (inherited from Storage Pool name)'></i>
+                      </div>
+                    </div>
+                    
+                    <div class="row" id="storagePoolCephOsdDataPoolNameRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">ceph.osd.data_pool_name: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolCephOsdDataPoolNameInput" class="form-control" placeholder="" name="storagePoolCephOsdDataPoolNameInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the name of the osd data pool. Default: (not set)'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolCephRbdCloneCopyRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">ceph.rbd.clone_copy: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="storagePoolCephRbdCloneCopyInput" onchange="" class="form-control" name="storagePoolCephRbdCloneCopyInput">
+                            <option value="">(not set)</option>
+                            <option value="true">true</option>
+                            <option value="false">false</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to use RBD lightweight clones rather than using full dataset copies. Default: true'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolCephRbdFeaturesRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">ceph.rbd.features: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolCephRbdFeaturesInput" class="form-control" placeholder="" name="storagePoolCephRbdFeaturesInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in a comma separated list of RBD features to enable. Default: layering'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolCephUserNameRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">ceph.user.name: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolCephUserNameInput" class="form-control" placeholder="" name="storagePoolCephUserNameInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the name of the ceph user. Default: admin'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolCephfsClusterNameRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">cephfs.cluster_name: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolCephfsClusterNameInput" class="form-control" placeholder="" name="storagePoolCephfsClusterNameInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the name of the ceph cluster used when creating new storage pools. Default: ceph'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolCephfsPathRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">cephfs.path: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolCephfsPathInput" class="form-control" placeholder="" name="storagePoolCephfsPathInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the base filepath for the CEPHFS mount. Default: /'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolCephfsUserNameRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">cephfs.user.name: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolCephfsUserNameInput" class="form-control" placeholder="" name="storagePoolCephfsUserNameInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the name of the CEPHFS user. Default: admin'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolLvmThinpoolNameRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">lvm.thinpool_name: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolLvmThinpoolNameInput" class="form-control" placeholder="" name="storagePoolLvmThinpoolNameInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the name of the thin pool where volumes are created. Default: LXDThinPool'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolLvmUseThinpoolRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">lvm.use_thinpool: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="storagePoolLvmUseThinpoolInput" onchange="" class="form-control" name="storagePoolLvmUseThinpoolInput">
+                            <option value="">(not set)</option>
+                            <option value="true">true</option>
+                            <option value="false">false</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to use thinpools for logical volumes. Default: true'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolLvmVgNameRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">lvm.vg_name: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolLvmVgNameInput" class="form-control" placeholder="" name="storagePoolLvmVgNameInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the name of the volume group to create. Default: (inherited from Storage Pool name)'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolLvmVgForceReuseRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">lvm.vg.force_reuse: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="storagePoolLvmVgForceReuseInput" onchange="" class="form-control" name="storagePoolLvmVgForceReuseInput">
+                            <option value="">(not set)</option>
+                            <option value="true">true</option>
+                            <option value="false">false</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to force using an existing non-empty volume group. Default: false'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolVolumeLvmStripesRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">volume.lvm.stripes: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolVolumeLvmStripesInput" class="form-control" placeholder="" name="storagePoolVolumeLvmStripesInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the number of stripes to use when creating new volumes. Default: (not set)'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolVolumeLvmStripesSizeRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">volume.lvm.stripes.size: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolVolumeLvmStripesSizeInput" class="form-control" placeholder="" name="storagePoolVolumeLvmStripesSizeInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the size of stripes to use. It must be at least 4096 bytes and be a multiple of 512. Default: (not set)'></i>
+                      </div>
+                    </div>
+                    
+                    <div class="row" id="storagePoolRsyncBwlimitRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">rsync.bwlimit: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolRsyncBwlimitInput" class="form-control" placeholder="" name="storagePoolRsyncBwlimitInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the socket I/O upper limit when rsync is used to transfer storage entities. Default: 0 (unlimited)'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolRsyncCompressionRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">rsync.compression: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="storagePoolRsyncCompressionInput" onchange="" class="form-control" name="storagePoolRsyncCompressionInput">
+                            <option value="">(not set)</option>
+                            <option value="true">true</option>
+                            <option value="false">false</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to use compression while migrating storage pools. Default: true'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolVolatileInitialSourceRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">volatile.initial_source: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolVolatileInitialSourceInput" class="form-control" placeholder="" name="storagePoolVolatileInitialSourceInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the filepath of the actual source passed during the creation process. Default: (not set). For example, /dev/sdb'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolVolatilePoolPristineRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">volatile.pool.pristine: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="storagePoolVolatilePoolPristineInput" onchange="" class="form-control" name="storagePoolVolatilePoolPristineInput">
+                            <option value="">(not set)</option>
+                            <option value="true">true</option>
+                            <option value="false">false</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not the pool has been empty since it was created. Default: true.'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolVolumeBlockFilesystemRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">volume.block.filesystem: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolVolumeBlockFilesystemInput" class="form-control" placeholder="" name="storagePoolVolumeBlockFilesystemInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in the filesystem to use for new volumes. Default: ext4'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolVolumeBlockMountOptionsRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">volume.block.mount_options: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolVolumeBlockMountOptionsInput" class="form-control" placeholder="" name="storagePoolVolumeBlockMountOptionsInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in mount options for block devices. Default: discard'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolVolumeSizeRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">volume.size: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolVolumeSizeInput" class="form-control" placeholder="" name="storagePoolVolumeSizeInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in default storage volume size. Default: unlimited (10GB for block devices)'></i>
+                      </div>
+                    </div>
+                    
+                    <div class="row" id="storagePoolVolumeZfsRemoveSnapshotsRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">volume.zfs.remove_snapshots: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="storagePoolVolumeZfsRemoveSnapshotsInput" onchange="" class="form-control" name="storagePoolVolumeZfsRemoveSnapshotsInput">
+                            <option value="">(not set)</option>
+                            <option value="true">true</option>
+                            <option value="false">false</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to remove snapshots as needed. Default: false.'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolVolumeZfsUseRefquotaRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">volume.zfs.use_refquota: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="storagePoolVolumeZfsUseRefquotaInput" onchange="" class="form-control" name="storagePoolVolumeZfsUseRefquotaInput ">
+                            <option value="">(not set)</option>
+                            <option value="true">true</option>
+                            <option value="false">false</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to use refquota instead of quota. Default: false.'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolZfsCloneCopyRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">zfs.clone_copy: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <select id="storagePoolZfsCloneCopyInput" onchange="" class="form-control" name="storagePoolZfsCloneCopyInput ">
+                            <option value="">(not set)</option>
+                            <option value="true">true</option>
+                            <option value="false">false</option>
+                            <option value="rebase">rebase</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Select whether or not to use ZFS lightweight clones rather than full dataset copies. Select "rebase" to copy based on the initial image. Default: true.'></i>
+                      </div>
+                    </div>
+
+                    <div class="row" id="storagePoolZfsPoolNameRow" style="display: none;">
+                      <label class="col-4 col-form-label text-right">zfs.pool_name: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="storagePoolZfsPoolNameInput" class="form-control" placeholder="" name="storagePoolZfsPoolNameInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title='Enter in name of the zfs pool. Default: (inherited from Storage Pool name)'></i>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
                 <div class="modal-footer">
                   <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                   <a class="btn btn-primary" href="#" onclick="createStoragePoolUsingForm()" data-dismiss="modal">Submit</a>
@@ -476,12 +891,81 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   }
 
   function createStoragePoolUsingForm(){
-    var storagePoolNameCreate = $("#storagePoolNameCreate").val();
-    var storagePoolDescriptionCreate = $("#storagePoolDescriptionCreate").val();
-    var storagePoolSizeCreate = $("#storagePoolSizeCreate").val();
-    var storagePoolDriverCreate = $("#storagePoolDriverCreate").val();
+    var storagePoolNameInput = $("#storagePoolNameInput").val();
+    var storagePoolDescriptionInput = $("#storagePoolDescriptionInput").val();
+    var storagePoolDriverInput = $("#storagePoolDriverInput").val();
+    var storagePoolSizeInput = $("#storagePoolSizeInput").val();
+    var storagePoolSourceInput = $("#storagePoolSourceInput").val();
+
+    var storagePoolBtrfsMountOptionsInput = $("#storagePoolBtrfsMountOptionsInput").val();
+    var storagePoolCephClusterNameInput = $("#storagePoolCephClusterNameInput").val();
+    var storagePoolCephOsdForceReuseInput = $("#storagePoolCephOsdForceReuseInput").val();
+    var storagePoolCephOsdPgNumInput = $("#storagePoolCephOsdPgNumInput").val();
+    var storagePoolCephOsdPoolNameInput = $("#storagePoolCephOsdPoolNameInput").val();
+    var storagePoolCephOsdDataPoolNameInput = $("#storagePoolCephOsdDataPoolNameInput").val();
+    var storagePoolCephRbdCloneCopyInput = $("#storagePoolCephRbdCloneCopyInput").val();
+    var storagePoolCephRbdFeaturesInput = $("#storagePoolCephRbdFeaturesInput").val();
+    var storagePoolCephUserNameInput = $("#storagePoolCephUserNameInput").val();
+    var storagePoolCephfsClusterNameInput = $("#storagePoolCephfsClusterNameInput").val();
+    var storagePoolCephfsPathInput = $("#storagePoolCephfsPathInput").val();
+    var storagePoolCephfsUserNameInput = $("#storagePoolCephfsUserNameInput").val();
+    var storagePoolLvmThinpoolNameInput = $("#storagePoolLvmThinpoolNameInput").val();
+    var storagePoolLvmUseThinpoolInput = $("#storagePoolLvmUseThinpoolInput").val();
+    var storagePoolLvmVgNameInput = $("#storagePoolLvmVgNameInput").val();
+    var storagePoolLvmVgForceReuseInput = $("#storagePoolLvmVgForceReuseInput").val();
+    var storagePoolVolumeLvmStripesInput = $("#storagePoolVolumeLvmStripesInput").val();
+    var storagePoolVolumeLvmStripesSizeInput = $("#storagePoolVolumeLvmStripesSizeInput").val();
+    var storagePoolRsyncBwlimitInput = $("#storagePoolRsyncBwlimitInput").val();
+    var storagePoolRsyncCompressionInput = $("#storagePoolRsyncCompressionInput").val();
+    var storagePoolVolatileInitialSourceInput = $("#storagePoolVolatileInitialSourceInput").val();
+    var storagePoolVolatilePoolPristineInput = $("#storagePoolVolatilePoolPristineInput").val();
+    var storagePoolVolumeBlockFilesystemInput = $("#storagePoolVolumeBlockFilesystemInput").val();
+    var storagePoolVolumeBlockMountOptionsInput = $("#storagePoolVolumeBlockMountOptionsInput").val();
+    var storagePoolVolumeSizeInput = $("#storagePoolVolumeSizeInput").val();
+    var storagePoolVolumeZfsRemoveSnapshotsInput = $("#storagePoolVolumeZfsRemoveSnapshotsInput").val();
+    var storagePoolVolumeZfsUseRefquotaInput = $("#storagePoolVolumeZfsUseRefquotaInput").val();
+    var storagePoolZfsCloneCopyInput = $("#storagePoolZfsCloneCopyInput").val();
+    var storagePoolZfsPoolNameInput = $("#storagePoolZfsPoolNameInput").val();
+
     console.log("Info: creating storage pool");
-    $.get("./php/lxd/storage-pools.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&name=" + encodeURI(storagePoolNameCreate) + "&description=" + encodeURI(storagePoolDescriptionCreate) + "&size=" + encodeURI(storagePoolSizeCreate)+ "&driver=" + encodeURI(storagePoolDriverCreate) + "&action=createStoragePoolUsingForm", function (data) {
+    $.get("./php/lxd/storage-pools.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + 
+    "&name=" + encodeURI(storagePoolNameInput) + 
+    "&description=" + encodeURI(storagePoolDescriptionInput) + 
+    "&size=" + encodeURI(storagePoolSizeInput) + 
+    "&driver=" + encodeURI(storagePoolDriverInput) + 
+    "&source=" + encodeURI(storagePoolSourceInput) + 
+
+    "&btrfs_mount_options=" + encodeURI(storagePoolBtrfsMountOptionsInput) + 
+    "&ceph_cluster_name=" + encodeURI(storagePoolCephClusterNameInput) + 
+    "&ceph_osd_force_reuse=" + encodeURI(storagePoolCephOsdForceReuseInput) + 
+    "&ceph_osd_pg_num=" + encodeURI(storagePoolCephOsdPgNumInput) + 
+    "&ceph_osd_pool_name=" + encodeURI(storagePoolCephOsdPoolNameInput) + 
+    "&ceph_osd_data_pool_name=" + encodeURI(storagePoolCephOsdDataPoolNameInput) + 
+    "&ceph_rbd_clone_copy=" + encodeURI(storagePoolCephRbdCloneCopyInput) + 
+    "&ceph_rbd_features=" + encodeURI(storagePoolCephRbdFeaturesInput) + 
+    "&ceph_user_name=" + encodeURI(storagePoolCephUserNameInput) + 
+    "&cephfs_cluster_name=" + encodeURI(storagePoolCephfsClusterNameInput) + 
+    "&cephfs_path=" + encodeURI(storagePoolCephfsPathInput) + 
+    "&cephfs_user_name=" + encodeURI(storagePoolCephfsUserNameInput) + 
+    "&lvm_thinpool_name=" + encodeURI(storagePoolLvmThinpoolNameInput) + 
+    "&lvm_use_thinpool=" + encodeURI(storagePoolLvmUseThinpoolInput) + 
+    "&lvm_vg_name=" + encodeURI(storagePoolLvmVgNameInput) + 
+    "&lvm_vg_force_reuse=" + encodeURI(storagePoolLvmVgForceReuseInput) + 
+    "&volume_lvm_stripes=" + encodeURI(storagePoolVolumeLvmStripesInput) + 
+    "&volume_lvm_stripes_size=" + encodeURI(storagePoolVolumeLvmStripesSizeInput) + 
+    "&rsync_bwlimit=" + encodeURI(storagePoolRsyncBwlimitInput) + 
+    "&rsync_compression=" + encodeURI(storagePoolRsyncCompressionInput) + 
+    "&volatile_initial_source=" + encodeURI(storagePoolVolatileInitialSourceInput) + 
+    "&volatile_pool_pristine=" + encodeURI(storagePoolVolatilePoolPristineInput) + 
+    "&volume_block_filesystem=" + encodeURI(storagePoolVolumeBlockFilesystemInput) + 
+    "&volume_block_mount_options=" + encodeURI(storagePoolVolumeBlockMountOptionsInput) + 
+    "&volume_size=" + encodeURI(storagePoolVolumeSizeInput) + 
+    "&volume_zfs_remove_snapshots=" + encodeURI(storagePoolVolumeZfsRemoveSnapshotsInput) + 
+    "&volume_zfs_use_refquota=" + encodeURI(storagePoolVolumeZfsUseRefquotaInput) + 
+    "&zfs_clone_copy=" + encodeURI(storagePoolZfsCloneCopyInput) + 
+    "&zfs_pool_name=" + encodeURI(storagePoolZfsPoolNameInput) + 
+
+    "&action=createStoragePoolUsingForm", function (data) {
       //Sync operation type
       var operationData = JSON.parse(data);
       console.log(operationData);
@@ -533,6 +1017,220 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       }
       setTimeout(() => { reloadPageContent(); }, 1000);
     });
+  }
+
+  function loadCreateStoragePoolModal(){
+    console.log("Info: loading create storage pool modal");
+    changeStoragePoolDriverInput();
+    $("#createStoragePoolModal").modal('show');
+  }
+
+  function changeStoragePoolDriverInput(){
+    var storagePoolDriverInput = $("#storagePoolDriverInput").val();
+    if (storagePoolDriverInput == "btrfs"){
+      $("#storagePoolSourceHint").removeClass("text-danger");
+
+      $("#storagePoolSizeRow").show()
+      $("#storagePoolBtrfsMountOptionsRow").show()
+      $("#storagePoolCephClusterNameRow").hide()
+      $("#storagePoolCephOsdForceReuseRow").hide()
+      $("#storagePoolCephOsdPgNumRow").hide()
+      $("#storagePoolCephOsdPoolNameRow").hide()
+      $("#storagePoolCephOsdDataPoolNameRow").hide()
+      $("#storagePoolCephRbdCloneCopyRow").hide()
+      $("#storagePoolCephRbdFeaturesRow").hide()
+      $("#storagePoolCephUserNameRow").hide()
+      $("#storagePoolCephfsClusterNameRow").hide()
+      $("#storagePoolCephfsPathRow").hide()
+      $("#storagePoolCephfsUserNameRow").hide()
+      $("#storagePoolLvmThinpoolNameRow").hide()
+      $("#storagePoolLvmUseThinpoolRow").hide()
+      $("#storagePoolLvmVgNameRow").hide()
+      $("#storagePoolLvmVgForceReuseRow").hide()
+      $("#storagePoolVolumeLvmStripesRow").hide()
+      $("#storagePoolVolumeLvmStripesSizeRow").hide()
+      $("#storagePoolRsyncBwlimitRow").show()
+      $("#storagePoolRsyncCompressionRow").show()
+      $("#storagePoolVolatileInitialSourceRow").show()
+      $("#storagePoolVolatilePoolPristineRow").hide()
+      $("#storagePoolVolumeBlockFilesystemRow").hide()
+      $("#storagePoolVolumeBlockMountOptionsRow").hide()
+      $("#storagePoolVolumeSizeRow").show()
+      $("#storagePoolVolumeZfsRemoveSnapshotsRow").hide()
+      $("#storagePoolVolumeZfsUseRefquotaRow").hide()
+      $("#storagePoolZfsCloneCopyRow").hide()
+      $("#storagePoolZfsPoolNameRow").hide()  
+    }
+    if (storagePoolDriverInput == "ceph"){
+      $("#storagePoolSourceHint").removeClass("text-danger");
+
+      $("#storagePoolSizeRow").hide()
+      $("#storagePoolBtrfsMountOptionsRow").hide()
+      $("#storagePoolCephClusterNameRow").show()
+      $("#storagePoolCephOsdForceReuseRow").show()
+      $("#storagePoolCephOsdPgNumRow").show()
+      $("#storagePoolCephOsdPoolNameRow").show()
+      $("#storagePoolCephOsdDataPoolNameRow").show()
+      $("#storagePoolCephRbdCloneCopyRow").show()
+      $("#storagePoolCephRbdFeaturesRow").show()
+      $("#storagePoolCephUserNameRow").show()
+      $("#storagePoolCephfsClusterNameRow").hide()
+      $("#storagePoolCephfsPathRow").hide()
+      $("#storagePoolCephfsUserNameRow").hide()
+      $("#storagePoolLvmThinpoolNameRow").hide()
+      $("#storagePoolLvmUseThinpoolRow").hide()
+      $("#storagePoolLvmVgNameRow").hide()
+      $("#storagePoolLvmVgForceReuseRow").hide()
+      $("#storagePoolVolumeLvmStripesRow").hide()
+      $("#storagePoolVolumeLvmStripesSizeRow").hide()
+      $("#storagePoolRsyncBwlimitRow").show()
+      $("#storagePoolRsyncCompressionRow").show()
+      $("#storagePoolVolatileInitialSourceRow").show()
+      $("#storagePoolVolatilePoolPristineRow").show()
+      $("#storagePoolVolumeBlockFilesystemRow").show()
+      $("#storagePoolVolumeBlockMountOptionsRow").show()
+      $("#storagePoolVolumeSizeRow").show()
+      $("#storagePoolVolumeZfsRemoveSnapshotsRow").hide()
+      $("#storagePoolVolumeZfsUseRefquotaRow").hide()
+      $("#storagePoolZfsCloneCopyRow").hide()
+      $("#storagePoolZfsPoolNameRow").hide()  
+    }
+    if (storagePoolDriverInput == "cephfs"){
+      $("#storagePoolSourceHint").addClass("text-danger");
+
+      $("#storagePoolSizeRow").hide()
+      $("#storagePoolBtrfsMountOptionsRow").hide()
+      $("#storagePoolCephClusterNameRow").hide()
+      $("#storagePoolCephOsdForceReuseRow").hide()
+      $("#storagePoolCephOsdPgNumRow").hide()
+      $("#storagePoolCephOsdPoolNameRow").hide()
+      $("#storagePoolCephOsdDataPoolNameRow").hide()
+      $("#storagePoolCephRbdCloneCopyRow").hide()
+      $("#storagePoolCephRbdFeaturesRow").hide()
+      $("#storagePoolCephUserNameRow").hide()
+      $("#storagePoolCephfsClusterNameRow").show()
+      $("#storagePoolCephfsPathRow").show()
+      $("#storagePoolCephfsUserNameRow").show()
+      $("#storagePoolLvmThinpoolNameRow").hide()
+      $("#storagePoolLvmUseThinpoolRow").hide()
+      $("#storagePoolLvmVgNameRow").hide()
+      $("#storagePoolLvmVgForceReuseRow").hide()
+      $("#storagePoolVolumeLvmStripesRow").hide()
+      $("#storagePoolVolumeLvmStripesSizeRow").hide()
+      $("#storagePoolRsyncBwlimitRow").show()
+      $("#storagePoolRsyncCompressionRow").show()
+      $("#storagePoolVolatileInitialSourceRow").show()
+      $("#storagePoolVolatilePoolPristineRow").show()
+      $("#storagePoolVolumeBlockFilesystemRow").show()
+      $("#storagePoolVolumeBlockMountOptionsRow").show()
+      $("#storagePoolVolumeSizeRow").show()
+      $("#storagePoolVolumeZfsRemoveSnapshotsRow").hide()
+      $("#storagePoolVolumeZfsUseRefquotaRow").hide()
+      $("#storagePoolZfsCloneCopyRow").hide()
+      $("#storagePoolZfsPoolNameRow").hide()  
+    }
+    if (storagePoolDriverInput == "dir"){
+      $("#storagePoolSourceHint").removeClass("text-danger");
+
+      $("#storagePoolSizeRow").hide()
+      $("#storagePoolBtrfsMountOptionsRow").hide()
+      $("#storagePoolCephClusterNameRow").hide()
+      $("#storagePoolCephOsdForceReuseRow").hide()
+      $("#storagePoolCephOsdPgNumRow").hide()
+      $("#storagePoolCephOsdPoolNameRow").hide()
+      $("#storagePoolCephOsdDataPoolNameRow").hide()
+      $("#storagePoolCephRbdCloneCopyRow").hide()
+      $("#storagePoolCephRbdFeaturesRow").hide()
+      $("#storagePoolCephUserNameRow").hide()
+      $("#storagePoolCephfsClusterNameRow").hide()
+      $("#storagePoolCephfsPathRow").hide()
+      $("#storagePoolCephfsUserNameRow").hide()
+      $("#storagePoolLvmThinpoolNameRow").hide()
+      $("#storagePoolLvmUseThinpoolRow").hide()
+      $("#storagePoolLvmVgNameRow").hide()
+      $("#storagePoolLvmVgForceReuseRow").hide()
+      $("#storagePoolVolumeLvmStripesRow").hide()
+      $("#storagePoolVolumeLvmStripesSizeRow").hide()
+      $("#storagePoolRsyncBwlimitRow").show()
+      $("#storagePoolRsyncCompressionRow").show()
+      $("#storagePoolVolatileInitialSourceRow").show()
+      $("#storagePoolVolatilePoolPristineRow").hide()
+      $("#storagePoolVolumeBlockFilesystemRow").hide()
+      $("#storagePoolVolumeBlockMountOptionsRow").hide()
+      $("#storagePoolVolumeSizeRow").show()
+      $("#storagePoolVolumeZfsRemoveSnapshotsRow").hide()
+      $("#storagePoolVolumeZfsUseRefquotaRow").hide()
+      $("#storagePoolZfsCloneCopyRow").hide()
+      $("#storagePoolZfsPoolNameRow").hide()  
+    }
+    if (storagePoolDriverInput == "lvm"){
+      $("#storagePoolSourceHint").removeClass("text-danger");
+
+      $("#storagePoolSizeRow").show()
+      $("#storagePoolBtrfsMountOptionsRow").hide()
+      $("#storagePoolCephClusterNameRow").hide()
+      $("#storagePoolCephOsdForceReuseRow").hide()
+      $("#storagePoolCephOsdPgNumRow").hide()
+      $("#storagePoolCephOsdPoolNameRow").hide()
+      $("#storagePoolCephOsdDataPoolNameRow").hide()
+      $("#storagePoolCephRbdCloneCopyRow").hide()
+      $("#storagePoolCephRbdFeaturesRow").hide()
+      $("#storagePoolCephUserNameRow").hide()
+      $("#storagePoolCephfsClusterNameRow").hide()
+      $("#storagePoolCephfsPathRow").hide()
+      $("#storagePoolCephfsUserNameRow").hide()
+      $("#storagePoolLvmThinpoolNameRow").show()
+      $("#storagePoolLvmUseThinpoolRow").show()
+      $("#storagePoolLvmVgNameRow").show()
+      $("#storagePoolLvmVgForceReuseRow").show()
+      $("#storagePoolVolumeLvmStripesRow").show()
+      $("#storagePoolVolumeLvmStripesSizeRow").show()
+      $("#storagePoolRsyncBwlimitRow").show()
+      $("#storagePoolRsyncCompressionRow").show()
+      $("#storagePoolVolatileInitialSourceRow").show()
+      $("#storagePoolVolatilePoolPristineRow").hide()
+      $("#storagePoolVolumeBlockFilesystemRow").show()
+      $("#storagePoolVolumeBlockMountOptionsRow").show()
+      $("#storagePoolVolumeSizeRow").show()
+      $("#storagePoolVolumeZfsRemoveSnapshotsRow").hide()
+      $("#storagePoolVolumeZfsUseRefquotaRow").hide()
+      $("#storagePoolZfsCloneCopyRow").hide()
+      $("#storagePoolZfsPoolNameRow").hide()  
+    }
+    if (storagePoolDriverInput == "zfs"){
+      $("#storagePoolSourceHint").removeClass("text-danger");
+
+      $("#storagePoolSizeRow").show()
+      $("#storagePoolBtrfsMountOptionsRow").hide()
+      $("#storagePoolCephClusterNameRow").hide()
+      $("#storagePoolCephOsdForceReuseRow").hide()
+      $("#storagePoolCephOsdPgNumRow").hide()
+      $("#storagePoolCephOsdPoolNameRow").hide()
+      $("#storagePoolCephOsdDataPoolNameRow").hide()
+      $("#storagePoolCephRbdCloneCopyRow").hide()
+      $("#storagePoolCephRbdFeaturesRow").hide()
+      $("#storagePoolCephUserNameRow").hide()
+      $("#storagePoolCephfsClusterNameRow").hide()
+      $("#storagePoolCephfsPathRow").hide()
+      $("#storagePoolCephfsUserNameRow").hide()
+      $("#storagePoolLvmThinpoolNameRow").hide()
+      $("#storagePoolLvmUseThinpoolRow").hide()
+      $("#storagePoolLvmVgNameRow").hide()
+      $("#storagePoolLvmVgForceReuseRow").hide()
+      $("#storagePoolVolumeLvmStripesRow").hide()
+      $("#storagePoolVolumeLvmStripesSizeRow").hide()
+      $("#storagePoolRsyncBwlimitRow").show()
+      $("#storagePoolRsyncCompressionRow").show()
+      $("#storagePoolVolatileInitialSourceRow").show()
+      $("#storagePoolVolatilePoolPristineRow").hide()
+      $("#storagePoolVolumeBlockFilesystemRow").hide()
+      $("#storagePoolVolumeBlockMountOptionsRow").hide()
+      $("#storagePoolVolumeSizeRow").show()
+      $("#storagePoolVolumeZfsRemoveSnapshotsRow").show()
+      $("#storagePoolVolumeZfsUseRefquotaRow").show()
+      $("#storagePoolZfsCloneCopyRow").show()
+      $("#storagePoolZfsPoolNameRow").show()  
+    }
   }
 
   $(document).ready(function(){

@@ -1,3 +1,9 @@
+# v2.2.0
+- Feature: Additional configuration properties have been added to the web form for creating Storage Pools and Storage Volumes, including clustered servers
+- Feature: Additional configuration properties have been added to the web form for creating Projects
+- Feature: Added cluster configuration to the creation of networks from form entries
+- Feature: Filtered the default view of Storage Volumes to show only custom type storage volumes by default and provided link to remove this filter
+
 # v2.1.0
 - Feature: Users can now add network, disk, and proxy devices directly to an instance from a form
 - Feature: Users can now remove network, disk, and proxy devices from an instance using the dashboard
