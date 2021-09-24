@@ -116,32 +116,36 @@ if (isset($_SESSION['username'])) {
         
         echo '{ "data": [';
         
-        foreach ($certificates as $certificate){
-          if ($i > 0){
-            echo ",";
-          }
-          $i++;
+        if ($results['status_code'] == "200"){
+
+          foreach ($certificates as $certificate){
+            if ($i > 0){
+              echo ",";
+            }
+            $i++;
           
-          echo "[ ";
+            echo "[ ";
+  
+            echo '"';
+              echo "<i class='fas fa-wallet fa-lg' style='color:#4e73df'></i>";    
+            echo '",';
+  
+            echo '"';
+              echo htmlentities($certificate['name']);
+            echo '",';
+  
+            echo '"' . htmlentities($certificate['type']) . '",';
+            echo '"' . htmlentities($certificate['fingerprint']) . '",';
+  
+            echo '"';
+            echo "<a href='#' onclick=loadCertificateJson('".$certificate['fingerprint']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
+            echo " &nbsp ";
+            echo "<a href='#' onclick=deleteCertificate('".$certificate['fingerprint']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
+            echo '"';
+  
+            echo " ]";
+          }
 
-          echo '"';
-            echo "<i class='fas fa-wallet fa-lg' style='color:#4e73df'></i>";    
-          echo '",';
-
-          echo '"';
-            echo htmlentities($certificate['name']);
-          echo '",';
-
-          echo '"' . htmlentities($certificate['type']) . '",';
-          echo '"' . htmlentities($certificate['fingerprint']) . '",';
-
-          echo '"';
-          echo "<a href='#' onclick=loadCertificateJson('".$certificate['fingerprint']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
-          echo " &nbsp ";
-          echo "<a href='#' onclick=deleteCertificate('".$certificate['fingerprint']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
-          echo '"';
-
-          echo " ]";
         }
 
         echo " ]}";

@@ -325,9 +325,70 @@ if (isset($_SESSION['username'])) {
       break;
 
     case "createStoragePoolUsingJSON":
-      $url = $base_url . "/1.0/storage-pools?project=" . $project;
-      $data = $json;
-      $results = sendCurlRequest($action, "POST", $url, $data);
+
+      //Check to see if host is part of a cluster. Clusted hosts need storage pool created first on each of the hosts
+      $url = $base_url . "/1.0/cluster";
+      $remote_data = sendCurlRequest($action, "GET", $url);
+      $remote_data = json_decode($remote_data, true);
+      $cluster_status = $remote_data['metadata'];
+
+      if ($cluster_status['enabled'] == true){
+        //Get a list of cluster members
+        $url = $base_url . "/1.0/cluster/members?recursion=1";
+        $cluster_api_data = sendCurlRequest($action, "GET", $url);
+        $cluster_api_data = json_decode($cluster_api_data, true);
+        $cluster_api_data = $cluster_api_data['metadata'];
+
+        //Setup Storage Pool data for REST API
+        $target_json_array = json_decode($json, true);
+
+        //Setup Storage Pool data for REST API
+        $target_device_array = array();
+        $target_device_array['config'] = new ArrayObject();
+        $target_device_array['name'] = $target_json_array['name'];
+        $target_device_array['description'] = $target_json_array['description'];
+        $target_device_array['driver'] = $target_json_array['driver'];
+        if (!empty($target_json_array['config']['source'])){ $target_device_array['config']['source'] = $target_json_array['config']['source'];}
+        
+        if ($target_device_array['driver'] == "btrfs"){
+          if (!empty($target_json_array['config']['size'])){ $target_device_array['config']['size'] = $target_json_array['config']['size'];}
+        }
+
+        if ($target_device_array['driver'] == "lvm"){
+          if (!empty($target_json_array['config']['size'])){ $target_device_array['config']['size'] = $target_json_array['config']['size'];}
+        }
+
+        if ($target_device_array['driver'] == "zfs"){
+          if (!empty($target_json_array['config']['size'])){ $target_device_array['config']['size'] = $target_json_array['config']['size'];}
+          if (!empty($target_json_array['config']['zfs.pool_name'])){ $target_device_array['config']['zfs.pool_name'] = $target_json_array['config']['zfs.pool_name'];}
+        }
+
+        $target_data = json_encode($target_device_array);
+
+        //Loop through each cluster member to create the storage pool, this will put the storage volume in pending status
+        foreach ($cluster_api_data as $cluster_data){
+          $url = $base_url . "/1.0/storage-pools?project=" . $project . "&target=".$cluster_data['server_name'];
+          $results = sendCurlRequest($action, "POST", $url, $target_data);
+        }
+
+        //Now lets create the storage pool without target config options, moving the pending status to created
+        $url = $base_url . "/1.0/storage-pools?project=" . $project;
+
+        //Setup Storage Pool data for REST API
+        $device_array = json_decode($json, true);
+        unset($device_array['config']['source']);
+        unset($device_array['config']['size']);
+        unset($device_array['config']['zfs.pool_name']);
+
+        $data = json_encode($device_array);
+        $results = sendCurlRequest($action, "POST", $url, $data);
+      }
+      else {
+        $url = $base_url . "/1.0/storage-pools?project=" . $project;
+        $data = $json;
+        $results = sendCurlRequest($action, "POST", $url, $data);
+      }
+ 
       echo $results;
 
       //Send event to accounting
@@ -367,39 +428,43 @@ if (isset($_SESSION['username'])) {
         $i = 0;
         echo '{ "data": [';
       
-        foreach ($storage_pools as $storage_pool){
-          
-          if ($storage_pool['name'] == "")
-          continue;
-      
-          if ($i > 0){
-            echo ",";
+        if ($results['status_code'] == "200"){
+
+          foreach ($storage_pools as $storage_pool){
+            
+            if ($storage_pool['name'] == "")
+            continue;
+        
+            if ($i > 0){
+              echo ",";
+            }
+            $i++;
+        
+            echo "[ ";
+            echo '"';
+            echo "<a href='storage-volumes.html?pool=".$storage_pool['name']."&remote=".$remote."&project=".$project."&type=custom'><i class='fas fa-hdd fa-lg' style='color:#4e73df'></i> </a>";
+            echo '",';
+        
+            echo '"';
+            echo "<a href='storage-volumes.html?pool=".$storage_pool['name']."&remote=".$remote."&project=".$project."&type=custom'> ".htmlentities($storage_pool['name'])."</a>";
+            echo '",';
+        
+            echo '"' . htmlentities($storage_pool['description']) . '",';
+            echo '"' . htmlentities($storage_pool['driver']) . '",';
+            echo '"' . htmlentities($storage_pool['status']) . '",';
+            echo '"' . htmlentities($storage_pool['config']['source']) . '",';
+            echo '"' . htmlentities($storage_pool['config']['size']) . '",';
+        
+            echo '"';
+            echo "<a href='#' onclick=loadStoragePoolJson('".$storage_pool['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
+            echo " &nbsp ";
+            echo "<a href='#' onclick=deleteStoragePool('".$storage_pool['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
+            echo '"';
+        
+            echo " ]";
+        
           }
-          $i++;
-      
-          echo "[ ";
-          echo '"';
-          echo "<a href='storage-volumes.html?pool=".$storage_pool['name']."&remote=".$remote."&project=".$project."&type=custom'><i class='fas fa-hdd fa-lg' style='color:#4e73df'></i> </a>";
-          echo '",';
-      
-          echo '"';
-          echo "<a href='storage-volumes.html?pool=".$storage_pool['name']."&remote=".$remote."&project=".$project."&type=custom'> ".htmlentities($storage_pool['name'])."</a>";
-          echo '",';
-      
-          echo '"' . htmlentities($storage_pool['description']) . '",';
-          echo '"' . htmlentities($storage_pool['driver']) . '",';
-          echo '"' . htmlentities($storage_pool['status']) . '",';
-          echo '"' . htmlentities($storage_pool['config']['source']) . '",';
-          echo '"' . htmlentities($storage_pool['config']['size']) . '",';
-      
-          echo '"';
-          echo "<a href='#' onclick=loadStoragePoolJson('".$storage_pool['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
-          echo " &nbsp ";
-          echo "<a href='#' onclick=deleteStoragePool('".$storage_pool['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
-          echo '"';
-      
-          echo " ]";
-      
+
         }
       
         echo " ]}";

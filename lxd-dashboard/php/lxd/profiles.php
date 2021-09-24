@@ -112,40 +112,44 @@ if (isset($_SESSION['username'])) {
         $i = 0;
         echo '{ "data": [';
 
-        foreach ($profiles as $profile){
+        if ($results['status_code'] == "200"){
 
-          if ($profile['name'] == "")
-          continue;
-        
-          if ($i > 0){
-            echo ",";
-          }
-          $i++;
+          foreach ($profiles as $profile){
 
-          echo "[ ";
-          echo '"' . "<i class='fas fa-money-check' style='color:#4e73df'></i>" . '",';
-          echo '"' . htmlentities($profile['name']) . '",';
-          echo '"' . htmlentities($profile['description']) . '",';
-
-          echo '"';
-            $ii = 0;
-            foreach($profile['devices'] as $device=>$value){
-              if ($ii > 0)
-                echo ", ";
-              echo htmlentities($device);
-              $ii++;
+            if ($profile['name'] == "")
+            continue;
+          
+            if ($i > 0){
+              echo ",";
             }
-          echo '",';
+            $i++;
 
-          echo '"';
-          echo "<a href='#' onclick=loadProfileJson('".$profile['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
-          echo " &nbsp ";
-          echo "<a href='#' onclick=loadRenameProfile('".$profile['name']."')><i class='fas fa-tag fa-lg' style='color:#ddd' title='Rename' aria-hidden='true'></i></a>";
-          echo " &nbsp ";
-          echo "<a href='#' onclick=deleteProfile('".$profile['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
-          echo '"';
+            echo "[ ";
+            echo '"' . "<i class='fas fa-money-check' style='color:#4e73df'></i>" . '",';
+            echo '"' . htmlentities($profile['name']) . '",';
+            echo '"' . htmlentities($profile['description']) . '",';
 
-          echo " ]";
+            echo '"';
+              $ii = 0;
+              foreach($profile['devices'] as $device=>$value){
+                if ($ii > 0)
+                  echo ", ";
+                echo htmlentities($device);
+                $ii++;
+              }
+            echo '",';
+
+            echo '"';
+            echo "<a href='#' onclick=loadProfileJson('".$profile['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
+            echo " &nbsp ";
+            echo "<a href='#' onclick=loadRenameProfile('".$profile['name']."')><i class='fas fa-tag fa-lg' style='color:#ddd' title='Rename' aria-hidden='true'></i></a>";
+            echo " &nbsp ";
+            echo "<a href='#' onclick=deleteProfile('".$profile['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
+            echo '"';
+
+            echo " ]";
+
+          }
 
         }
 

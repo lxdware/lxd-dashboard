@@ -88,33 +88,37 @@ if (isset($_SESSION['username'])) {
     
           $i = 0;
       
-          foreach ($members as $member){
+          if ($results['status_code'] == "200"){
+
+            foreach ($members as $member){
     
-            $database_status = ($member['database']) ? "true" : "false";
+              $database_status = ($member['database']) ? "true" : "false";
     
-            if ($i > 0){
-              echo ",";
-            }
-            $i++;
+              if ($i > 0){
+                echo ",";
+              }
+              $i++;
     
-            echo "[ ";
+              echo "[ ";
             
-            echo '"';
-            echo "<i class='fas fa-layer-group fa-lg' style='color:#4e73df'></i>";
-            echo '",';
+              echo '"';
+              echo "<i class='fas fa-layer-group fa-lg' style='color:#4e73df'></i>";
+              echo '",';
 
-            echo '"' . htmlentities($member['server_name']) . '",';
-            echo '"' . htmlentities($member['url']) . '",';
-            echo '"' . $database_status . '",';
-            echo '"' . htmlentities($member['status']) . '",';
-            echo '"' . htmlentities($member['message']) . '",';
+              echo '"' . htmlentities($member['server_name']) . '",';
+              echo '"' . htmlentities($member['url']) . '",';
+              echo '"' . $database_status . '",';
+              echo '"' . htmlentities($member['status']) . '",';
+              echo '"' . htmlentities($member['message']) . '",';
         
-            echo '"';
-            echo "<a href='#' onclick=loadDeleteClusterMemberModal('".$member['server_name']."')> <i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i> </a>";
-            echo '"';
+              echo '"';
+              echo "<a href='#' onclick=loadDeleteClusterMemberModal('".$member['server_name']."')> <i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i> </a>";
+              echo '"';
 
-            echo " ]";
+              echo " ]";
     
+            }
+
           }
 
         }

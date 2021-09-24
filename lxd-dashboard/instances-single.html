@@ -60,7 +60,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
       <!-- Sidebar Toggler (Sidebar) -->
       <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        <button class="rounded-circle border-0" id="sidebarToggle" onclick="setSidebarToggleValue()"></button>
       </div>
     </ul>
     <!-- End of Sidebar -->
@@ -2124,7 +2124,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title='Always start the instance when LXD starts (if not set, restore last state). Default: (not set)'></i>
+                <i class="far fa-sm fa-question-circle" title='Select whether to always start the instance when LXD starts (if not set, restore last state). Default: (not set)'></i>
               </div>
             </div>
             <div class="row">
@@ -2135,7 +2135,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title='Number of seconds to wait after the instance started before starting the next one. Default: 0'></i>
+                <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds to wait after the instance has started before starting the next one. Default: 0'></i>
               </div>
             </div>
             <div class="row">
@@ -2146,7 +2146,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title='What order to start the instances in (starting with highest). Default: 0'></i>
+                <i class="far fa-sm fa-question-circle" title='Enter in the numbered order to start the instances in (starting with highest). Default: 0'></i>
               </div>
             </div>
             <div class="row">
@@ -2157,7 +2157,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title='Seconds to wait for instance to shutdown before it is force stopped. Default: 30'></i>
+                <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds to wait for instance to shutdown before it is force stopped. Default: 30'></i>
               </div>
             </div>
             <div class="row">
@@ -2168,7 +2168,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title='What order to shutdown the instances (starting with highest). Default: 0'></i>
+                <i class="far fa-sm fa-question-circle" title='Enter in the numbered order to shutdown the instances (starting with highest). Default: 0'></i>
               </div>
             </div>
           </div>
@@ -2199,7 +2199,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title='Number or range of CPUs to expose to the instance. Default: (all)'></i>
+                <i class="far fa-sm fa-question-circle" title='Enter in the number or range of CPUs to expose to the instance. Default: (all)'></i>
               </div>
             </div>
             <div class="row">
@@ -2210,7 +2210,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title='How much of the CPU can be used. Can be a percentage (e.g. 50%) for a soft limit or hard a chunk of time (25ms/100ms). Default: 100%'></i>
+                <i class="far fa-sm fa-question-circle" title='(Containers only) Enter in how much of the CPU can be used. Can be a percentage (e.g. 50%) for a soft limit or hard a chunk of time (25ms/100ms). Default: 100%'></i>
               </div>
             </div>
             <div class="row">
@@ -2221,7 +2221,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title='CPU scheduling priority compared to other instances sharing the same CPUs (overcommit) (integer between 0 and 10). Default: 10'></i>
+                <i class="far fa-sm fa-question-circle" title='(Containers only) Enter in the CPU scheduling priority compared to other instances sharing the same CPUs (overcommit) (integer between 0 and 10). Default: 10'></i>
               </div>
             </div>
           </div>
@@ -2252,7 +2252,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title="Percentage of the host's memory or fixed value in bytes (various suffixes supported, see below). Default: (all)"></i>
+                <i class="far fa-sm fa-question-circle" title="Enter in the percentage of the host's memory or fixed value in bytes (various suffixes such as GB or GiB). Default: 1GiB for VMs and no limit for containers"></i>
               </div>
             </div>
             <div class="row">
@@ -2267,7 +2267,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title="If hard, instance can't exceed its memory limit. If soft, the instance can exceed its memory limit when extra host memory is available. Default: hard"></i>
+                <i class="far fa-sm fa-question-circle" title="(Containers only) If hard, instance can't exceed its memory limit. If soft, the instance can exceed its memory limit when extra host memory is available. Default: hard"></i>
               </div>
             </div>
             <div class="row">
@@ -2282,7 +2282,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title='Controls whether to back the instance using hugepages rather than regular system memory. Default: false'></i>
+                <i class="far fa-sm fa-question-circle" title='(Virtual Machines only) Select whether to back the instance using hugepages rather than regular system memory. Default: false'></i>
               </div>
             </div>
             <div class="row">
@@ -2297,7 +2297,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title='Controls whether to encourage/discourage swapping less used pages for this instance. Default: true'></i>
+                <i class="far fa-sm fa-question-circle" title='(Containers only) Select whether to encourage/discourage swapping less used pages for this instance. Default: true'></i>
               </div>
             </div>
             <div class="row">
@@ -2308,7 +2308,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title='The higher this is set, the least likely the instance is to be swapped to disk (integer between 0 and 10). Default: 10'></i>
+                <i class="far fa-sm fa-question-circle" title='(Containers only) The higher this is set, the least likely the instance is to be swapped to disk (integer between 0 and 10). Default: 10'></i>
               </div>
             </div>
           </div>
@@ -2344,7 +2344,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title='Support running lxd (nested) inside the instance. Default: false'></i>
+                <i class="far fa-sm fa-question-circle" title='(Containers only) Select wheter to support running lxd (nested) inside the instance. Default: false'></i>
               </div>
             </div>
 
@@ -2360,7 +2360,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title='Runs the instance in privileged mode. Default: false'></i>
+                <i class="far fa-sm fa-question-circle" title='(Containers only) Select whether to run the instance in privileged mode. Default: false'></i>
               </div>
             </div>
 
@@ -2376,7 +2376,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title='Prevents the instance from being deleted. Default: false'></i>
+                <i class="far fa-sm fa-question-circle" title='Select whether to prevents the instance from being deleted. Default: false'></i>
               </div>
             </div>
 
@@ -2408,7 +2408,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title='Cron expression (<minute> <hour> <dom> <month> <dow>). Default: (not set)'></i>
+                <i class="far fa-sm fa-question-circle" title='Enter in a Cron expression (<minute> <hour> <dom> <month> <dow>). Default: (not set)'></i>
               </div>
             </div>
             <div class="row">
@@ -2423,7 +2423,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title='Controls whether or not stopped instances are to be snapshoted automatically. Default: false'></i>
+                <i class="far fa-sm fa-question-circle" title='Select whether or not stopped instances are to be snapshoted automatically. Default: false'></i>
               </div>
             </div>
             <div class="row">
@@ -2434,7 +2434,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title='Pongo2 template string which represents the snapshot name (used for scheduled snapshots and unnamed snapshots). Default: snap%d'></i>
+                <i class="far fa-sm fa-question-circle" title='Enter in a Pongo2 template string which represents the snapshot name (used for scheduled snapshots and unnamed snapshots). Default: snap%d'></i>
               </div>
             </div>
             <div class="row">
@@ -2445,7 +2445,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               <div class="col-1">
-                <i class="far fa-sm fa-question-circle" title='Controls when snapshots are to be deleted (expects expression like 1M 2H 3d 4w 5m 6y). Default: (not set)'></i>
+                <i class="far fa-sm fa-question-circle" title='Enter in when snapshots are to be deleted (expects expression like 1M 2H 3d 4w 5m 6y). Default: (not set)'></i>
               </div>
             </div>
           </div>
@@ -2530,6 +2530,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   const projectName = urlParams.get('project');
   var instanceDetails = "";
   var instanceStateDetails = "";
+  var instanceType = "";
   var consoleControlSocket;
   var consoleDataSocket;
   var consoleTerminal;
@@ -2784,6 +2785,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         $("#snapshotsScheduleStopped").text(data.snapshotsScheduleStopped)
         $("#snapshotsPattern").text(data.snapshotsPattern)
         $("#snapshotsExpiry").text(data.snapshotsExpiry)
+
+        //Use Instance Type to disable config options in modals that are specific type
+        if (data.type == "virtual-machine"){
+          //Disable container only fields
+          $("#limitsCpuAllowanceInput").prop('disabled', true);
+          $("#limitsCpuPriorityInput").prop('disabled', true); 
+          $("#limitsMemoryEnforceInput").prop('disabled', true); 
+          $("#limitsMemorySwapInput").prop('disabled', true); 
+          $("#limitsMemorySwapPriorityInput").prop('disabled', true); 
+          $("#securityNestingInput").prop('disabled', true); 
+          $("#securityPrivilegedInput").prop('disabled', true); 
+        }
+        else {
+          //Disable virtual-machine only fields
+          $("#limitsMemoryHugepagesInput").prop('disabled', true); 
+        }
+        
+        //Set Instance Type for Updating config functions
+        instanceType = data.type;
+
     });
     
     //Load Instance State Information for Card
@@ -4287,7 +4308,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     bootAutostartPriority = $("#bootAutostartPriorityInput").val()
     bootHostShutdownTimeout = $("#bootHostShutdownTimeoutInput").val()
     bootStopPriority = $("#bootStopPriorityInput").val()
-    $.post("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=updateInstanceBootConfiguration", {boot_autostart: encodeURI(bootAutostart), boot_autostart_delay: encodeURI(bootAutostartDelay), boot_autostart_priority: encodeURI(bootAutostartPriority), boot_host_shutdown_timeout: encodeURI(bootHostShutdownTimeout), boot_stop_priority: encodeURI(bootStopPriority)}, function (data) {
+    $.post("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&type=" + encodeURI(instanceType) + "&action=updateInstanceBootConfiguration", {boot_autostart: encodeURI(bootAutostart), boot_autostart_delay: encodeURI(bootAutostartDelay), boot_autostart_priority: encodeURI(bootAutostartPriority), boot_host_shutdown_timeout: encodeURI(bootHostShutdownTimeout), boot_stop_priority: encodeURI(bootStopPriority)}, function (data) {
       //Async operation type
       var operationData = JSON.parse(data);
       console.log(operationData);
@@ -4318,7 +4339,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     limitsCpu = $("#limitsCpuInput").val()
     limitsCpuAllowance = $("#limitsCpuAllowanceInput").val()
     limitsCpuPriority = $("#limitsCpuPriorityInput").val()
-    $.post("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=updateInstanceCpuLimits", {limits_cpu: encodeURI(limitsCpu), limits_cpu_allowance: encodeURI(limitsCpuAllowance), limits_cpu_priority: encodeURI(limitsCpuPriority)}, function (data) {
+    $.post("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&type=" + encodeURI(instanceType) + "&action=updateInstanceCpuLimits", {limits_cpu: encodeURI(limitsCpu), limits_cpu_allowance: encodeURI(limitsCpuAllowance), limits_cpu_priority: encodeURI(limitsCpuPriority)}, function (data) {
       //Async operation type
       var operationData = JSON.parse(data);
       console.log(operationData);
@@ -4353,7 +4374,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     limitsMemoryHugepages = $("#limitsMemoryHugepagesInput").val()
     limitsMemorySwap = $("#limitsMemorySwapInput").val()
     limitsMemorySwapPriority = $("#limitsMemorySwapPriorityInput").val()
-    $.post("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=updateInstanceMemoryLimits", {limits_memory: encodeURI(limitsMemory), limits_memory_enforce: encodeURI(limitsMemoryEnforce), limits_memory_hugepages: encodeURI(limitsMemoryHugepages), limits_memory_swap: encodeURI(limitsMemorySwap), limits_memory_swap_priority: encodeURI(limitsMemorySwapPriority)}, function (data) {
+    $.post("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&type=" + encodeURI(instanceType) + "&action=updateInstanceMemoryLimits", {limits_memory: encodeURI(limitsMemory), limits_memory_enforce: encodeURI(limitsMemoryEnforce), limits_memory_hugepages: encodeURI(limitsMemoryHugepages), limits_memory_swap: encodeURI(limitsMemorySwap), limits_memory_swap_priority: encodeURI(limitsMemorySwapPriority)}, function (data) {
       //Async operation type
       var operationData = JSON.parse(data);
       console.log(operationData);
@@ -4384,7 +4405,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     securityNesting = $("#securityNestingInput").val()
     securityPrivileged = $("#securityPrivilegedInput").val()
     securityProtectionDelete = $("#securityProtectionDeleteInput").val()
-    $.post("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=updateInstanceSecurityConfiguration", {security_nesting: encodeURI(securityNesting), security_privileged: encodeURI(securityPrivileged), security_protection_delete: encodeURI(securityProtectionDelete)}, function (data) {
+    $.post("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&type=" + encodeURI(instanceType) + "&action=updateInstanceSecurityConfiguration", {security_nesting: encodeURI(securityNesting), security_privileged: encodeURI(securityPrivileged), security_protection_delete: encodeURI(securityProtectionDelete)}, function (data) {
       //Async operation type
       var operationData = JSON.parse(data);
       console.log(operationData);
@@ -4416,7 +4437,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     snapshotsScheduleStopped = $("#snapshotsScheduleStoppedInput").val()
     snapshotsPattern = $("#snapshotsPatternInput").val()
     snapshotsExpiry = $("#snapshotsExpiryInput").val()
-    $.post("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=updateInstanceSnapshotConfiguration",{snapshots_schedule: encodeURI(snapshotsSchedule), snapshots_schedule_stopped: encodeURI(snapshotsScheduleStopped), snapshots_pattern: encodeURI(snapshotsPattern), snapshots_expiry: encodeURI(snapshotsExpiry) }, function (data) {
+    $.post("./php/lxd/instances-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&type=" + encodeURI(instanceType) + "&action=updateInstanceSnapshotConfiguration",{snapshots_schedule: encodeURI(snapshotsSchedule), snapshots_schedule_stopped: encodeURI(snapshotsScheduleStopped), snapshots_pattern: encodeURI(snapshotsPattern), snapshots_expiry: encodeURI(snapshotsExpiry) }, function (data) {
       //Async operation type
       var operationData = JSON.parse(data);
       console.log(operationData);
@@ -4429,6 +4450,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
   }
 
+  function setSidebarToggleValue(){
+    sidebarState = localStorage.getItem('sidebarState');
+    if (sidebarState == "collapsed"){
+      localStorage.setItem('sidebarState','expanded');
+    }
+    else {
+      localStorage.setItem('sidebarState','collapsed');
+    }
+  }
+  
+  function applySidebarToggleValue() {
+    sidebarState = localStorage.getItem('sidebarState');
+    if (sidebarState == "collapsed"){
+      $("body").toggleClass("sidebar-toggled"), 
+      $(".sidebar").toggleClass("toggled"), 
+      $(".sidebar").hasClass("toggled") && $(".sidebar .collapse").collapse("hide")
+    }
+  }
+
+  applySidebarToggleValue();
+  
   $(document).ready(function(){
 
     //Check Authorization

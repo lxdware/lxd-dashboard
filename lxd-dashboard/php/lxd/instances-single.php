@@ -92,6 +92,7 @@ if (isset($_SESSION['username'])) {
   $security_uid = (isset($_GET['security_uid'])) ? filter_var(urldecode($_GET['security_uid']), FILTER_SANITIZE_NUMBER_INT) : "";
   $shell = (isset($_GET['shell'])) ? filter_var(urldecode($_GET['shell']), FILTER_SANITIZE_STRING) : "";
   $shift = (isset($_GET['shift'])) ? filter_var(urldecode($_GET['shift']), FILTER_SANITIZE_STRING) : "";
+  $type = (isset($_GET['type'])) ? filter_var(urldecode($_GET['type']), FILTER_SANITIZE_STRING) : "";
   $uid = (isset($_GET['uid'])) ? filter_var(urldecode($_GET['uid']), FILTER_SANITIZE_NUMBER_INT) : "";
   $vlan = (isset($_GET['vlan'])) ? filter_var(urldecode($_GET['vlan']), FILTER_SANITIZE_NUMBER_INT) : "";
   $vlan_tagged = (isset($_GET['vlan_tagged'])) ? filter_var(urldecode($_GET['vlan_tagged']), FILTER_SANITIZE_NUMBER_INT) : "";
@@ -689,84 +690,88 @@ if (isset($_SESSION['username'])) {
       $i = 0;
       echo '{ "data": [';
 
-      foreach ($instance_backups as $instance_backup){
+      if ($results['status_code'] == "200"){
 
-        $instance_only = ($instance_backup['instance_only'])?"true":"false";
-        $container_only = ($instance_backup['container_only'])?"true":"false";
-        $optimized_storage = ($instance_backup['optimized_storage'])?"true":"false";
-        $hostname = retrieveHostName($remote);
-        $file = '/var/lxdware/backups/' . $hostname . '/' . $project . '/' . $instance . '/' . $instance_backup['name'];
-        $file_exists = false;
+        foreach ($instance_backups as $instance_backup){
 
-        if ($i > 0){
-          echo ",";
-        }
-        $i++;
+          $instance_only = ($instance_backup['instance_only'])?"true":"false";
+          $container_only = ($instance_backup['container_only'])?"true":"false";
+          $optimized_storage = ($instance_backup['optimized_storage'])?"true":"false";
+          $hostname = retrieveHostName($remote);
+          $file = '/var/lxdware/backups/' . $hostname . '/' . $project . '/' . $instance . '/' . $instance_backup['name'];
+          $file_exists = false;
 
-        echo "[ ";
-
-        echo '"' . "<i class='fas fa-save fa-lg' style='color:#4e73df'></i>" . '",';
-
-        if (file_exists($file)){
-          $file_exists = true;
-          $file_size = filesize($file);
-          $unit_size = "bytes";
-          if ($file_size >= 1024){
-            $file_size = $file_size / 1024;
-            $unit_size = "KB";
+          if ($i > 0){
+            echo ",";
           }
-          if ($file_size >= 1024){
-            $file_size = $file_size / 1024;
-            $unit_size = "MB";
-          }
-          if ($file_size >= 1024){
-            $file_size = $file_size / 1024;
-            $unit_size = "GB";
-          }
-          if ($file_size >= 1024){
-            $file_size = $file_size / 1024;
-            $unit_size = "TB";
-          }
-          //echo '"' . "<a href='./php/lxd/instances.php?remote=".$remote."&project=".$project."&instance=".$instance."&name=".$instance_backup['name']."&action=downloadInstanceExportFile'>".htmlentities(basename($file))."</a> (".number_format($file_size,1)." ".$unit_size.")" . '",';
-          echo '"' . "<a href='./php/lxd/instances.php?remote=".$remote."&project=".$project."&instance=".$instance."&name=".$instance_backup['name']."&action=downloadInstanceExportFile'>".htmlentities(basename($file))."</a>" . '",';
-        }
-        else{
-          echo '"' . htmlentities($instance_backup['name']) . '", ';
-        }
+          $i++;
 
-      
-        //LXD version of backup datetime: 2021-04-28T09:26:50-04:00
-        $dt = new DateTime($instance_backup['created_at']);
-        echo '"' . htmlentities($dt->format('Y-m-d H:i:s')) . '",';
- 
- 
-        //LXD version of backup datetime for no expiration: 0000-12-31T18:27:49-05:32
-        if ($instance_backup['expires_at'] == "0000-12-31T18:27:49-05:32"){
-          echo '"Never",';
-        }
-        else {
-          $dt = new DateTime($instance_backup['expires_at']);
+          echo "[ ";
+
+          echo '"' . "<i class='fas fa-save fa-lg' style='color:#4e73df'></i>" . '",';
+
+          if (file_exists($file)){
+            $file_exists = true;
+            $file_size = filesize($file);
+            $unit_size = "bytes";
+            if ($file_size >= 1024){
+              $file_size = $file_size / 1024;
+              $unit_size = "KB";
+            }
+            if ($file_size >= 1024){
+              $file_size = $file_size / 1024;
+              $unit_size = "MB";
+            }
+            if ($file_size >= 1024){
+              $file_size = $file_size / 1024;
+              $unit_size = "GB";
+            }
+            if ($file_size >= 1024){
+              $file_size = $file_size / 1024;
+              $unit_size = "TB";
+            }
+            //echo '"' . "<a href='./php/lxd/instances.php?remote=".$remote."&project=".$project."&instance=".$instance."&name=".$instance_backup['name']."&action=downloadInstanceExportFile'>".htmlentities(basename($file))."</a> (".number_format($file_size,1)." ".$unit_size.")" . '",';
+            echo '"' . "<a href='./php/lxd/instances.php?remote=".$remote."&project=".$project."&instance=".$instance."&name=".$instance_backup['name']."&action=downloadInstanceExportFile'>".htmlentities(basename($file))."</a>" . '",';
+          }
+          else{
+            echo '"' . htmlentities($instance_backup['name']) . '", ';
+          }
+
+        
+          //LXD version of backup datetime: 2021-04-28T09:26:50-04:00
+          $dt = new DateTime($instance_backup['created_at']);
           echo '"' . htmlentities($dt->format('Y-m-d H:i:s')) . '",';
+  
+  
+          //LXD version of backup datetime for no expiration: 0000-12-31T18:27:49-05:32
+          if ($instance_backup['expires_at'] == "0000-12-31T18:27:49-05:32"){
+            echo '"Never",';
+          }
+          else {
+            $dt = new DateTime($instance_backup['expires_at']);
+            echo '"' . htmlentities($dt->format('Y-m-d H:i:s')) . '",';
+          }
+
+          //echo '"' . htmlentities($instance_backup['created_at']) . '",';
+          //echo '"' . htmlentities($instance_backup['expires_at']) . '",';
+          echo '"' . htmlentities($instance_only) . '",';
+          echo '"' . htmlentities($optimized_storage) . '",';
+
+          echo '"';
+            //check to see if file does not exist and also make sure backup operation isn't running for export action
+            if (!$file_exists && !in_array($instance_backup['name'], $current_backups)){
+              echo "<a href='#' onclick=exportInstanceBackup('".$instance_backup['name']."')><i class='fas fa-file-export fa-lg' style='color:#ddd' title='Export to local file' aria-hidden='true'></i></a>";
+              echo " &nbsp ";
+            }
+          
+            echo "<a href='#' onclick=deleteInstanceBackup('".$instance_backup['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
+            
+          echo '"';
+
+          echo " ]";
+          
         }
 
-        //echo '"' . htmlentities($instance_backup['created_at']) . '",';
-        //echo '"' . htmlentities($instance_backup['expires_at']) . '",';
-        echo '"' . htmlentities($instance_only) . '",';
-        echo '"' . htmlentities($optimized_storage) . '",';
-
-        echo '"';
-          //check to see if file does not exist and also make sure backup operation isn't running for export action
-          if (!$file_exists && !in_array($instance_backup['name'], $current_backups)){
-            echo "<a href='#' onclick=exportInstanceBackup('".$instance_backup['name']."')><i class='fas fa-file-export fa-lg' style='color:#ddd' title='Export to local file' aria-hidden='true'></i></a>";
-            echo " &nbsp ";
-          }
-        
-          echo "<a href='#' onclick=deleteInstanceBackup('".$instance_backup['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
-          
-        echo '"';
-
-        echo " ]";
-        
       }
 
       echo " ]}";
@@ -788,56 +793,60 @@ if (isset($_SESSION['username'])) {
       $i = 0;
       echo '{ "data": [';
 
-      //Loop through the expanded devices
-      foreach ($expanded_device_names as $expanded_device_name => $device_data){
-        $disk_path = (isset($device_data['path'])) ? $device_data['path'] : "";
-        $disk_type = $device_data['type'];
-        $disk_usage = "";
-        $disk_unit = "";
-        
-        //Proceed only if a disk device
-        if ($disk_type == "disk"){
+      if ($results['status_code'] == "200"){
 
-          //Determine if there is usage data available for disk device
-          foreach ($disk_names as $disk_name => $disk_data){
-            if ($expanded_device_name == $disk_name){
-              $disk_usage = $disk_data['usage']/1024/1024;
-              $disk_unit = "MB";
-              if ($disk_usage >= 1024){
-                $disk_usage = $disk_usage/1024;
-                $disk_unit = "GB";
-              }
-              if ($disk_usage >= 1024){
-                $disk_usage = $disk_usage/1024;
-                $disk_unit = "TB";
-              }
-              $disk_usage = number_format($disk_usage,2);
-            }
-          }
+        //Loop through the expanded devices
+        foreach ($expanded_device_names as $expanded_device_name => $device_data){
+          $disk_path = (isset($device_data['path'])) ? $device_data['path'] : "";
+          $disk_type = $device_data['type'];
+          $disk_usage = "";
+          $disk_unit = "";
           
-          if ($i > 0){
-            echo ",";
-          }
-          $i++;
-  
-          echo "[ ";
-  
-          echo '"';
-            echo "<i class='fas fa-hdd fa-lg' style='color:#4e73df'></i>";
-          echo '",';
-  
-          echo '"' . htmlentities($expanded_device_name) . '",';
-          echo '"' . htmlentities($disk_path) . '",';
-          echo '"' . htmlentities($disk_usage) . " " . $disk_unit . '",';
-          echo '"' . htmlentities($disk_type) . '",';
+          //Proceed only if a disk device
+          if ($disk_type == "disk"){
 
-          echo '"';
-          if (array_key_exists($expanded_device_name, $device_names)){
-            echo "<a href='#' onclick=removeInstanceDevice('".$expanded_device_name."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Remove' aria-hidden='true'></i></a>";
-          } 
-          echo '"';
-   
-          echo " ]";
+            //Determine if there is usage data available for disk device
+            foreach ($disk_names as $disk_name => $disk_data){
+              if ($expanded_device_name == $disk_name){
+                $disk_usage = $disk_data['usage']/1024/1024;
+                $disk_unit = "MB";
+                if ($disk_usage >= 1024){
+                  $disk_usage = $disk_usage/1024;
+                  $disk_unit = "GB";
+                }
+                if ($disk_usage >= 1024){
+                  $disk_usage = $disk_usage/1024;
+                  $disk_unit = "TB";
+                }
+                $disk_usage = number_format($disk_usage,2);
+              }
+            }
+            
+            if ($i > 0){
+              echo ",";
+            }
+            $i++;
+    
+            echo "[ ";
+    
+            echo '"';
+              echo "<i class='fas fa-hdd fa-lg' style='color:#4e73df'></i>";
+            echo '",';
+    
+            echo '"' . htmlentities($expanded_device_name) . '",';
+            echo '"' . htmlentities($disk_path) . '",';
+            echo '"' . htmlentities($disk_usage) . " " . $disk_unit . '",';
+            echo '"' . htmlentities($disk_type) . '",';
+
+            echo '"';
+            if (array_key_exists($expanded_device_name, $device_names)){
+              echo "<a href='#' onclick=removeInstanceDevice('".$expanded_device_name."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Remove' aria-hidden='true'></i></a>";
+            } 
+            echo '"';
+    
+            echo " ]";
+
+          }
 
         }
 
@@ -855,52 +864,56 @@ if (isset($_SESSION['username'])) {
       $i = 0;
       echo '{ "data": [';
 
-      foreach ($networks as $network => $network_data){
+      if ($results['status_code'] == "200"){
 
-        if ($i > 0){
-          echo ",";
+        foreach ($networks as $network => $network_data){
+
+          if ($i > 0){
+            echo ",";
+          }
+          $i++;
+
+          echo "[ ";
+
+          echo '"';
+            if ($network_data['state'] == "up")
+              echo "<i class='fas fa-network-wired fa-lg' style='color:#4e73df'></i>";
+            else
+              echo "<i class='fas fa-network-wired fa-lg' style='color:#ddd'></i>";
+          echo '",';
+
+          echo '"' . htmlentities($network) . '",';
+          echo '"' . htmlentities($network_data['hwaddr']) . '",';
+
+          echo '"';
+            $ii = 0;
+            foreach ($network_data['addresses'] as $address){
+              if ($address['family'] == "inet"){
+                if ($ii > 0)
+                  echo "<br />";
+                echo htmlentities($address['address']) . "/" . htmlentities($address['netmask']);
+                $ii++;
+              }
+            }
+          echo '",';
+
+          echo '"';
+            $ii = 0;
+            foreach ($network_data['addresses'] as $address){
+              if ($address['family'] == "inet6"){
+                if ($ii > 0)
+                  echo "<br />";
+                echo htmlentities($address['address']);
+                $ii++;
+              }
+            }
+          echo '",';
+
+          echo '"' . htmlentities($network_data['state']) . '"';
+
+          echo " ]";
+
         }
-        $i++;
-
-        echo "[ ";
-
-        echo '"';
-          if ($network_data['state'] == "up")
-            echo "<i class='fas fa-network-wired fa-lg' style='color:#4e73df'></i>";
-          else
-            echo "<i class='fas fa-network-wired fa-lg' style='color:#ddd'></i>";
-        echo '",';
-
-        echo '"' . htmlentities($network) . '",';
-        echo '"' . htmlentities($network_data['hwaddr']) . '",';
-
-        echo '"';
-          $ii = 0;
-          foreach ($network_data['addresses'] as $address){
-            if ($address['family'] == "inet"){
-              if ($ii > 0)
-                echo "<br />";
-              echo htmlentities($address['address']) . "/" . htmlentities($address['netmask']);
-              $ii++;
-            }
-          }
-        echo '",';
-
-        echo '"';
-          $ii = 0;
-          foreach ($network_data['addresses'] as $address){
-            if ($address['family'] == "inet6"){
-              if ($ii > 0)
-                echo "<br />";
-              echo htmlentities($address['address']);
-              $ii++;
-            }
-          }
-        echo '",';
-
-        echo '"' . htmlentities($network_data['state']) . '"';
-
-        echo " ]";
 
       }
 
@@ -917,29 +930,33 @@ if (isset($_SESSION['username'])) {
       $i = 0;
       echo '{ "data": [';
 
-      foreach ($instance_logs as $instance_log){
+      if ($results['status_code'] == "200"){
 
-        if ($i > 0){
-          echo ",";
+        foreach ($instance_logs as $instance_log){
+
+          if ($i > 0){
+            echo ",";
+          }
+          $i++;
+
+          echo "[ ";
+
+          echo '"' . "<i class='fas fa-history fa-lg' style='color:#4e73df'></i>" . '",';
+
+          echo '"' . htmlentities($instance_log) . '",';
+
+          echo '"';
+        
+            echo "<a href='#' onclick=loadInstanceLog('".$instance_log."')><i class='fas fa-file fa-lg' style='color:#ddd' title='Display' aria-hidden='true'></i></a>";
+            echo " &nbsp ";
+          
+            echo "<a href='#' onclick=deleteInstanceLog('".$instance_log."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
+          
+          echo '"';
+
+          echo " ]";
+
         }
-        $i++;
-
-        echo "[ ";
-
-        echo '"' . "<i class='fas fa-history fa-lg' style='color:#4e73df'></i>" . '",';
-
-        echo '"' . htmlentities($instance_log) . '",';
-
-        echo '"';
-       
-          echo "<a href='#' onclick=loadInstanceLog('".$instance_log."')><i class='fas fa-file fa-lg' style='color:#ddd' title='Display' aria-hidden='true'></i></a>";
-          echo " &nbsp ";
-        
-          echo "<a href='#' onclick=deleteInstanceLog('".$instance_log."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
-        
-        echo '"';
-
-        echo " ]";
 
       }
       
@@ -956,39 +973,43 @@ if (isset($_SESSION['username'])) {
       $i = 0;
       echo '{ "data": [';
     
-      foreach ($expanded_device_names as $expanded_device_name => $device_data){
-        if ($device_data['type'] == "nic"){
+      if ($results['status_code'] == "200"){
 
-          $device_data_nictype = (isset($device_data['nictype'])) ? htmlentities($device_data['nictype']) : "";
-          $device_data_parent = (isset($device_data['parent'])) ? htmlentities($device_data['parent']) : "";
-          $device_data_network = (isset($device_data['network'])) ? htmlentities($device_data['network']) : "";
-          $device_data_name = (isset($device_data['name'])) ? htmlentities($device_data['name']) : "";
+        foreach ($expanded_device_names as $expanded_device_name => $device_data){
+          if ($device_data['type'] == "nic"){
 
-          if ($i > 0){
-            echo ",";
+            $device_data_nictype = (isset($device_data['nictype'])) ? htmlentities($device_data['nictype']) : "";
+            $device_data_parent = (isset($device_data['parent'])) ? htmlentities($device_data['parent']) : "";
+            $device_data_network = (isset($device_data['network'])) ? htmlentities($device_data['network']) : "";
+            $device_data_name = (isset($device_data['name'])) ? htmlentities($device_data['name']) : "";
+
+            if ($i > 0){
+              echo ",";
+            }
+            $i++;
+
+            echo "[ ";
+
+            echo '"' . "<i class='fas fa-exchange-alt fa-lg' style='color:#4e73df'></i>" . '",';
+
+            echo '"' . htmlentities($expanded_device_name) . '",';
+            echo '"' . $device_data_nictype . '",';
+            echo '"' . $device_data_parent . '",';
+            echo '"' . $device_data_network . '",';
+            echo '"' . $device_data_name . '",';
+
+            echo '"';
+            if (array_key_exists($expanded_device_name, $device_names)){
+              echo "<a href='#' onclick=removeInstanceDevice('".$expanded_device_name."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Remove' aria-hidden='true'></i></a>";
+            } 
+            echo '"';
+
+            echo " ]";
+      
           }
-          $i++;
 
-          echo "[ ";
-
-          echo '"' . "<i class='fas fa-exchange-alt fa-lg' style='color:#4e73df'></i>" . '",';
-
-          echo '"' . htmlentities($expanded_device_name) . '",';
-          echo '"' . $device_data_nictype . '",';
-          echo '"' . $device_data_parent . '",';
-          echo '"' . $device_data_network . '",';
-          echo '"' . $device_data_name . '",';
-
-          echo '"';
-          if (array_key_exists($expanded_device_name, $device_names)){
-            echo "<a href='#' onclick=removeInstanceDevice('".$expanded_device_name."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Remove' aria-hidden='true'></i></a>";
-          } 
-          echo '"';
-
-          echo " ]";
-    
         }
-
+    
       }
       
       echo " ]}";
@@ -1004,39 +1025,43 @@ if (isset($_SESSION['username'])) {
       $i = 0;
       echo '{ "data": [';
         
-      foreach ($profile_names as $profile_name){
-        $url = $base_url . "/1.0/profiles/" . $profile_name . "?project=" . $project;
-        $results = sendCurlRequest($action, "GET", $url);
-        $results = json_decode($results, true);
-        $profile_data = (isset($results['metadata'])) ? $results['metadata'] : [];
+      if ($results['status_code'] == "200"){
 
-        if ($profile_data['name'] == "")
-        continue;
+        foreach ($profile_names as $profile_name){
+          $url = $base_url . "/1.0/profiles/" . $profile_name . "?project=" . $project;
+          $results = sendCurlRequest($action, "GET", $url);
+          $results = json_decode($results, true);
+          $profile_data = (isset($results['metadata'])) ? $results['metadata'] : [];
 
-        if ($i > 0){
-          echo ",";
+          if ($profile_data['name'] == "")
+          continue;
+
+          if ($i > 0){
+            echo ",";
+          }
+          $i++;
+
+          echo "[ ";
+
+          echo '"';
+            echo "<i class='fas fa-address-card fa-lg' style='color:#4e73df'></i>";
+          echo '",';
+
+          echo '"';
+            echo htmlentities($profile_data['name']);
+          echo '",';
+
+          echo '"';
+            echo htmlentities($profile_data['description']);
+          echo '",';
+
+          echo '"';
+            echo "<a href='#' onclick=detachInstanceProfile('".$profile_data['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Detach' aria-hidden='true'></i></a>";
+          echo '"';
+
+          echo " ]";
+
         }
-        $i++;
-
-        echo "[ ";
-
-        echo '"';
-          echo "<i class='fas fa-address-card fa-lg' style='color:#4e73df'></i>";
-        echo '",';
-
-        echo '"';
-          echo htmlentities($profile_data['name']);
-        echo '",';
-
-        echo '"';
-          echo htmlentities($profile_data['description']);
-        echo '",';
-
-        echo '"';
-          echo "<a href='#' onclick=detachInstanceProfile('".$profile_data['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Detach' aria-hidden='true'></i></a>";
-        echo '"';
-
-        echo " ]";
 
       }
 
@@ -1053,35 +1078,39 @@ if (isset($_SESSION['username'])) {
       $i = 0;
       echo '{ "data": [';
     
-      foreach ($expanded_device_names as $expanded_device_name => $device_data){
-        if ($device_data['type'] == "proxy"){
+      if ($results['status_code'] == "200"){
 
-          $device_data_connect = (isset($device_data['connect'])) ? htmlentities($device_data['connect']) : "";
-          $device_data_listen = (isset($device_data['listen'])) ? htmlentities($device_data['listen']) : "";
-          $device_data_type = (isset($device_data['type'])) ? htmlentities($device_data['type']) : "";
+        foreach ($expanded_device_names as $expanded_device_name => $device_data){
+          if ($device_data['type'] == "proxy"){
 
-          if ($i > 0){
-            echo ",";
+            $device_data_connect = (isset($device_data['connect'])) ? htmlentities($device_data['connect']) : "";
+            $device_data_listen = (isset($device_data['listen'])) ? htmlentities($device_data['listen']) : "";
+            $device_data_type = (isset($device_data['type'])) ? htmlentities($device_data['type']) : "";
+
+            if ($i > 0){
+              echo ",";
+            }
+            $i++;
+
+            echo "[ ";
+
+            echo '"' . "<i class='fas fa-exchange-alt fa-lg' style='color:#4e73df'></i>" . '",';
+
+            echo '"' . htmlentities($expanded_device_name) . '",';
+            echo '"' . $device_data_connect . '",';
+            echo '"' . $device_data_listen . '",';
+            echo '"' . $device_data_type . '",';
+
+            echo '"';
+            if (array_key_exists($expanded_device_name, $device_names)){
+              echo "<a href='#' onclick=removeInstanceDevice('".$expanded_device_name."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Remove' aria-hidden='true'></i></a>";
+            } 
+            echo '"';
+
+            echo " ]";
+      
           }
-          $i++;
 
-          echo "[ ";
-
-          echo '"' . "<i class='fas fa-exchange-alt fa-lg' style='color:#4e73df'></i>" . '",';
-
-          echo '"' . htmlentities($expanded_device_name) . '",';
-          echo '"' . $device_data_connect . '",';
-          echo '"' . $device_data_listen . '",';
-          echo '"' . $device_data_type . '",';
-
-          echo '"';
-          if (array_key_exists($expanded_device_name, $device_names)){
-            echo "<a href='#' onclick=removeInstanceDevice('".$expanded_device_name."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Remove' aria-hidden='true'></i></a>";
-          } 
-          echo '"';
-
-          echo " ]";
-    
         }
 
       }
@@ -1098,72 +1127,76 @@ if (isset($_SESSION['username'])) {
       $i = 0;
       echo '{ "data": [';
 
-      foreach ($snapshots as $snapshot){
+      if ($results['status_code'] == "200"){
 
-        if ($snapshot['name'] == "")
-        continue;
+        foreach ($snapshots as $snapshot){
 
-        if ($snapshot['stateful'])
-          $state = "stateful";
-        else
-          $state = "stateless";
+          if ($snapshot['name'] == "")
+          continue;
 
-        if ($i > 0){
-          echo ",";
-        }
-        $i++;
+          if ($snapshot['stateful'])
+            $state = "stateful";
+          else
+            $state = "stateless";
 
-        echo "[ ";
+          if ($i > 0){
+            echo ",";
+          }
+          $i++;
 
-        echo '"' . "<i class='fas fa-clone fa-lg' style='color:#4e73df'></i>" . '",';
+          echo "[ ";
 
-        echo '"' . htmlentities($snapshot['name']) . '",';
-        echo '"' . htmlentities($state) . '",';
-        echo '"' . htmlentities(number_format($snapshot['size']/1024/1024,2)) . "MB" . '",';
+          echo '"' . "<i class='fas fa-clone fa-lg' style='color:#4e73df'></i>" . '",';
 
-        //PHP can't convert milliseconds in ISO8601 format, remove them.
-         //LXD version of datetime: 2021-04-28T08:44:22.271358535-04:00
-        $date_time_without_milliseconds = substr($snapshot['created_at'], 0, 19);
-        $date_time_offset = substr(-6, 6);
-        $date_time = $date_time_without_milliseconds . $date_time_offset;
-        $dt = new DateTime($date_time);
-        echo '"' . htmlentities($dt->format('Y-m-d H:i:s')) . '",';
+          echo '"' . htmlentities($snapshot['name']) . '",';
+          echo '"' . htmlentities($state) . '",';
+          echo '"' . htmlentities(number_format($snapshot['size']/1024/1024,2)) . "MB" . '",';
 
-        //LXD version of datetime for no expiration: 0001-01-01T00:00:00Z
-        if ($snapshot['expires_at'] == "0001-01-01T00:00:00Z"){
-          echo '"Never",';
-        }
-        else {
-          $date_time_without_milliseconds = substr($snapshot['expires_at'], 0, 19);
+          //PHP can't convert milliseconds in ISO8601 format, remove them.
+          //LXD version of datetime: 2021-04-28T08:44:22.271358535-04:00
+          $date_time_without_milliseconds = substr($snapshot['created_at'], 0, 19);
           $date_time_offset = substr(-6, 6);
           $date_time = $date_time_without_milliseconds . $date_time_offset;
           $dt = new DateTime($date_time);
           echo '"' . htmlentities($dt->format('Y-m-d H:i:s')) . '",';
+
+          //LXD version of datetime for no expiration: 0001-01-01T00:00:00Z
+          if ($snapshot['expires_at'] == "0001-01-01T00:00:00Z"){
+            echo '"Never",';
+          }
+          else {
+            $date_time_without_milliseconds = substr($snapshot['expires_at'], 0, 19);
+            $date_time_offset = substr(-6, 6);
+            $date_time = $date_time_without_milliseconds . $date_time_offset;
+            $dt = new DateTime($date_time);
+            echo '"' . htmlentities($dt->format('Y-m-d H:i:s')) . '",';
+          }
+
+          echo '"';
+        
+            echo "<a href='#' onclick=restoreInstanceSnapshot('".$snapshot['name']."')><i class='fas fa-window-restore fa-lg' style='color:#ddd' title='Restore Snapshot' aria-hidden='true'></i></a>";
+            echo " &nbsp ";
+          
+            echo "<a href='#' onclick=loadCreateInstanceFromSnapshotModal('".$snapshot['name']."')><i class='fas fa-cube fa-lg' style='color:#ddd' title='Create Instance' aria-hidden='true'></i></a>";
+            echo " &nbsp ";
+          
+            echo "<a href='#' onclick=loadPublishImageFromSnapshotModal('".$snapshot['name']."')><i class='fas fa-box-open fa-lg' style='color:#ddd' title='Publish Image' aria-hidden='true'></i></a>";
+            echo " &nbsp ";
+          
+            echo "<a href='#' onclick=deleteInstanceSnapshot('".$snapshot['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
+          
+          echo '"';
+
+          echo " ]";
+
         }
-
-        echo '"';
-       
-          echo "<a href='#' onclick=restoreInstanceSnapshot('".$snapshot['name']."')><i class='fas fa-window-restore fa-lg' style='color:#ddd' title='Restore Snapshot' aria-hidden='true'></i></a>";
-          echo " &nbsp ";
-        
-          echo "<a href='#' onclick=loadCreateInstanceFromSnapshotModal('".$snapshot['name']."')><i class='fas fa-cube fa-lg' style='color:#ddd' title='Create Instance' aria-hidden='true'></i></a>";
-          echo " &nbsp ";
-        
-          echo "<a href='#' onclick=loadPublishImageFromSnapshotModal('".$snapshot['name']."')><i class='fas fa-box-open fa-lg' style='color:#ddd' title='Publish Image' aria-hidden='true'></i></a>";
-          echo " &nbsp ";
-        
-          echo "<a href='#' onclick=deleteInstanceSnapshot('".$snapshot['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
-        
-        echo '"';
-
-        echo " ]";
 
       }
       
       echo " ]}";
       break;
 
-  case "removeInstanceDevice":
+    case "removeInstanceDevice":
       $url = $base_url . "/1.0/instances/" . $instance . "?project=" . $project;
       $results = sendCurlRequest($action, "GET", $url);
       $data = json_decode($results, true);
@@ -1207,7 +1240,16 @@ if (isset($_SESSION['username'])) {
 
     case "updateInstanceBootConfiguration":
       $url = $base_url . "/1.0/instances/" . $instance . "?project=" . $project;
-      $data = '{"config": {"boot.autostart":"'.$boot_autostart.'", "boot.autostart.delay":"'.$boot_autostart_delay.'", "boot.autostart.priority":"'.$boot_autostart_priority.'", "boot.host_shutdown_timeout":"'.$boot_host_shutdown_timeout.'", "boot.stop.priority":"'.$boot_stop_priority.'"}}';
+
+      $update_array = array();
+      $update_array['config'] = new ArrayObject();
+      $update_array['config']['boot.autostart'] = $boot_autostart;
+      $update_array['config']['boot.autostart.delay'] = $boot_autostart_delay;
+      $update_array['config']['boot.autostart.priority'] = $boot_autostart_priority;
+      $update_array['config']['boot.host_shutdown_timeout'] = $boot_host_shutdown_timeout;
+      $update_array['config']['boot.stop.priority'] = $boot_stop_priority;
+
+      $data = json_encode($update_array);
       $results = sendCurlRequest($action, "PATCH", $url, $data);
       echo $results;
 
@@ -1224,7 +1266,17 @@ if (isset($_SESSION['username'])) {
 
     case "updateInstanceCpuLimits":
       $url = $base_url . "/1.0/instances/" . $instance . "?project=" . $project;
-      $data = '{"config": {"limits.cpu":"'.$limits_cpu.'", "limits.cpu.allowance":"'.$limits_cpu_allowance.'", "limits.cpu.priority":"'.$limits_cpu_priority.'"}}';
+
+      $update_array = array();
+      $update_array['config'] = new ArrayObject();
+      $update_array['config']['limits.cpu'] = $limits_cpu;
+
+      if ($type == "container"){
+        $update_array['config']['limits.cpu.allowance'] = $limits_cpu_allowance;
+        $update_array['config']['limits.cpu.priority'] = $limits_cpu_priority;
+      }
+
+      $data = json_encode($update_array);
       $results = sendCurlRequest($action, "PATCH", $url, $data);
       echo $results;
 
@@ -1241,7 +1293,22 @@ if (isset($_SESSION['username'])) {
 
     case "updateInstanceMemoryLimits":
       $url = $base_url . "/1.0/instances/" . $instance . "?project=" . $project;
-      $data = '{"config": {"limits.memory":"'.$limits_memory.'", "limits.memory.enforce":"'.$limits_memory_enforce.'", "limits.memory.hugepages":"'.$limits_memory_hugepages.'", "limits.memory.swap":"'.$limits_memory_swap.'", "limits.memory.swap.priority": "'.$limits_memory_swap_priority.'"}}';
+
+      $update_array = array();
+      $update_array['config'] = new ArrayObject();
+      $update_array['config']['limits.memory'] = $limits_memory;
+
+      if ($type == "container"){
+        $update_array['config']['limits.memory.enforce'] = $limits_memory_enforce;
+        $update_array['config']['limits.memory.swap'] = $limits_memory_swap;
+        $update_array['config']['limits.memory.swap.priority'] = $limits_memory_swap_priority;
+      }
+
+      if ($type == "virtual-machine"){
+        $update_array['config']['limits.memory.hugepages'] = $limits_memory_hugepages;
+      }
+
+      $data = json_encode($update_array);
       $results = sendCurlRequest($action, "PATCH", $url, $data);
       echo $results;
 
@@ -1258,7 +1325,17 @@ if (isset($_SESSION['username'])) {
 
     case "updateInstanceSecurityConfiguration":
       $url = $base_url . "/1.0/instances/" . $instance . "?project=" . $project;
-      $data = '{"config": {"security.nesting":"'.$security_nesting.'", "security.privileged":"'.$security_privileged.'", "security.protection.delete":"'.$security_protection_delete.'"}}';
+
+      $update_array = array();
+      $update_array['config'] = new ArrayObject();
+      $update_array['config']['security.protection.delete'] = $security_protection_delete;
+
+      if ($type == "container"){
+        $update_array['config']['security.nesting'] = $security_nesting;
+        $update_array['config']['security.privileged'] = $security_privileged;
+      }
+
+      $data = json_encode($update_array);
       $results = sendCurlRequest($action, "PATCH", $url, $data);
       echo $results;
 
@@ -1275,7 +1352,15 @@ if (isset($_SESSION['username'])) {
 
     case "updateInstanceSnapshotConfiguration":
       $url = $base_url . "/1.0/instances/" . $instance . "?project=" . $project;
-      $data = '{"config": {"snapshots.schedule":"'.$snapshots_schedule.'", "snapshots.schedule.stopped":"'.$snapshots_schedule_stopped.'", "snapshots.pattern":"'.$snapshots_pattern.'", "snapshots.expiry":"'.$snapshots_expiry.'"}}';
+
+      $update_array = array();
+      $update_array['config'] = new ArrayObject();
+      $update_array['config']['snapshots.schedule'] = $snapshots_schedule;
+      $update_array['config']['snapshots.schedule.stopped'] = $snapshots_schedule_stopped;
+      $update_array['config']['snapshots.pattern'] = $snapshots_pattern;
+      $update_array['config']['snapshots.expiry'] = $snapshots_expiry;
+
+      $data = json_encode($update_array);
       $results = sendCurlRequest($action, "PATCH", $url, $data);
       echo $results;
 

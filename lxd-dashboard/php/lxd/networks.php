@@ -348,9 +348,70 @@ if (isset($_SESSION['username'])) {
       break;
 
     case "createNetworkUsingJSON":
-      $url = $base_url . "/1.0/networks?project=" . $project;
-      $data = $json;
-      $results = sendCurlRequest($action, "POST", $url, $data);
+
+      //Check to see if host is part of a cluster. Clusted hosts need network created first on each of the hosts
+      $url = $base_url . "/1.0/cluster";
+      $remote_data = sendCurlRequest($action, "GET", $url);
+      $remote_data = json_decode($remote_data, true);
+      $cluster_status = $remote_data['metadata'];
+
+      if ($cluster_status['enabled'] == true){
+        //Get a list of cluster members
+        $url = $base_url . "/1.0/cluster/members?recursion=1";
+        $cluster_api_data = sendCurlRequest($action, "GET", $url);
+        $cluster_api_data = json_decode($cluster_api_data, true);
+        $cluster_api_data = $cluster_api_data['metadata'];
+
+        //Setup Network data for REST API
+        $target_json_array = json_decode($json, true);
+
+        //Setup Network data for REST API
+        $target_device_array = array();
+        $target_device_array['config'] = new ArrayObject();
+        $target_device_array['name'] = $target_json_array['name'];
+        $target_device_array['type'] = $target_json_array['type'];
+        $target_device_array['description'] = $target_json_array['description'];
+        
+        if ($target_device_array['type'] == "bridge"){
+          if (!empty($target_json_array['config']['bridge.external_interfaces'])){ $target_device_array['config']['bridge.external_interfaces'] = $target_json_array['config']['bridge.external_interfaces'];}
+        }
+        if ($target_device_array['type'] == "macvlan" || $target_device_array['type'] == "sriov"){
+          if (!empty($target_json_array['config']['parent'])){ $target_device_array['config']['parent'] = $target_json_array['config']['parent'];}
+        }
+  
+        if ($target_device_array['type'] == "ovn"){
+        }
+  
+        if ($target_device_array['type'] == "physical"){
+          if (!empty($target_json_array['config']['parent'])){ $target_device_array['config']['parent'] = $target_json_array['config']['parent'];}
+        }
+
+        $target_data = json_encode($target_device_array);
+
+        //Loop through each cluster member to create the network, this will put the network in pending status
+        foreach ($cluster_api_data as $cluster_data){
+          $url = $base_url . "/1.0/networks?project=" . $project . "&target=".$cluster_data['server_name'];
+          $results = sendCurlRequest($action, "POST", $url, $target_data);
+        }
+
+        //Now lets create the network without target config options, moving the pending status to created
+        $url = $base_url . "/1.0/networks?project=" . $project;
+
+        //Setup Network data for REST API
+        $device_array = json_decode($json, true);
+        unset($device_array['config']['bridge.external_interfaces']);
+        unset($device_array['config']['parent']);
+
+        $data = json_encode($device_array);
+        $results = sendCurlRequest($action, "POST", $url, $data);
+
+      }
+      else {
+        $url = $base_url . "/1.0/networks?project=" . $project;
+        $data = $json;
+        $results = sendCurlRequest($action, "POST", $url, $data);
+      }
+
       echo $results;
 
       //Send event to accounting
@@ -390,61 +451,65 @@ if (isset($_SESSION['username'])) {
         $i = 0;
         echo '{ "data": [';
 
-        foreach ($networks as $network){
-          
-          if ($network['name'] == "")
-            continue;
+        if ($results['status_code'] == "200"){
 
-          $network_data_managed = ($network['managed']) ? "true" : "false";
+          foreach ($networks as $network){
+            
+            if ($network['name'] == "")
+              continue;
 
-          //This array key is not availabe on unmanaged network devices
-          if (isset($network['config']['ipv4.address']))
-            $ipv4 = $network['config']['ipv4.address'];
-          else
-            $ipv4 = "";
+            $network_data_managed = ($network['managed']) ? "true" : "false";
 
-          //This array key is not available on unmanaged network devices
-          if (isset($network['config']['ipv6.address']))
-            $ipv6 = $network['config']['ipv6.address'];
-          else
-            $ipv6 = "";
+            //This array key is not availabe on unmanaged network devices
+            if (isset($network['config']['ipv4.address']))
+              $ipv4 = $network['config']['ipv4.address'];
+            else
+              $ipv4 = "";
 
-          if ($i > 0){
-            echo ",";
+            //This array key is not available on unmanaged network devices
+            if (isset($network['config']['ipv6.address']))
+              $ipv6 = $network['config']['ipv6.address'];
+            else
+              $ipv6 = "";
+
+            if ($i > 0){
+              echo ",";
+            }
+            $i++;
+
+            echo "[ ";
+
+            if ($network['managed'] == "true"){
+              echo '"' . "<i class='fas fa-network-wired fa-lg' style='color:#4e73df'></i>" . '",';
+              echo '"' . htmlentities($network['name']) . '",';
+            }
+            else {
+              echo '"' . "<i class='fas fa-network-wired fa-lg' style='color:#ddd'></i>" . '",';
+              echo '"' . htmlentities($network['name']) . '",';
+            }
+
+            echo '"' . htmlentities($network['description']) . '",';
+            echo '"' . htmlentities($ipv4) . '",';
+            echo '"' . htmlentities($ipv6) . '",';
+            echo '"' . htmlentities($network['type']) . '",';
+            echo '"' . htmlentities($network_data_managed) . '",';
+
+            echo '"';
+            if ($network['managed'] == "true"){
+              echo "<a href='#' onclick=loadNetworkJson('".$network['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
+              echo " &nbsp ";
+              echo "<a href='#' onclick=loadRenameNetwork('".$network['name']."')><i class='fas fa-tag fa-lg' style='color:#ddd' title='Rename' aria-hidden='true'></i></a>";
+              echo " &nbsp ";
+              echo "<a href='#' onclick=deleteNetwork('".$network['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
+            }
+            echo '"';
+
+            echo " ]";
+
           }
-          $i++;
-
-          echo "[ ";
-
-          if ($network['managed'] == "true"){
-            echo '"' . "<i class='fas fa-network-wired fa-lg' style='color:#4e73df'></i>" . '",';
-            echo '"' . htmlentities($network['name']) . '",';
-          }
-          else {
-            echo '"' . "<i class='fas fa-network-wired fa-lg' style='color:#ddd'></i>" . '",';
-            echo '"' . htmlentities($network['name']) . '",';
-          }
-
-          echo '"' . htmlentities($network['description']) . '",';
-          echo '"' . htmlentities($ipv4) . '",';
-          echo '"' . htmlentities($ipv6) . '",';
-          echo '"' . htmlentities($network['type']) . '",';
-          echo '"' . htmlentities($network_data_managed) . '",';
-
-          echo '"';
-          if ($network['managed'] == "true"){
-            echo "<a href='#' onclick=loadNetworkJson('".$network['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
-            echo " &nbsp ";
-            echo "<a href='#' onclick=loadRenameNetwork('".$network['name']."')><i class='fas fa-tag fa-lg' style='color:#ddd' title='Rename' aria-hidden='true'></i></a>";
-            echo " &nbsp ";
-            echo "<a href='#' onclick=deleteNetwork('".$network['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
-          }
-          echo '"';
-
-          echo " ]";
 
         }
-
+        
         echo " ]}";
       }
       else {

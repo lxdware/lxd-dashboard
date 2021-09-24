@@ -166,50 +166,55 @@ if (isset($_SESSION['username'])) {
         $i = 0;
         echo '{ "data": [';
 
-        foreach ($operations_dict as $operations){
+        if ($results['status_code'] == "200"){
 
-          foreach ($operations as $operation){
+          foreach ($operations_dict as $operations){
 
-            if ($i > 0){
-              echo ",";
-            }
-            $i++;
-        
-            echo "[ ";
-            echo '"';
-            echo "<a href='#' onclick=loadOperationJson('".$operation['id']."')> <i class='fas fa-exchange-alt fa-lg' style='color:#4e73df'></i> </a>";    
-            echo '",';
+            foreach ($operations as $operation){
 
-            echo '"';
-            echo "<a href='#' onclick=loadOperationJson('".$operation['id']."')>".htmlentities($operation['id'])."</a>";
-            echo '",';
-
-            echo '"' . htmlentities($operation['class']) . '",';
-            echo '"' . htmlentities($operation['description']) . '",';
-            echo '"' . htmlentities($operation['status']) . '",';
-            echo '"' . htmlentities($operation['created_at']) . '",';
-
-            if($operation['may_cancel']){
-              $may_cancel = "true";
-              echo '"' . htmlentities($may_cancel) . '",';
+              if ($i > 0){
+                echo ",";
+              }
+              $i++;
+          
+              echo "[ ";
+              echo '"';
+              echo "<a href='#' onclick=loadOperationJson('".$operation['id']."')> <i class='fas fa-exchange-alt fa-lg' style='color:#4e73df'></i> </a>";    
+              echo '",';
 
               echo '"';
-                echo "<a href='#' onclick=deleteOperation('".$operation['id']."')> <i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i> </a>";
-              echo '"';
-            }
+              echo "<a href='#' onclick=loadOperationJson('".$operation['id']."')>".htmlentities($operation['id'])."</a>";
+              echo '",';
+
+              echo '"' . htmlentities($operation['class']) . '",';
+              echo '"' . htmlentities($operation['description']) . '",';
+              echo '"' . htmlentities($operation['status']) . '",';
+              echo '"' . htmlentities($operation['created_at']) . '",';
+
+              if($operation['may_cancel']){
+                $may_cancel = "true";
+                echo '"' . htmlentities($may_cancel) . '",';
+
+                echo '"';
+                  echo "<a href='#' onclick=deleteOperation('".$operation['id']."')> <i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i> </a>";
+                echo '"';
+              }
+                
+              else{
+                $may_cancel = "false";
+                echo '"' . htmlentities($may_cancel) . '",';
+                echo '" ';
+                echo ' "';
+              }
               
-            else{
-              $may_cancel = "false";
-              echo '"' . htmlentities($may_cancel) . '",';
-              echo '" ';
-              echo ' "';
+              echo " ]";
+          
             }
-            
-            echo " ]";
-        
+          
           }
-        
+
         }
+        
         echo " ]}";
       }
       else {

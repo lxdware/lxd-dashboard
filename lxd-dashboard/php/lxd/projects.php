@@ -197,43 +197,47 @@ if (isset($_SESSION['username'])) {
         $i = 0;
         echo '{ "data": [';
       
-        foreach ($projects as $project_data){
+        if ($results['status_code'] == "200"){
 
-          $features_images = (isset($project_data['config']['features.images'])) ? htmlentities($project_data['config']['features.images']) : "true";
-          $features_networks = (isset($project_data['config']['features.networks'])) ? htmlentities($project_data['config']['features.networks']) : "false";
-          $features_profiles = (isset($project_data['config']['features.profiles'])) ? htmlentities($project_data['config']['features.profiles']) : "true";
-          $features_storage_volumes = (isset($project_data['config']['features.storage.volumes'])) ? htmlentities($project_data['config']['features.storage.volumes']) : "true";
-      
-          if ($i > 0){
-            echo ",";
+          foreach ($projects as $project_data){
+
+            $features_images = (isset($project_data['config']['features.images'])) ? htmlentities($project_data['config']['features.images']) : "true";
+            $features_networks = (isset($project_data['config']['features.networks'])) ? htmlentities($project_data['config']['features.networks']) : "false";
+            $features_profiles = (isset($project_data['config']['features.profiles'])) ? htmlentities($project_data['config']['features.profiles']) : "true";
+            $features_storage_volumes = (isset($project_data['config']['features.storage.volumes'])) ? htmlentities($project_data['config']['features.storage.volumes']) : "true";
+        
+            if ($i > 0){
+              echo ",";
+            }
+            $i++;
+        
+            echo "[ ";
+            echo '"';
+            echo "<a href='remotes-single.html?remote=".$remote."&project=".$project_data['name'] ."'><i class='fas fa-chart-bar fa-lg' style='color:#4e73df'></i> </a>";
+            echo '",';
+        
+            echo '"';
+            echo "<a href='remotes-single.html?remote=".$remote."&project=".$project_data['name'] ."'> ".htmlentities($project_data['name']) ."</a>";
+            echo '",';
+        
+            echo '"' . htmlentities($project_data['description']) . '",';
+            echo '"' . $features_images . '",';
+            echo '"' . $features_networks . '",';
+            echo '"' . $features_profiles . '",';
+            echo '"' . $features_storage_volumes . '",';
+        
+            echo '"';
+            echo "<a href='#' onclick=loadProjectJson('".$project_data['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
+            echo " &nbsp ";
+            echo "<a href='#' onclick=loadRenameProject('".$project_data['name']."')><i class='fas fa-tag fa-lg' style='color:#ddd' title='Rename' aria-hidden='true'></i></a>";
+            echo " &nbsp ";
+            echo "<a href='#' onclick=deleteProject('".$project_data['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
+            echo '"';
+        
+            echo " ]";
+        
           }
-          $i++;
-      
-          echo "[ ";
-          echo '"';
-          echo "<a href='remotes-single.html?remote=".$remote."&project=".$project_data['name'] ."'><i class='fas fa-chart-bar fa-lg' style='color:#4e73df'></i> </a>";
-          echo '",';
-      
-          echo '"';
-          echo "<a href='remotes-single.html?remote=".$remote."&project=".$project_data['name'] ."'> ".htmlentities($project_data['name']) ."</a>";
-          echo '",';
-      
-          echo '"' . htmlentities($project_data['description']) . '",';
-          echo '"' . $features_images . '",';
-          echo '"' . $features_networks . '",';
-          echo '"' . $features_profiles . '",';
-          echo '"' . $features_storage_volumes . '",';
-      
-          echo '"';
-          echo "<a href='#' onclick=loadProjectJson('".$project_data['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
-          echo " &nbsp ";
-          echo "<a href='#' onclick=loadRenameProject('".$project_data['name']."')><i class='fas fa-tag fa-lg' style='color:#ddd' title='Rename' aria-hidden='true'></i></a>";
-          echo " &nbsp ";
-          echo "<a href='#' onclick=deleteProject('".$project_data['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
-          echo '"';
-      
-          echo " ]";
-      
+
         }
       
         echo " ]}";

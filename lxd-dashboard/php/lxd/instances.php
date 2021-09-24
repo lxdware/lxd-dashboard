@@ -444,131 +444,135 @@ if (isset($_SESSION['username'])) {
         $i = 0;
         echo '{ "data": [';
 
-        foreach ($instance_api_data as $instance_data){
+        if ($results['status_code'] == "200"){
 
-          if ($instance_data['name'] == "")
-            continue;
+          foreach ($instance_api_data as $instance_data){
 
-          if ($i > 0){
-            echo ",";
-          }
-          $i++;
+            if ($instance_data['name'] == "")
+              continue;
 
-          echo "[ ";
-          if ($instance_data['status'] == "Running"){
+            if ($i > 0){
+              echo ",";
+            }
+            $i++;
+
+            echo "[ ";
+            if ($instance_data['status'] == "Running"){
+              echo '"';
+              echo "<a href='instances-single.html?instance=".$instance_data['name']."&remote=".$remote."&project=".$project."'><i class='fas fa-cube fa-lg' style='color:#4e73df'></i> </a>";
+              echo '",';
+
+              echo '"';
+              echo "<a href='instances-single.html?instance=".$instance_data['name']."&remote=".$remote."&project=".$project."'> ".htmlentities($instance_data['name'])."</a>";
+              echo '",';
+            }
+            else {
+              echo '"';
+              echo "<a href='instances-single.html?instance=".$instance_data['name']."&remote=".$remote."&project=".$project."'><i class='fas fa-cube fa-lg' style='color:#ddd'></i> </a>";
+              echo '",';
+
+              echo '"';
+              echo "<a href='instances-single.html?instance=".$instance_data['name']."&remote=".$remote."&project=".$project."'> ".htmlentities($instance_data['name'])."</a>";
+              echo '",';
+            }
+          
             echo '"';
-            echo "<a href='instances-single.html?instance=".$instance_data['name']."&remote=".$remote."&project=".$project."'><i class='fas fa-cube fa-lg' style='color:#4e73df'></i> </a>";
+            if (isset($instance_data['config']['image.os']))
+              echo htmlentities($instance_data['config']['image.os']);
+            else 
+              echo "";
             echo '",';
 
-            echo '"';
-            echo "<a href='instances-single.html?instance=".$instance_data['name']."&remote=".$remote."&project=".$project."'> ".htmlentities($instance_data['name'])."</a>";
-            echo '",';
-          }
-          else {
-            echo '"';
-            echo "<a href='instances-single.html?instance=".$instance_data['name']."&remote=".$remote."&project=".$project."'><i class='fas fa-cube fa-lg' style='color:#ddd'></i> </a>";
-            echo '",';
+            echo '"' . htmlentities($instance_data['location']) . '",';
 
+            //IPv4
             echo '"';
-            echo "<a href='instances-single.html?instance=".$instance_data['name']."&remote=".$remote."&project=".$project."'> ".htmlentities($instance_data['name'])."</a>";
-            echo '",';
-          }
-        
-          echo '"';
-          if (isset($instance_data['config']['image.os']))
-            echo htmlentities($instance_data['config']['image.os']);
-          else 
-            echo "";
-          echo '",';
-
-          echo '"' . htmlentities($instance_data['location']) . '",';
-
-          //IPv4
-          echo '"';
-          if (isset($instance_data['state']['network'])){
-            foreach ($instance_data['state']['network'] as $nic => $nic_properties){
-              foreach ($nic_properties['addresses'] as $nic_address){
-                if ($nic_address['family'] == "inet" && $nic_address['scope'] == "global"){
-                  echo htmlentities($nic_address['address']) . " (" . htmlentities($nic) . ")<br />";
+            if (isset($instance_data['state']['network'])){
+              foreach ($instance_data['state']['network'] as $nic => $nic_properties){
+                foreach ($nic_properties['addresses'] as $nic_address){
+                  if ($nic_address['family'] == "inet" && $nic_address['scope'] == "global"){
+                    echo htmlentities($nic_address['address']) . " (" . htmlentities($nic) . ")<br />";
+                  }
                 }
               }
             }
-          }
-          echo '",';
+            echo '",';
 
-          //IPv6
-          echo '"';
-          if (isset($instance_data['state']['network'])){
-            foreach ($instance_data['state']['network'] as $nic => $nic_properties){
-              foreach ($nic_properties['addresses'] as $nic_address){
-                if ($nic_address['family'] == "inet6" && $nic_address['scope'] == "global"){
-                  echo htmlentities($nic_address['address']) . " (" . htmlentities($nic) . ")<br />";
+            //IPv6
+            echo '"';
+            if (isset($instance_data['state']['network'])){
+              foreach ($instance_data['state']['network'] as $nic => $nic_properties){
+                foreach ($nic_properties['addresses'] as $nic_address){
+                  if ($nic_address['family'] == "inet6" && $nic_address['scope'] == "global"){
+                    echo htmlentities($nic_address['address']) . " (" . htmlentities($nic) . ")<br />";
+                  }
                 }
               }
             }
-          }
-          echo '",';
+            echo '",';
 
-          echo '"' . htmlentities($instance_data['type']) . '",';
+            echo '"' . htmlentities($instance_data['type']) . '",';
 
-          //Convert the memory usage to an appropriate unit
-          if ($instance_data['state']['memory']['usage'] < 1073741824){
-            $memory = number_format($instance_data['state']['memory']['usage']/1024/1024, 2);
-            $memory_unit = "MB";
-          }
-          else {
-            $memory = number_format($instance_data['state']['memory']['usage']/1024/1024/1024, 2);
-            $memory_unit = "GB";
-          }
+            //Convert the memory usage to an appropriate unit
+            if ($instance_data['state']['memory']['usage'] < 1073741824){
+              $memory = number_format($instance_data['state']['memory']['usage']/1024/1024, 2);
+              $memory_unit = "MB";
+            }
+            else {
+              $memory = number_format($instance_data['state']['memory']['usage']/1024/1024/1024, 2);
+              $memory_unit = "GB";
+            }
 
-          echo '"' . htmlentities($memory) . " " . $memory_unit . '",';
+            echo '"' . htmlentities($memory) . " " . $memory_unit . '",';
 
-          //When first created, the root disk usage is not set for brief second causing a PHP Notice in error log for Undefined index: root
-          if (isset($instance_data['state']['disk']['root']['usage'])){
-            //Convert the storage usage to an approprate unit
-            if ($instance_data['state']['disk']['root']['usage']  < 1073741824){
-              $disk_total = number_format($instance_data['state']['disk']['root']['usage']/1024/1024,2);
+            //When first created, the root disk usage is not set for brief second causing a PHP Notice in error log for Undefined index: root
+            if (isset($instance_data['state']['disk']['root']['usage'])){
+              //Convert the storage usage to an approprate unit
+              if ($instance_data['state']['disk']['root']['usage']  < 1073741824){
+                $disk_total = number_format($instance_data['state']['disk']['root']['usage']/1024/1024,2);
+                $disk_unit = "MB";
+              }
+              if ($instance_data['state']['disk']['root']['usage']  >= 1073741824 && $instance_data['state']['disk']['root']['usage'] < 1099511627776) {
+                $disk_total = number_format($instance_data['state']['disk']['root']['usage']/1024/1024/1024,2);
+                $disk_unit = "GB";
+              }
+              if ($instance_data['state']['disk']['root']['usage'] >= 1099511627776){
+                $disk_total = number_format($instance_data['state']['disk']['root']['usage']/1024/1024/1024/1024,2);
+                $disk_unit = "TB";
+              }
+            }
+            else {
+              $disk_total = 0.00;
               $disk_unit = "MB";
             }
-            if ($instance_data['state']['disk']['root']['usage']  >= 1073741824 && $instance_data['state']['disk']['root']['usage'] < 1099511627776) {
-              $disk_total = number_format($instance_data['state']['disk']['root']['usage']/1024/1024/1024,2);
-              $disk_unit = "GB";
+
+            echo '"' . htmlentities($disk_total) . " " . $disk_unit . '",';
+            echo '"' . htmlentities($instance_data['status']) . '",';
+
+            switch ($instance_data['status']) {
+              case "Running":
+                echo '"';
+                echo "<a href='#' onclick=stopInstance('".$instance_data['name']."')> <i class='fas fa-stop fa-lg' style='color:#ddd' title='Stop' aria-hidden='true'></i> </a>";
+                echo '"';
+                break;
+              case "Frozen":
+                echo '"';
+                echo "<a href='#' onclick=unfreezeInstance('".$instance_data['name']."')> <i class='fas fa-pause fa-lg' style='color:#ddd' title='Unfreeze' aria-hidden='true'></i> </a>";
+                echo '"';
+                break;
+              case "Stopped":
+                echo '"';
+                echo "<a href='#' onclick=startInstance('".$instance_data['name']."')> <i class='fas fa-play fa-lg' style='color:#ddd' title='Start' aria-hidden='true'></i> </a>";
+                echo '"';
+                break;
+              default:
+                echo '" "';
             }
-            if ($instance_data['state']['disk']['root']['usage'] >= 1099511627776){
-              $disk_total = number_format($instance_data['state']['disk']['root']['usage']/1024/1024/1024/1024,2);
-              $disk_unit = "TB";
-            }
-          }
-          else {
-            $disk_total = 0.00;
-            $disk_unit = "MB";
-          }
+            
+            echo " ]";
 
-          echo '"' . htmlentities($disk_total) . " " . $disk_unit . '",';
-          echo '"' . htmlentities($instance_data['status']) . '",';
-
-          switch ($instance_data['status']) {
-            case "Running":
-              echo '"';
-              echo "<a href='#' onclick=stopInstance('".$instance_data['name']."')> <i class='fas fa-stop fa-lg' style='color:#ddd' title='Stop' aria-hidden='true'></i> </a>";
-              echo '"';
-              break;
-            case "Frozen":
-              echo '"';
-              echo "<a href='#' onclick=unfreezeInstance('".$instance_data['name']."')> <i class='fas fa-pause fa-lg' style='color:#ddd' title='Unfreeze' aria-hidden='true'></i> </a>";
-              echo '"';
-              break;
-            case "Stopped":
-              echo '"';
-              echo "<a href='#' onclick=startInstance('".$instance_data['name']."')> <i class='fas fa-play fa-lg' style='color:#ddd' title='Start' aria-hidden='true'></i> </a>";
-              echo '"';
-              break;
-            default:
-              echo '" "';
           }
-          
-          echo " ]";
-
+        
         }
 
         echo " ]}";

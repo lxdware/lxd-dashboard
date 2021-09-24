@@ -93,35 +93,39 @@ if (isset($_SESSION['username'])) {
       
         $i = 0;
         echo '{ "data": [';
+
+        if ($results['status_code'] == "200"){
       
-        foreach ($images as $image){
+          foreach ($images as $image){
       
-          if ($image['fingerprint'] == "")
-          continue;
+            if ($image['fingerprint'] == "")
+            continue;
           
-          if ($i > 0){
-            echo ",";
+            if ($i > 0){
+              echo ",";
+            }
+            $i++;
+      
+            echo "[ ";
+          
+            echo '"' . "<i class='fas fa-box-open fa-lg' style='color:#4e73df'></i>" . '",';
+            echo '"' . htmlentities($image['properties']['description']) . '",';
+            echo '"' . htmlentities($image['fingerprint']) . '",';
+            echo '"' . htmlentities($image['type']) . '",';
+            echo '"' . htmlentities(number_format($image['size'] / 1048576, 2)) . ' MB",';
+      
+            echo '"';
+            echo "<a href='#' onclick=refreshImage('".$image['fingerprint']."')><i class='fas fa-sync-alt fa-lg' style='color:#ddd' title='Refresh' aria-hidden='true'></i></a>";
+            echo " &nbsp ";          
+            echo "<a href='#' onclick=loadImageJson('".$image['fingerprint']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
+            echo " &nbsp ";
+            echo "<a href='#' onclick=deleteImage('".$image['fingerprint']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";  
+            echo '"';
+      
+            echo " ]";
+      
           }
-          $i++;
-      
-          echo "[ ";
-          
-          echo '"' . "<i class='fas fa-box-open fa-lg' style='color:#4e73df'></i>" . '",';
-          echo '"' . htmlentities($image['properties']['description']) . '",';
-          echo '"' . htmlentities($image['fingerprint']) . '",';
-          echo '"' . htmlentities($image['type']) . '",';
-          echo '"' . htmlentities(number_format($image['size'] / 1048576, 2)) . ' MB",';
-      
-          echo '"';
-          echo "<a href='#' onclick=refreshImage('".$image['fingerprint']."')><i class='fas fa-sync-alt fa-lg' style='color:#ddd' title='Refresh' aria-hidden='true'></i></a>";
-          echo " &nbsp ";          
-          echo "<a href='#' onclick=loadImageJson('".$image['fingerprint']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
-          echo " &nbsp ";
-          echo "<a href='#' onclick=deleteImage('".$image['fingerprint']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";  
-          echo '"';
-      
-          echo " ]";
-      
+
         }
       
         echo " ]}";

@@ -359,58 +359,62 @@ if (isset($_SESSION['username'])) {
         $i = 0;
         echo '{ "data": [';
 
-        foreach ($network_acls as $network_acl){
-          $network_acl_name = (isset($network_acl['name'])) ? htmlentities($network_acl['name']) : "";
-          
-          if ($network_acl_name == "")
-            continue;
+        if ($results['status_code'] == "200"){
 
-          if ($i > 0){
-            echo ",";
-          }
-          $i++;
+          foreach ($network_acls as $network_acl){
+            $network_acl_name = (isset($network_acl['name'])) ? htmlentities($network_acl['name']) : "";
+            
+            if ($network_acl_name == "")
+              continue;
 
-          echo "[ ";
- 
-          echo '"';
-          echo "<i class='fas fa-shield-alt fa-lg' style='color:#4e73df'></i>";
-          echo '",';
-
-          echo '"';
-          echo $network_acl_name;
-          echo '",';
-
-          echo '"' . htmlentities($network_acl['description']) . '",';
-
-          echo '"';
-          echo "<a href='network-acls-ingress.html?network_acl=".$network_acl['name']."&remote=".$remote."&project=".$project."'>".count($network_acl['ingress'])."</a>";
-          echo '",';
-    
-          echo '"';
-          echo "<a href='network-acls-egress.html?network_acl=".$network_acl['name']."&remote=".$remote."&project=".$project."'>".count($network_acl['egress'])."</a>";
-          echo '",';
-          
-          $used_by = "";
-          $ii = 0;
-          foreach($network_acl['used_by'] as $network){
-            if ($ii > 0){
-              $used_by .= ", ";
+            if ($i > 0){
+              echo ",";
             }
-            $ii++;
-            $used_by .= $network;
+            $i++;
+
+            echo "[ ";
+  
+            echo '"';
+            echo "<i class='fas fa-shield-alt fa-lg' style='color:#4e73df'></i>";
+            echo '",';
+
+            echo '"';
+            echo $network_acl_name;
+            echo '",';
+
+            echo '"' . htmlentities($network_acl['description']) . '",';
+
+            echo '"';
+            echo "<a href='network-acls-ingress.html?network_acl=".$network_acl['name']."&remote=".$remote."&project=".$project."'>".count($network_acl['ingress'])."</a>";
+            echo '",';
+      
+            echo '"';
+            echo "<a href='network-acls-egress.html?network_acl=".$network_acl['name']."&remote=".$remote."&project=".$project."'>".count($network_acl['egress'])."</a>";
+            echo '",';
+            
+            $used_by = "";
+            $ii = 0;
+            foreach($network_acl['used_by'] as $network){
+              if ($ii > 0){
+                $used_by .= ", ";
+              }
+              $ii++;
+              $used_by .= $network;
+            }
+
+            echo '"' . htmlentities($used_by) . '",';
+
+            echo '"';
+            echo "<a href='#' onclick=loadNetworkAclJson('".$network_acl['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
+            echo " &nbsp ";
+            echo "<a href='#' onclick=loadRenameNetworkAcl('".$network_acl['name']."')><i class='fas fa-tag fa-lg' style='color:#ddd' title='Rename' aria-hidden='true'></i></a>";
+            echo " &nbsp ";
+            echo "<a href='#' onclick=deleteNetworkAcl('".$network_acl['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
+            echo '"';
+
+            echo " ]";
+
           }
-
-          echo '"' . htmlentities($used_by) . '",';
-
-          echo '"';
-          echo "<a href='#' onclick=loadNetworkAclJson('".$network_acl['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
-          echo " &nbsp ";
-          echo "<a href='#' onclick=loadRenameNetworkAcl('".$network_acl['name']."')><i class='fas fa-tag fa-lg' style='color:#ddd' title='Rename' aria-hidden='true'></i></a>";
-          echo " &nbsp ";
-          echo "<a href='#' onclick=deleteNetworkAcl('".$network_acl['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
-          echo '"';
-
-          echo " ]";
 
         }
 

@@ -1,3 +1,10 @@
+# v2.3.0
+- Feature: Added PHP configuration for creating Networks and Storage Pools using JSON in clustered hosts
+- Feature: Utilized local web browser storage to save the state of the sidebar toggle between pages and page reloads
+- Improvement: Added additional 200 status_code checks on API calls for lists of LXD items
+- Improvement: Disabled container-only and vm-only instance configuration options for the non-selected instance type
+- Bug Fix: Now updates instance memory and cpu limits on container-only and vm-only options when virtual-machine selected
+
 # v2.2.0
 - Feature: Additional configuration properties have been added to the web form for creating Storage Pools and Storage Volumes, including clustered servers
 - Feature: Additional configuration properties have been added to the web form for creating Projects

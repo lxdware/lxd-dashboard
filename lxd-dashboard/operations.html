@@ -59,7 +59,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
       <!-- Sidebar Toggler (Sidebar) -->
       <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        <button class="rounded-circle border-0" id="sidebarToggle" onclick="setSidebarToggleValue()"></button>
       </div>
     </ul>
     <!-- End of Sidebar -->
@@ -386,6 +386,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     });
   }
 
+  function setSidebarToggleValue(){
+    sidebarState = localStorage.getItem('sidebarState');
+    if (sidebarState == "collapsed"){
+      localStorage.setItem('sidebarState','expanded');
+    }
+    else {
+      localStorage.setItem('sidebarState','collapsed');
+    }
+  }
+  
+  function applySidebarToggleValue() {
+    sidebarState = localStorage.getItem('sidebarState');
+    if (sidebarState == "collapsed"){
+      $("body").toggleClass("sidebar-toggled"), 
+      $(".sidebar").toggleClass("toggled"), 
+      $(".sidebar").hasClass("toggled") && $(".sidebar .collapse").collapse("hide")
+    }
+  }
+
+  applySidebarToggleValue();
+  
   $(document).ready(function(){
 
     //Check Authorization

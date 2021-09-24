@@ -144,42 +144,46 @@ if (isset($_SESSION['username'])) {
         $i = 0;
         echo '{ "data": [';
 
-        foreach ($storage_volumes as $storage_volume){
-          
-          if ($type == "custom" && $storage_volume['type'] != $type)
-            continue;
+        if ($results['status_code'] == "200"){
 
-          if ($i > 0){
-            echo ",";
+          foreach ($storage_volumes as $storage_volume){
+            
+            if ($type == "custom" && $storage_volume['type'] != $type)
+              continue;
+
+            if ($i > 0){
+              echo ",";
+            }
+            $i++;
+
+            echo "[ ";
+            echo '"';
+            echo "<i class='fas fa-hdd fa-lg' style='color:#4e73df'></i>";
+            echo '",';
+            echo '"' . htmlentities($storage_volume['name']) . '",';
+            echo '"' . htmlentities($storage_volume['type']) . '",';
+            echo '"' . htmlentities($storage_volume['location']) . '",';
+            echo '"' . htmlentities($storage_volume['content_type']) . '",';
+
+            echo '"';
+            $ii = 0;
+            foreach ($storage_volume['used_by'] as $item){
+              if ($ii >= 1)
+                echo ", ";
+              $ii++;
+              echo htmlentities($item);
+            }
+            echo '",';
+
+            echo '"';
+            echo "<a href='#' onclick=loadStorageVolumeJson('".$storage_volume['type']."/".$storage_volume['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
+            echo " &nbsp ";       
+            echo "<a href='#' onclick=deleteStorageVolume('".$storage_volume['type']."/".$storage_volume['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
+            echo '"';
+
+            echo " ]";
+
           }
-          $i++;
-
-          echo "[ ";
-          echo '"';
-          echo "<i class='fas fa-hdd fa-lg' style='color:#4e73df'></i>";
-          echo '",';
-          echo '"' . htmlentities($storage_volume['name']) . '",';
-          echo '"' . htmlentities($storage_volume['type']) . '",';
-          echo '"' . htmlentities($storage_volume['location']) . '",';
-          echo '"' . htmlentities($storage_volume['content_type']) . '",';
-
-          echo '"';
-          $ii = 0;
-          foreach ($storage_volume['used_by'] as $item){
-            if ($ii >= 1)
-              echo ", ";
-            $ii++;
-            echo htmlentities($item);
-          }
-          echo '",';
-
-          echo '"';
-          echo "<a href='#' onclick=loadStorageVolumeJson('".$storage_volume['type']."/".$storage_volume['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
-          echo " &nbsp ";       
-          echo "<a href='#' onclick=deleteStorageVolume('".$storage_volume['type']."/".$storage_volume['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
-          echo '"';
-
-          echo " ]";
 
         }
 
