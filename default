@@ -2,7 +2,7 @@ server {
 	listen 80 default_server;
 	listen [::]:80 default_server;
 	root /var/www/html/lxd-dashboard;
-	index index.html;
+	index index.php index.html;
 	server_name _;
 
 	location / {
