@@ -475,7 +475,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                   <div class="card-body">
                     <strong>System Vendor</strong>: <span id="systemVendor"></span> <br />
                     <strong>System Product</strong>: <span id="systemProduct"></span> <br />
-                    <strong>Total Memory</strong>: <span id="memoryTotal"></span><span id="memoryUnit"></span><br />
+                    <strong>Total Memory</strong>: <span id="memoryTotal"></span> <span id="memoryUnit"></span><br />
                     <br />
                     <strong>CPU Information</strong>:
                     <ul>
@@ -627,6 +627,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
   function reloadPageContent() {
 
+    clearTimeout(pageReloadTimeout);
+
     //Check Authorization
     $.get("./backend/aaa/authentication.php?action=validateAuthentication", function (data) {
       operationData = JSON.parse(data);
@@ -731,6 +733,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       $("#totalStoragePools").text(stats.totalStoragePools);
     });
 
+    pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, 7000);
+
   }
 
   function loadPageContent(){
@@ -769,11 +773,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           tableRow += '<td>'+element.type+'</td>';
           if (element.size < 1099511627776){
             diskTotal = Math.round(element.size/1024/1024/1024 * 100) / 100;
-            diskUnit = "GB";
+            diskUnit = "GiB";
           }
           else {
             diskTotal = Math.round(element.size/1024/1024/1024/1024 * 100) / 100;
-            diskUnit = "TB";
+            diskUnit = "TiB";
           }
           tableRow += '<td>'+diskTotal + ' ' +diskUnit +'</td>';
           tableRow += '</tr>';
@@ -901,8 +905,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     //Check for any running operations
     operationTimeout = setTimeout(() => { operationStatusCheck(); }, 1000);
 
-    //Set the page content to reload in 7 seconds
-    setInterval(() => { reloadPageContent(); }, 7000);
+    //Reload page content in 7 seconds
+    pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, 7000);
   }
 
   function setSidebarToggleValue(){

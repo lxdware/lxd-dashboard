@@ -442,23 +442,10 @@ if (isset($_SESSION['username'])) {
           }
           
           $url = $base_url . "/1.0/instances/" . $instance . "/backups/" . $name . "/export?project=" . $project;
-          $fp = fopen($file, "w+");
 
-          $ch = curl_init();
-          curl_setopt($ch, CURLOPT_URL, $url);
-          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-          curl_setopt($ch, CURLOPT_FILE, $fp);
-          curl_setopt($ch, CURLOPT_SSLCERT, $cert);
-          curl_setopt($ch, CURLOPT_SSLKEY, $key);
-          curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
-          curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-          curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
-          curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-          $results = curl_exec($ch);
-          curl_close($ch);
-          fclose($fp);
+          //Calling a script to execute the export. This will run in a seperate process so that it doesn't block other PHP requests from completing
+          $results = exec("php ./scripts/curl-export-file.php $file $url $cert $key > /dev/null &");
+
           if ($results == false){
             $results = '{"status": "Bad Request", "status_code": 400, "metadata": {"err": "Unable to execute action on remote host", "status_code": "400"}}';
           }
@@ -576,11 +563,11 @@ if (isset($_SESSION['username'])) {
             //Convert the memory usage to an appropriate unit
             if ($instance_data['state']['memory']['usage'] < 1073741824){
               $memory = number_format($instance_data['state']['memory']['usage']/1024/1024, 2);
-              $memory_unit = "MB";
+              $memory_unit = "MiB";
             }
             else {
               $memory = number_format($instance_data['state']['memory']['usage']/1024/1024/1024, 2);
-              $memory_unit = "GB";
+              $memory_unit = "GiB";
             }
 
             echo '"' . htmlentities($memory) . " " . $memory_unit . '",';
@@ -590,20 +577,20 @@ if (isset($_SESSION['username'])) {
               //Convert the storage usage to an approprate unit
               if ($instance_data['state']['disk']['root']['usage']  < 1073741824){
                 $disk_total = number_format($instance_data['state']['disk']['root']['usage']/1024/1024,2);
-                $disk_unit = "MB";
+                $disk_unit = "MiB";
               }
               if ($instance_data['state']['disk']['root']['usage']  >= 1073741824 && $instance_data['state']['disk']['root']['usage'] < 1099511627776) {
                 $disk_total = number_format($instance_data['state']['disk']['root']['usage']/1024/1024/1024,2);
-                $disk_unit = "GB";
+                $disk_unit = "GiB";
               }
               if ($instance_data['state']['disk']['root']['usage'] >= 1099511627776){
                 $disk_total = number_format($instance_data['state']['disk']['root']['usage']/1024/1024/1024/1024,2);
-                $disk_unit = "TB";
+                $disk_unit = "TiB";
               }
             }
             else {
               $disk_total = 0.00;
-              $disk_unit = "MB";
+              $disk_unit = "MiB";
             }
 
             echo '"' . htmlentities($disk_total) . " " . $disk_unit . '",';

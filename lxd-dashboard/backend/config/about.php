@@ -24,6 +24,18 @@ if (!isset($_SESSION)) {
 
 
 if (isset($_SESSION['username'])) {
+
+  //Include db_config.php file
+  include_once('/var/lxdware/data/db_config.php');
+
+  switch (DB_TYPE) {
+    case "sqlite":
+      $database_type = "SQLite";
+      break;
+    case "mysql":
+      $database_type = "MySQL";
+      break;
+  } 
 ?>
 
 <!DOCTYPE html>
@@ -31,10 +43,13 @@ if (isset($_SESSION['username'])) {
 <body class="">
   <p>This open source LXD dashboard is developed by LXDWARE and provides a web-based user interface capable of managing multiple LXD servers from a single location.</p>
   <p>
-    <strong>Version</strong>: <span id="versionNumber">v3.0.0</span> <br />
+    <strong>Version</strong>: <span id="versionNumber">v3.1.0</span> <br />
     <strong>License</strong>: AGPL-3.0 <br />
     <strong>URL</strong>: https://lxdware.com <br />
-</p>
+  </p>
+  <p>
+  <strong>Database Type</strong>: <?php echo $database_type ?>
+  </p>
   
   <div class="text-center">
     <p class="text-primary" id="updateMessage"></p>

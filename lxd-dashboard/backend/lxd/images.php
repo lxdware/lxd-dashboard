@@ -112,7 +112,7 @@ if (isset($_SESSION['username'])) {
             echo '"' . htmlentities($image['properties']['description']) . '",';
             echo '"' . htmlentities($image['fingerprint']) . '",';
             echo '"' . htmlentities($image['type']) . '",';
-            echo '"' . htmlentities(number_format($image['size'] / 1048576, 2)) . ' MB",';
+            echo '"' . htmlentities(number_format($image['size'] / 1048576, 2)) . ' MiB",';
       
             echo '"';
             echo "<a href='#' onclick=refreshImage('".$image['fingerprint']."')><i class='fas fa-sync-alt fa-lg' style='color:#ddd' title='Refresh' aria-hidden='true'></i></a>";

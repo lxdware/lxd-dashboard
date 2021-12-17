@@ -515,22 +515,22 @@ if (isset($_SESSION['username'])) {
 
       //Format memory output
       if ($memory < 1073741824){
-        $memory = number_format($memory/1024/1024, 2); //total amount of memory used in MB
-        $memory_unit = "MB";
+        $memory = number_format($memory/1024/1024, 2); //total amount of memory used in MiB
+        $memory_unit = "MiB";
       }
       else {
-        $memory = number_format($memory/1024/1024/1024, 2); //total amount of memory used in GB
-        $memory_unit = "GB";
+        $memory = number_format($memory/1024/1024/1024, 2); //total amount of memory used in GiB
+        $memory_unit = "GiB";
       }
 
       //Format swap memory output
       if ($swap < 1073741824){
-        $swap = number_format($swap/1024/1024, 2); //total amount of swap memory used in MB
-        $swap_unit = "MB";
+        $swap = number_format($swap/1024/1024, 2); //total amount of swap memory used in MiB
+        $swap_unit = "MiB";
       }
       else {
-        $swap = number_format($swap/1024/1024/1024, 2); //total amount of swap memory used in GB
-        $swap_unit = "GB";
+        $swap = number_format($swap/1024/1024/1024, 2); //total amount of swap memory used in GiB
+        $swap_unit = "GiB";
       }
 
 
@@ -655,6 +655,8 @@ if (isset($_SESSION['username'])) {
           $hostname = retrieveHostName($remote);
           $file = '/var/lxdware/backups/' . $hostname . '/' . $project . '/' . $instance . '/' . $instance_backup['name'];
           $file_exists = false;
+          $file_size = "";
+          $unit_size = "";
 
           if ($i > 0){
             echo ",";
@@ -671,20 +673,23 @@ if (isset($_SESSION['username'])) {
             $unit_size = "bytes";
             if ($file_size >= 1024){
               $file_size = $file_size / 1024;
-              $unit_size = "KB";
+              $unit_size = "KiB";
             }
             if ($file_size >= 1024){
               $file_size = $file_size / 1024;
-              $unit_size = "MB";
+              $unit_size = "MiB";
             }
             if ($file_size >= 1024){
               $file_size = $file_size / 1024;
-              $unit_size = "GB";
+              $unit_size = "GiB";
             }
             if ($file_size >= 1024){
               $file_size = $file_size / 1024;
-              $unit_size = "TB";
+              $unit_size = "TiB";
             }
+
+            $file_size = (number_format($file_size,2));
+
             echo '"' . "<a href='./backend/lxd/virtual-machines.php?remote=".$remote."&project=".$project."&instance=".$instance."&name=".$instance_backup['name']."&action=downloadInstanceExportFile'>".htmlentities(basename($file))."</a>" . '",';
           }
           else{
@@ -710,13 +715,17 @@ if (isset($_SESSION['username'])) {
           //echo '"' . htmlentities($instance_backup['expires_at']) . '",';
           echo '"' . htmlentities($instance_only) . '",';
           echo '"' . htmlentities($optimized_storage) . '",';
+          echo '"' . htmlentities($file_size . " " . $unit_size) . '",';
 
           echo '"';
-            //check to see if file does not exist and also make sure backup operation isn't running for export action
-            if (!$file_exists && !in_array($instance_backup['name'], $current_backups)){
+            //check to see if file exists for export action
+            if ($file_exists){
+              echo "<i class='fas fa-file-export fa-lg' style='color:#f1f1f1' title='Export to local file' aria-hidden='true'></i>";
+            } 
+            else {
               echo "<a href='#' onclick=exportInstanceBackup('".$instance_backup['name']."')><i class='fas fa-file-export fa-lg' style='color:#ddd' title='Export to local file' aria-hidden='true'></i></a>";
-              echo " &nbsp ";
             }
+            echo " &nbsp ";
           
             echo "<a href='#' onclick=deleteInstanceBackup('".$instance_backup['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
             
@@ -763,14 +772,14 @@ if (isset($_SESSION['username'])) {
             foreach ($disk_names as $disk_name => $disk_data){
               if ($expanded_device_name == $disk_name){
                 $disk_usage = $disk_data['usage']/1024/1024;
-                $disk_unit = "MB";
+                $disk_unit = "MiB";
                 if ($disk_usage >= 1024){
                   $disk_usage = $disk_usage/1024;
-                  $disk_unit = "GB";
+                  $disk_unit = "GiB";
                 }
                 if ($disk_usage >= 1024){
                   $disk_usage = $disk_usage/1024;
-                  $disk_unit = "TB";
+                  $disk_unit = "TiB";
                 }
                 $disk_usage = number_format($disk_usage,2);
               }
@@ -1159,7 +1168,7 @@ if (isset($_SESSION['username'])) {
 
           echo '"' . htmlentities($snapshot['name']) . '",';
           echo '"' . htmlentities($state) . '",';
-          echo '"' . htmlentities(number_format($snapshot['size']/1024/1024,2)) . "MB" . '",';
+          echo '"' . htmlentities(number_format($snapshot['size']/1024/1024,2)) . " MiB" . '",';
 
           //PHP can't convert milliseconds in ISO8601 format, remove them.
           //LXD version of datetime: 2021-04-28T08:44:22.271358535-04:00

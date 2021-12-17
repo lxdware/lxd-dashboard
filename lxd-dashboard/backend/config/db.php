@@ -32,6 +32,10 @@ function establishDatabaseConnection(){
       $_SESSION['db_type'] = "SQLite";
       $conn = new PDO('sqlite:/var/lxdware/data/sqlite/lxdware.sqlite');
       break;
+    case "mysql":
+      $_SESSION['db_type'] = "MySQL";
+      $conn = new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME, DB_USER, DB_PASSWORD);
+      break;
   }
   
   return $conn;
@@ -47,6 +51,10 @@ function initializeEventsTable(){
 
   if ($_SESSION['db_type'] == "SQLite"){
     $db->exec('CREATE TABLE IF NOT EXISTS lxd_events (id INTEGER PRIMARY KEY AUTOINCREMENT, control TEXT, remote_id INTEGER, project TEXT, object TEXT, status_code INT, message TEXT, hostname TEXT, user_id INT, date DATETIME)');
+  }
+
+  if ($_SESSION['db_type'] == "MySQL"){
+    $db->exec('CREATE TABLE IF NOT EXISTS lxd_events (id INTEGER PRIMARY KEY AUTOINCREMENT, control VARCHAR(255), remote_id INTEGER, project VARCHAR(255), object VARCHAR(255), status_code INT, message VARCHAR(255), hostname VARCHAR(255), user_id INT, date DATE)');
   }
 
   $db = null;
@@ -74,6 +82,10 @@ function initializeHostsTable(){
       
   }
 
+  if ($_SESSION['db_type'] == "MySQL"){
+    $db->exec('CREATE TABLE IF NOT EXISTS lxd_hosts (id INTEGER PRIMARY KEY AUTO_INCREMENT, host VARCHAR(255) NOT NULL, port INTEGER NOT NULL, alias VARCHAR(255), protocol VARCHAR(255), external_host VARCHAR(255), external_port INTEGER, user_id INTEGER)');
+  }
+
   $db = null;
 }
 
@@ -82,6 +94,10 @@ function initializeGroupsRolesMappingTable(){
 
   if ($_SESSION['db_type'] == "SQLite"){
     $db->exec('CREATE TABLE IF NOT EXISTS lxd_groups_roles_mapping (id INTEGER PRIMARY KEY AUTOINCREMENT, group_id INTEGER NOT NULL, role_id INTEGER NOT NULL)');
+  }
+
+  if ($_SESSION['db_type'] == "MySQL"){
+    $db->exec('CREATE TABLE IF NOT EXISTS lxd_groups_roles_mapping (id INTEGER PRIMARY KEY AUTO_INCREMENT, group_id INTEGER NOT NULL, role_id INTEGER NOT NULL)');
   }
 
   //Map admin group to ADMIN role
@@ -129,7 +145,11 @@ function initializeGroupsTable(){
   if ($_SESSION['db_type'] == "SQLite"){
     $db->exec('CREATE TABLE IF NOT EXISTS lxd_groups (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, description TEXT)');
   }
-  
+
+  if ($_SESSION['db_type'] == "MySQL"){
+    $db->exec('CREATE TABLE IF NOT EXISTS lxd_groups (id INTEGER PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, description VARCHAR(255))');
+  }
+
   $adminGroupExists = false;
   $operatorGroupExists = false;
   $userGroupExists = false;
@@ -174,6 +194,10 @@ function initializeRolesTable(){
 
   if ($_SESSION['db_type'] == "SQLite"){
     $db->exec('CREATE TABLE IF NOT EXISTS lxd_roles (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, description TEXT)');
+  }
+
+  if ($_SESSION['db_type'] == "MySQL"){
+    $db->exec('CREATE TABLE IF NOT EXISTS lxd_roles (id INTEGER PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, description VARCHAR(255))');
   }
 
   //Default Roles
@@ -332,6 +356,10 @@ function initializeSimplestreamsTable(){
       $stmt = $db->query("UPDATE lxd_simplestreams SET user_id = 0");
     }
   }
+
+  if ($_SESSION['db_type'] == "MySQL"){
+    $db->exec('CREATE TABLE IF NOT EXISTS lxd_simplestreams (id INTEGER PRIMARY KEY AUTO_INCREMENT, host VARCHAR(255) NOT NULL, alias VARCHAR(255), protocol VARCHAR(255), user_id INTEGER)');
+  }
   
   $imagesSimplestreamsExists = false;
   $ubuntuSimplestreamsExists = false;
@@ -371,6 +399,10 @@ function initializeUsersGroupsMappingTable(){
   if ($_SESSION['db_type'] == "SQLite"){
     $db->exec('CREATE TABLE IF NOT EXISTS lxd_users_groups_mapping (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, group_id INTEGER NOT NULL)');
   }
+
+  if ($_SESSION['db_type'] == "MySQL"){
+    $db->exec('CREATE TABLE IF NOT EXISTS lxd_users_groups_mapping (id INTEGER PRIMARY KEY AUTO_INCREMENT, user_id INTEGER NOT NULL, group_id INTEGER NOT NULL)');
+  }
   
   $db = null;
 }
@@ -382,6 +414,10 @@ function initializeUsersTable(){
     $db->exec('CREATE TABLE IF NOT EXISTS lxd_users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, first_name TEXT, last_name TEXT, passwd_hash TEXT NOT NULL, email TEXT, type TEXT)');
   }
   
+  if ($_SESSION['db_type'] == "MySQL"){
+    $db->exec('CREATE TABLE IF NOT EXISTS lxd_users (id INTEGER PRIMARY KEY AUTO_INCREMENT, username VARCHAR(255) NOT NULL UNIQUE, first_name VARCHAR(255), last_name VARCHAR(255), passwd_hash VARCHAR(255) NOT NULL, email VARCHAR(255), type VARCHAR(255))');
+  }
+
   $db = null;
 }
 
@@ -940,7 +976,8 @@ function isFirstUser(){
 function retrieveDatabaseTypes(){
 
   $datbase_types = array(
-    'sqlite'
+    'sqlite',
+    'mysql'
   );
 
   return $datbase_types;

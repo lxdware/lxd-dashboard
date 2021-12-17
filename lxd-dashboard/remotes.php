@@ -176,7 +176,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold">
-                    <span class="ml-1">Images</span>
+                    <span class="ml-1">Hosts</span>
                   </h6>
                   <div class="dropdown no-arrow">
                     <a class="dropdown-toggle mr-2" href="#" onclick="reloadPageContent()" title="Refresh" aria-hidden="true">
@@ -525,6 +525,8 @@ function logout(){
 
   function reloadPageContent() {
 
+    clearTimeout(pageReloadTimeout);
+
     //Check Authorization
     $.get("./backend/aaa/authentication.php?action=validateAuthentication", function (data) {
       operationData = JSON.parse(data);
@@ -535,6 +537,8 @@ function logout(){
     });
 
     $('#lxdListTable').DataTable().ajax.reload(null, false);
+
+    pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, 7000);
   }
 
   function loadPageContent(){
@@ -565,8 +569,8 @@ function logout(){
       $("#clientCert").html(data);
     });
 
-    //Set the page content to reload in 7 seconds
-    setInterval(() => { reloadPageContent(); }, 7000);
+    //Reload page content in 7 seconds
+    pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, 7000);
 
   }
 

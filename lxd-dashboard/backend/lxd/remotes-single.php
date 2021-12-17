@@ -267,14 +267,14 @@ if (isset($_SESSION['username'])) {
 
       //Format memory values
       if ($memory_total < 1073741824) {
-        $memory_total = number_format($memory_total/1024/1024, 2); //total amount of memory available in MB
-        $memory_used = number_format($memory_used/1024/1024, 2); //current amount of memory used in MB
-        $memory_unit = "MB";
+        $memory_total = number_format($memory_total/1024/1024, 2); //total amount of memory available in MiB
+        $memory_used = number_format($memory_used/1024/1024, 2); //current amount of memory used in MiB
+        $memory_unit = "MiB";
       }
       else {
-        $memory_total = number_format($memory_total/1024/1024/1024, 2); //total amount of memory available in GB
-        $memory_used = number_format($memory_used/1024/1024/1024, 2); //current amount of memory used in GB
-        $memory_unit = "GB";
+        $memory_total = number_format($memory_total/1024/1024/1024, 2); //total amount of memory available in GiB
+        $memory_used = number_format($memory_used/1024/1024/1024, 2); //current amount of memory used in GiB
+        $memory_unit = "GiB";
       }
       
       $arr['memoryTotal'] = $memory_total;

@@ -933,6 +933,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
   function reloadPageContent() {
 
+    clearTimeout(pageReloadTimeout);
+
     //Check Authorization
     $.get("./backend/aaa/authentication.php?action=validateAuthentication", function (data) {
       operationData = JSON.parse(data);
@@ -951,6 +953,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         selectList = data;
       }
     });
+
+    pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, 7000);
   }
   
   function loadPageContent(){
@@ -985,8 +989,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     //Check for any running operations
     operationTimeout = setTimeout(() => { operationStatusCheck(); }, 1000);
 
-    //Set the page content to reload in 7 seconds
-    setInterval(() => { reloadPageContent(); }, 7000);
+    //Reload page content in 7 secondsons
+    pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, 7000);
   }
     
   function refreshImage(imageFingerprint){

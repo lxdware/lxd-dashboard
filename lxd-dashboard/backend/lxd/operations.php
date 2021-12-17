@@ -77,7 +77,9 @@ if (isset($_SESSION['username'])) {
 
         if (!empty($operations_data['running'])){
           foreach ($operations_data['running'] as $running_task){
-            $results = $running_task['description'];
+            //This is annoyingly showing when using exec terminal, will look to build indicator for when someone is executing a command on instance page instead
+            if ($running_task['description'] != "Executing command")
+              $results = $running_task['description'];
 
             if (isset($running_task['resources']['instances'][0])) {
               $instance = basename($running_task['resources']['instances'][0]);
@@ -115,9 +117,8 @@ if (isset($_SESSION['username'])) {
                   $results .= " " . htmlentities($running_task['metadata']['download_progress']);
                 break;
               case "Executing command":
-                if (isset($running_task['metadata']['command'][0]))
-                  $results = "Executing " . htmlentities($running_task['metadata']['command'][0]) . " command on " . htmlentities($instance);
-                  $results = ""; //This is annoyingly showing when using exec, will look to build indicator for when someone is executing a command on instance page instead.
+                //if (isset($running_task['metadata']['command'][0]))
+                  //$results = "Executing " . htmlentities($running_task['metadata']['command'][0]) . " command on " . htmlentities($instance);
                 break;
               case "Freezing instance":
                 $results .= " " . $instance;

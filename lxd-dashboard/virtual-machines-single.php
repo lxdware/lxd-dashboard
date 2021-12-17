@@ -2888,6 +2888,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   
   function reloadPageContent(){
 
+    clearTimeout(pageReloadTimeout);
+    
     //Check Authorization
     $.get("./backend/aaa/authentication.php?action=validateAuthentication", function (data) {
       operationData = JSON.parse(data);
@@ -2896,6 +2898,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         window.location.href = './index.php'
       }
     });
+
+    //Display instance menu options based on state
+    $.get("./backend/lxd/virtual-machines-single.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=retrieveInstanceState", displayMenuOptions)
 
     //Reload based on which tab is active
     switch(activeTab) {
@@ -3042,8 +3047,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         // code block
     } 
 
-    //Display instance menu options based on state
-    $.get("./backend/lxd/virtual-machines-single.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=retrieveInstanceState", displayMenuOptions)
+    pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, 7000);
 
   }
 
@@ -3127,183 +3131,237 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         $("#ipv6Addresses").text(data.ipv6Addresses)
     });
 
-    //Load Snapshots Table
-    $('#snapshotTableList').DataTable( {
-      ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceSnapshots",
-      columns: [
-        {},
-        { title: "Name" },
-        { title: "Stateful/Stateless" },
-        { title: "Size" },
-        { title: "Created" },
-        { title: "Expires" },
-        { title: "Actions" }
-      ],
-      order: [],
-      columnDefs: [
-        { targets: 0, orderable: false, width: "25px" }
-      ]
-    });
-
-    //Load Profiles Table
-    $('#profileTableList').DataTable( {
-      ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceProfiles",
-      columns: [
-        {},
-        { title: "Name" },
-        { title: "Description" },
-        { title: "Actions" }
-      ],
-      order: [],
-      columnDefs: [
-        { targets: 0, orderable: false, width: "25px" }
-      ]
-    });
-
-    //Load Interfaces Table
-    $('#interfaceTableList').DataTable( {
-      ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceInterfaces",
-      columns: [
-        {},
-        { title: "Name" },
-        { title: "HW Address" },
-        { title: "IPv4" },
-        { title: "IPv6" },
-        { title: "State" }
-      ],
-      order: [],
-      columnDefs: [
-        { targets: 0, orderable: false, width: "25px" }
-      ]
-    });
-
-    //Load Network Devices Table
-    $('#networkDeviceTableList').DataTable( {
-      ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceNetworkDevices",
-      columns: [
-        {},
-        { title: "Name" },
-        { title: "Type" },
-        { title: "Parent" },
-        { title: "Network" },
-        { title: "Interface Name" },
-        { title: "Action" }
-      ],
-      order: [],
-      columnDefs: [
-        { targets: 0, orderable: false, width: "25px" }
-      ]
-    });
-
-    //Load Disk Devices Table
-    $('#diskDeviceTableList').DataTable( {
-      ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceDiskDevices",
-      columns: [
-        {},
-        { title: "Name" },
-        { title: "Path" },
-        { title: "Usage" },
-        { title: "Type" },
-        { title: "Action" }
-      ],
-      order: [],
-      columnDefs: [
-        { targets: 0, orderable: false, width: "25px" }
-      ]
-    });
-
-    //Load GPU Devices Table
-    $('#gpuDeviceTableList').DataTable( {
-      ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceGPUDevices",
-      columns: [
-        {},
-        { title: "Name" },
-        { title: "Vendor" },
-        { title: "Product" },
-        { title: "ID" },
-        { title: "PCI" },
-        { title: "Type" },
-        { title: "Action" }
-      ],
-      order: [],
-      columnDefs: [
-        { targets: 0, orderable: false, width: "25px" }
-      ]
-    });
-
-    //Load Proxy Devices Table
-    $('#proxyDeviceTableList').DataTable( {
-      ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceProxyDevices",
-      columns: [
-        {},
-        { title: "Name" },
-        { title: "Connect" },
-        { title: "Listen" },
-        { title: "Type" },
-        { title: "Action" }
-      ],
-      order: [],
-      columnDefs: [
-        { targets: 0, orderable: false, width: "25px" }
-      ]
-    });
-    
-    //Load USB Devices Table
-    $('#usbDeviceTableList').DataTable( {
-      ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceUSBDevices",
-      columns: [
-        {},
-        { title: "Name" },
-        { title: "Vendor" },
-        { title: "Product" },
-        { title: "Mode" },
-        { title: "Required" },
-        { title: "Type" },
-        { title: "Action" }
-      ],
-      order: [],
-      columnDefs: [
-        { targets: 0, orderable: false, width: "25px" }
-      ]
-    });
-
-    //Load Backups Table
-    $('#backupTableList').DataTable( {
-      ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceBackups",
-      columns: [
-        {},
-        { title: "Name" },
-        { title: "Created" },
-        { title: "Expires" },
-        { title: "Instance Only" },
-        { title: "Optimized Storage" },
-        { title: "Actions" }
-      ],
-      order: [],
-      columnDefs: [
-        { targets: 0, orderable: false, width: "25px" }
-      ]
-    });
-
-    //Load Logs Table
-    $('#logTableList').DataTable( {
-      ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceLogs",
-      columns: [
-        {},
-        { title: "Name" },
-        { title: "Actions" }
-      ],
-      order: [],
-      columnDefs: [
-        { targets: 0, orderable: false, width: "25px" }
-      ]
-    });
-
     //Check for any running operations
     operationTimeout = setTimeout(() => { operationStatusCheck(); }, 1000);
 
-    //Set the page content to reload in 7 seconds
-    setInterval(() => { reloadPageContent(); }, 7000);
+    //Reload page content in 7 seconds
+    pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, 7000);
+
+  }
+
+  function loadTabContent(loadTab){
+    //Load based on which tab is active
+    switch(loadTab) {
+
+      case "#nav-snapshots":
+        if ( ! $.fn.DataTable.isDataTable( '#snapshotTableList' ) ) {
+          //Load Snapshots Table
+          $('#snapshotTableList').DataTable( {
+            ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceSnapshots",
+            columns: [
+              {},
+              { title: "Name" },
+              { title: "Stateful/Stateless" },
+              { title: "Size" },
+              { title: "Created" },
+              { title: "Expires" },
+              { title: "Actions" }
+            ],
+            order: [],
+            columnDefs: [
+              { targets: 0, orderable: false, width: "25px" }
+            ]
+          });
+        }
+        break;
+
+      case "#nav-profiles":
+        if ( ! $.fn.DataTable.isDataTable( '#profileTableList' ) ) {
+          //Load Profiles Table
+          $('#profileTableList').DataTable( {
+            ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceProfiles",
+            columns: [
+              {},
+              { title: "Name" },
+              { title: "Description" },
+              { title: "Actions" }
+            ],
+            order: [],
+            columnDefs: [
+              { targets: 0, orderable: false, width: "25px" }
+            ]
+          });
+        }
+        break;
+
+      case "#nav-interfaces":
+        if ( ! $.fn.DataTable.isDataTable( '#interfaceTableList' ) ) {
+          //Load Interfaces Table
+          $('#interfaceTableList').DataTable( {
+            ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceInterfaces",
+            columns: [
+              {},
+              { title: "Name" },
+              { title: "HW Address" },
+              { title: "IPv4" },
+              { title: "IPv6" },
+              { title: "State" }
+            ],
+            order: [],
+            columnDefs: [
+              { targets: 0, orderable: false, width: "25px" }
+            ]
+          });
+        }
+        break;
+
+      case "#nav-network-devices":
+        if ( ! $.fn.DataTable.isDataTable( '#networkDeviceTableList' ) ) {
+          //Load Network Devices Table
+          $('#networkDeviceTableList').DataTable( {
+            ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceNetworkDevices",
+            columns: [
+              {},
+              { title: "Name" },
+              { title: "Type" },
+              { title: "Parent" },
+              { title: "Network" },
+              { title: "Interface Name" },
+              { title: "Action" }
+            ],
+            order: [],
+            columnDefs: [
+              { targets: 0, orderable: false, width: "25px" }
+            ]
+          });
+        }
+        break;
+
+      case "#nav-disk-devices":
+        if ( ! $.fn.DataTable.isDataTable( '#diskDeviceTableList' ) ) {
+          //Load Disk Devices Table
+          $('#diskDeviceTableList').DataTable( {
+            ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceDiskDevices",
+            columns: [
+              {},
+              { title: "Name" },
+              { title: "Path" },
+              { title: "Usage" },
+              { title: "Type" },
+              { title: "Action" }
+            ],
+            order: [],
+            columnDefs: [
+              { targets: 0, orderable: false, width: "25px" }
+            ]
+          });
+        }
+        break;
+
+      case "#nav-gpu-devices":
+        if ( ! $.fn.DataTable.isDataTable( '#gpuDeviceTableList' ) ) {
+          //Load GPU Devices Table
+          $('#gpuDeviceTableList').DataTable( {
+            ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceGPUDevices",
+            columns: [
+              {},
+              { title: "Name" },
+              { title: "Vendor" },
+              { title: "Product" },
+              { title: "ID" },
+              { title: "PCI" },
+              { title: "Type" },
+              { title: "Action" }
+            ],
+            order: [],
+            columnDefs: [
+              { targets: 0, orderable: false, width: "25px" }
+            ]
+          });
+        }
+        break;
+
+      case "#nav-proxy-devices":
+        if ( ! $.fn.DataTable.isDataTable( '#proxyDeviceTableList' ) ) {
+          //Load Proxy Devices Table
+          $('#proxyDeviceTableList').DataTable( {
+            ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceProxyDevices",
+            columns: [
+              {},
+              { title: "Name" },
+              { title: "Connect" },
+              { title: "Listen" },
+              { title: "Type" },
+              { title: "Action" }
+            ],
+            order: [],
+            columnDefs: [
+              { targets: 0, orderable: false, width: "25px" }
+            ]
+          });
+        }
+        break;
+
+      case "#nav-usb-devices":
+        if ( ! $.fn.DataTable.isDataTable( '#usbDeviceTableList' ) ) {
+          //Load USB Devices Table
+          $('#usbDeviceTableList').DataTable( {
+            ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceUSBDevices",
+            columns: [
+              {},
+              { title: "Name" },
+              { title: "Vendor" },
+              { title: "Product" },
+              { title: "Mode" },
+              { title: "Required" },
+              { title: "Type" },
+              { title: "Action" }
+            ],
+            order: [],
+            columnDefs: [
+              { targets: 0, orderable: false, width: "25px" }
+            ]
+          });
+        }
+        break;
+
+      case "#nav-backups":
+        if ( ! $.fn.DataTable.isDataTable( '#backupTableList' ) ) {
+          //Load Backups Table
+          $('#backupTableList').DataTable( {
+            ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceBackups",
+            columns: [
+              {},
+              { title: "Name" },
+              { title: "Created" },
+              { title: "Expires" },
+              { title: "Instance Only" },
+              { title: "Optimized Storage" },
+              { title: "File Size" },
+              { title: "Actions" }
+            ],
+            order: [],
+            columnDefs: [
+              { targets: 0, orderable: false, width: "25px" }
+            ]
+          });
+        }
+        break;
+
+      case "#nav-logs":
+        if ( ! $.fn.DataTable.isDataTable( '#logTableList' ) ) {
+          //Load Logs Table
+          $('#logTableList').DataTable( {
+            ajax: "./backend/lxd/virtual-machines-single.php?instance=" + encodeURI(instanceName) + "&remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listInstanceLogs",
+            columns: [
+              {},
+              { title: "Name" },
+              { title: "Actions" }
+            ],
+            order: [],
+            columnDefs: [
+              { targets: 0, orderable: false, width: "25px" }
+            ]
+          });
+        }
+        break;
+
+      default:
+        // code block
+      }
+
+    pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, 7000);
+
   }
 
   function startInstance(){
@@ -3662,11 +3720,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
   function exportInstanceBackup(backupName){
     console.log("Info: exporting backup " + backupName + " from instance " + instanceName + " to a file");
-    $('#notificationArea').show();
-    $('#notification').text('Notice: Exporting ' + backupName + ' to local file');
     $.get("./backend/lxd/virtual-machines.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&name=" + encodeURI(backupName) + "&action=exportInstanceBackup", function (data) {
-      $('#notificationArea').hide();
-      $('#notification').text("");
+      reloadPageContent();
     });
   }
 
@@ -4822,7 +4877,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     //When tab changes, set active tab for content refresh
     $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
-      activeTab = $(e.target).attr("href") // activated tab
+      clearTimeout(pageReloadTimeout);  //clear reload because new tab is being loaded
+      activeTab = $(e.target).attr("href"); // activated tab
+      loadTabContent(activeTab); //call new tab to load
     });
 
     //Initialize xterm for Console
