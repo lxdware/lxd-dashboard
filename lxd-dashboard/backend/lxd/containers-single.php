@@ -770,11 +770,11 @@ if (isset($_SESSION['username'])) {
 
           echo '"';
             //check to see if file exists for export action
-            if ($file_exists){
-              echo "<i class='fas fa-file-export fa-lg' style='color:#f1f1f1' title='Export to local file' aria-hidden='true'></i>";
+            if (!$file_exists && !in_array($instance_backup['name'], $current_backups)){
+              echo "<a href='#' onclick=exportInstanceBackup('".$instance_backup['name']."')><i class='fas fa-file-export fa-lg' style='color:#ddd' title='Export to local file' aria-hidden='true'></i></a>";
             } 
             else {
-              echo "<a href='#' onclick=exportInstanceBackup('".$instance_backup['name']."')><i class='fas fa-file-export fa-lg' style='color:#ddd' title='Export to local file' aria-hidden='true'></i></a>";
+              echo "<i class='fas fa-file-export fa-lg' style='color:#f1f1f1' title='Export to local file' aria-hidden='true'></i>";
             }
             echo " &nbsp ";
             echo "<a href='#' onclick=deleteInstanceBackup('".$instance_backup['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
