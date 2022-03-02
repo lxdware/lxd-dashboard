@@ -479,7 +479,7 @@ function addHost($host, $port, $alias, $external_host, $external_port){
   $stmt->bindValue(':port', $port, PDO::PARAM_INT);
   $stmt->bindValue(':alias', $alias, PDO::PARAM_STR);
   $stmt->bindValue(':external_host', $external_host, PDO::PARAM_STR);
-  $stmt->bindValue(':external_port', $external_port, PDO::PARAM_STR);
+  $stmt->bindValue(':external_port', $external_port, PDO::PARAM_INT);
   $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
   $stmt->execute();
   $db = null;
@@ -933,7 +933,7 @@ function updateHost($id, $host, $port, $alias, $external_host, $external_port){
   $stmt->bindValue(':port', $port, PDO::PARAM_INT);
   $stmt->bindValue(':alias', $alias, PDO::PARAM_STR);
   $stmt->bindValue(':external_host', $external_host, PDO::PARAM_STR);
-  $stmt->bindValue(':external_port', $external_port, PDO::PARAM_STR);
+  $stmt->bindValue(':external_port', $external_port, PDO::PARAM_INT);
   $stmt->execute();
   $db = null;
   return $stmt;
