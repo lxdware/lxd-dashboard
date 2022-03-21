@@ -29,12 +29,13 @@ if (isset($_SESSION['username'])) {
   $action = (isset($_GET['action'])) ? filter_var(urldecode($_GET['action']), FILTER_SANITIZE_STRING) : "";
   $alias = (isset($_GET['alias'])) ? filter_var(urldecode($_GET['alias']), FILTER_SANITIZE_STRING) : "";
   $external_host = (isset($_GET['external_host'])) ? filter_var(urldecode($_GET['external_host']), FILTER_SANITIZE_STRING) : "";
-  $external_port = (isset($_GET['external_port'])) ? filter_var(urldecode($_GET['external_port']), FILTER_SANITIZE_NUMBER_INT) : "";
+  $external_port = ($_GET['external_port'] != "") ? filter_var(urldecode($_GET['external_port']), FILTER_SANITIZE_NUMBER_INT) : null;
   $host = (isset($_GET['host'])) ? filter_var(urldecode($_GET['host']), FILTER_SANITIZE_STRING) : "";
   $id = (isset($_GET['id'])) ? filter_var(urldecode($_GET['id']), FILTER_SANITIZE_NUMBER_INT) : "";
   $port = (isset($_GET['port'])) ? filter_var(urldecode($_GET['port']), FILTER_SANITIZE_NUMBER_INT) : "8443";
   $project = (isset($_GET['project'])) ? filter_var(urldecode($_GET['project']), FILTER_SANITIZE_STRING) : "";
   $remote = (isset($_GET['remote'])) ? filter_var(urldecode($_GET['remote']), FILTER_SANITIZE_NUMBER_INT) : "";
+  
 
   //Require code from lxd-dashboard/backend/config/curl.php
   require_once('../config/curl.php');
@@ -123,6 +124,12 @@ if (isset($_SESSION['username'])) {
       logEvent($action, $remote, $project, $object, $event['status_code'], $event['status']);
       break;
 
+    case "retrieveRemoteInfo":
+      $results = retrieveHostInfo($id);
+      $results = json_encode($results);
+      echo $results;
+      break;
+
     case "listRemotes":
       if (validateAuthorization($action)) {
         $rows = retrieveTableRows('lxd_hosts');
@@ -156,7 +163,7 @@ if (isset($_SESSION['username'])) {
           echo '"';
           echo "<a href='#' onclick=editRemote('".$row['id']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";
           echo " &nbsp ";
-          echo "<a href='#' onclick=deleteRemote('".$row['id']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
+          echo "<a href='#' onclick=confirmDeleteRemote('".$row['id']."')><i class='fas fa-trash-alt fa-lg' style='color:#ddd' title='Delete' aria-hidden='true'></i></a>";
           echo '"';
 
           echo " ]";

@@ -589,8 +589,8 @@ if (isset($_SESSION['username'])) {
               }
             }
             else {
-              $disk_total = 0.00;
-              $disk_unit = "MiB";
+              $disk_total = "N/A";
+              $disk_unit = "";
             }
 
             echo '"' . htmlentities($disk_total) . " " . $disk_unit . '",';

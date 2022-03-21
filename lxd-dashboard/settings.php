@@ -116,6 +116,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                   <i class="fas fa-cog fa-sm fa-fw mr-2 text-gray-400"></i>
                   Settings
                 </a>
+                <a class="dropdown-item" href="logs.php">
+                  <i class="fas fa-history fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logs
+                </a>
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#aboutModal">
                   <i class="fas fa-info-circle fa-sm fa-fw mr-2 text-gray-400"></i>
                   About
@@ -173,6 +177,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <ul class="nav nav-pills card-header-pills" id="cardPill" role="tablist">              
                       <li class="nav-item"><a class="nav-link active" id="nav-users-tab" href="#nav-users" data-toggle="pill" role="tab" aria-controls="nav-users" aria-selected="true">Users</a></li>
                       <li class="nav-item"><a class="nav-link" id="nav-groups-tab" href="#nav-groups" data-toggle="pill" role="tab" aria-controls="nav-groups" aria-selected="false">Groups</a></li>
+                      <li class="nav-item"><a class="nav-link" id="nav-preferences-tab" href="#nav-preferences" data-toggle="pill" role="tab" aria-controls="nav-preferences" aria-selected="false">Preferences</a></li>
                       <li class="nav-item"><a class="nav-link" id="nav-certs-tab" href="#nav-certs" data-toggle="pill" role="tab" aria-controls="nav-certs" aria-selected="false">Certificates</a></li>
                     </ul>
                   </h6>
@@ -198,6 +203,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </div>
                         <!-- End Users List -->
                       </div>
+                     
                       <div class="tab-pane fade" id="nav-groups" role="tabpanel" aria-labelledby="nav-groups-tab">
                         <!-- Groups List -->
                         <div class="text-right mb-3 mt-n1">
@@ -209,6 +215,448 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </div>
                         <!-- End Groups List -->
                       </div>
+                      
+                      <div class="tab-pane fade" id="nav-preferences" role="tabpanel" aria-labelledby="nav-preferences-tab">
+                        <!-- Preferences List -->
+                        <div class="text-right mb-3 mt-n1" style="min-height: 38px;">
+                          <!--<button type="button" class="btn btn-outline-primary"  id="" data-toggle="modal" data-target="#createCertModal" title="New Certificate" onclick=""><i class="fas fa-plus fa-sm fa-fw"></i>Certificate</button>-->
+                        </div>
+                        <div class="row">
+                          <div class="col-3">
+                            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                              <a class="nav-link active" id="v-pills-event-logging-tab" data-toggle="pill" href="#v-pills-event-logging" role="tab" aria-controls="v-pills-event-logging" aria-selected="true">Event Logging</a>
+                              <a class="nav-link" id="v-pills-outbound-requests-tab" data-toggle="pill" href="#v-pills-outbound-requests" role="tab" aria-controls="v-pills-outbound-requests" aria-selected="false">Outbound Requests</a>
+                              <a class="nav-link" id="v-pills-refresh-rates-tab" data-toggle="pill" href="#v-pills-refresh-rates" role="tab" aria-controls="v-pills-refresh-rates" aria-selected="false">Refresh Rates</a>
+                            </div>
+                          </div>
+                          <div class="col-9">
+                            <div class="tab-content" id="v-pills-tabContent">
+
+                              <div class="tab-pane fade show active" id="v-pills-event-logging" role="tabpanel" aria-labelledby="v-pills-event-logging-tab">
+
+                                <div class="col-11">
+                                  <div class="modal-header py-3">
+                                    <h5 class="m-0 font-weight-bold modal-title">Enable logging of user activities.</h5>
+                                  </div>
+                                </div>
+
+                                <div class="modal-body">
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Enable Logging:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <select id="logsEnabledStatusInput" class="form-control" name="logsEnabledStatusInput">
+                                        <option value="true">true</option>
+                                        <option value="false">false</option>
+                                      </select>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Select whether to enable logging of events while using LXD Dashboard'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Logs Retrieval Number:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="logsRetrievalNumberInput" class="form-control" name="logsRetrievalNumberInput"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of log activity events to retrieve when viewing logs. Default: 100'></i>
+                                    </div>
+                                  </div>
+
+                                </div>
+
+                                <div class="col-11">
+                                  <div class="modal-footer">
+                                    <a class="btn btn-primary" href="#" onclick="updateLogPreferences()">Update</a>
+                                  </div>
+                                </div>
+
+                              </div>
+
+                              <div class="tab-pane fade" id="v-pills-outbound-requests" role="tabpanel" aria-labelledby="v-pills-outbound-requests-tab">
+
+                                <div class="col-11">
+                                  <div class="modal-header py-3">
+                                    <h5 class="m-0 font-weight-bold modal-title">Set connection and operation timeout values when making API requests.</h5>
+                                  </div>
+                                </div>
+
+                                <div class="modal-body">
+  
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">GET Connection Timeout:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="getConnectionTimeoutInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='The maximum number of seconds a curl operation will wait to connect to remote host. Default: 3, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">GET Operation Timeout:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="getOperationTimeoutInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='The maximum number of seconds a curl operation can run. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">POST Connection Timeout:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="postConnectionTimeoutInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='The maximum number of seconds a curl operation will wait to connect to remote host. Default: 3, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">POST Operation Timeout:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="postOperationTimeoutInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='The maximum number of seconds a curl operation can run. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">PATCH Connection Timeout:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="patchConnectionTimeoutInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='The maximum number of seconds a curl operation will wait to connect to remote host. Default: 3, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">PATCH Operation Timeout:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="patchOperationTimeoutInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='The maximum number of seconds a curl operation can run. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">PUT Connection Timeout:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="putConnectionTimeoutInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='The maximum number of seconds a curl operation will wait to connect to remote host. Default: 3, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">PUT Operation Timeout:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="putOperationTimeoutInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='The maximum number of seconds a curl operation can run. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">DELETE Connection Timeout:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="deleteConnectionTimeoutInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='The maximum number of seconds a curl operation will wait to connect to remote host. Default: 3, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">DELETE Operation Timeout:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="deleteOperationTimeoutInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='The maximum number of seconds a curl operation can run. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="col-11">
+                                  <div class="modal-footer">
+                                    <a class="btn btn-primary" href="#" onclick="updateOutboundRequestPreferences()">Update</a>
+                                  </div>
+                                </div>
+
+                              </div>
+
+                              <div class="tab-pane fade" id="v-pills-refresh-rates" role="tabpanel" aria-labelledby="v-pills-refresh-rates-tab">
+
+                                <div class="col-11">
+                                  <div class="modal-header py-3">
+                                    <h5 class="m-0 font-weight-bold modal-title">Set the amount of time before each page automatically refreshes its content.</h5>
+                                  </div>
+                                </div>
+
+                                <div class="modal-body">
+                                
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Certificates Page:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="certificatesPageRateInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds before the page refreshes its content. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Cluster Members Page:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="clusterMembersPageRateInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds before the page refreshes its content. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Containers:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="containersPageRateInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds before the page refreshes its content. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Containers Single Page:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="containersSinglePageRateInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds before the page refreshes its content. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Images Page:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="imagesPageRateInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds before the page refreshes its content. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Logs Page:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="logsPageRateInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds before the page refreshes its content. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Network ACLs Page:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="networkAcLsPageRateInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds before the page refreshes its content. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Networks PAge:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="networksPageRateInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds before the page refreshes its content. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Operations Page:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="operationsPageRateInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds before the page refreshes its content. Default: 3, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Profiles Page:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="profilesPageRateInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds before the page refreshes its content. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Projects Page:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="projectsPageRateInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds before the page refreshes its content. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Remotes Single:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="remotesSinglePageRateInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds before the page refreshes its content. Default: 10, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Remotes Page:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="remotesPageRateInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds before the page refreshes its content. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Simplestreams Page:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="simplestreamsPageRateInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds before the page refreshes its content. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Storage Pools Page:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="storagePoolsPageRateInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds before the page refreshes its content. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Storage Volumes Page:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="storageVolumesPageRateInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds before the page refreshes its content. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Virtual Machines Page:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="virtualMachinesPageRateInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds before the page refreshes its content. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <label class="col-3 col-form-label text-right">Virtual Machines Single Page:</label>
+                                    <div class="col-7">
+                                      <div class="form-group">
+                                      <input type="number" id="virtualMachinesSinglePageRateInput" class="form-control" name="logsRetrievalNumberInput" min="1"></input>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <i class="far fa-sm fa-question-circle" title='Enter in the number of seconds before the page refreshes its content. Default: 5, Minimum: 1'></i>
+                                    </div>
+                                  </div>
+
+                                </div>
+                                <div class="col-11">
+                                  <div class="modal-footer">
+                                    <a class="btn btn-primary" href="#" onclick="updateRefreshRatePreferences()">Update</a>
+                                  </div>
+                                </div>
+
+                              </div>
+                          
+                            </div>
+                          </div>
+                        </div>
+
+
+
+                        <!-- End Preferences List -->
+                      </div>
+
                       <div class="tab-pane fade" id="nav-certs" role="tabpanel" aria-labelledby="nav-certs-tab">
                         <!-- Local Certificates List -->
                         <div class="text-right mb-3 mt-n1" style="min-height: 38px;">
@@ -913,6 +1361,105 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     $("#deleteCertModal").modal('show');
   }
 
+  function updateLogPreferences(){
+    var logsEnabledStatusInput = $("#logsEnabledStatusInput").val();
+    var logsRetrievalNumberInput = $("#logsRetrievalNumberInput").val();
+    console.log("Info: updating event logging preferences");
+    $.get('./backend/admin/settings.php?logs_enabled_status=' + encodeURI(logsEnabledStatusInput) + '&logs_retrieval_number=' + encodeURI(logsRetrievalNumberInput) + '&action=updateLogPreferences',  function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code >= 400) {
+        alert(operationData.metadata.error);
+      }
+      else {
+        alert("Preferences updated");
+      }
+    });
+  }
+
+  function updateOutboundRequestPreferences(){
+    var getConnectionTimeoutInput = $("#getConnectionTimeoutInput").val();
+    var getOperationTimeoutInput = $("#getOperationTimeoutInput").val();
+    var postConnectionTimeoutInput = $("#postConnectionTimeoutInput").val();
+    var postOperationTimeoutInput = $("#postOperationTimeoutInput").val();
+    var patchConnectionTimeoutInput = $("#patchConnectionTimeoutInput").val();
+    var patchOperationTimeoutInput = $("#patchOperationTimeoutInput").val();
+    var putConnectionTimeoutInput = $("#putConnectionTimeoutInput").val();
+    var putOperationTimeoutInput = $("#putOperationTimeoutInput").val();
+    var deleteConnectionTimeoutInput = $("#deleteConnectionTimeoutInput").val();
+    var deleteOperationTimeoutInput = $("#deleteOperationTimeoutInput").val();
+    console.log("Info: updating outbound requests preferences");
+    $.get('./backend/admin/settings.php?get_connection_timeout=' + encodeURI(getConnectionTimeoutInput) + '&get_operation_timeout=' + encodeURI(getOperationTimeoutInput) + 
+      '&post_connection_timeout=' + encodeURI(postConnectionTimeoutInput) + 
+      '&post_operation_timeout=' + encodeURI(postOperationTimeoutInput) + 
+      '&patch_connection_timeout=' + encodeURI(patchConnectionTimeoutInput) + 
+      '&patch_operation_timeout=' + encodeURI(patchOperationTimeoutInput) + 
+      '&put_connection_timeout=' + encodeURI(putConnectionTimeoutInput) + 
+      '&put_operation_timeout=' + encodeURI(putOperationTimeoutInput) + 
+      '&delete_connection_timeout=' + encodeURI(deleteConnectionTimeoutInput) + 
+      '&delete_operation_timeout=' + encodeURI(deleteOperationTimeoutInput) + 
+      '&action=updateOutboundRequestPreferences',  function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code >= 400) {
+        alert(operationData.metadata.error);
+      }
+      else {
+        alert("Preferences updated");
+      }
+    });
+  }
+
+  function updateRefreshRatePreferences(){
+    var certificatesPageRateInput = $("#certificatesPageRateInput").val();
+    var clusterMembersPageRateInput = $("#clusterMembersPageRateInput").val();
+    var containersPageRateInput = $("#containersPageRateInput").val();
+    var containersSinglePageRateInput = $("#containersSinglePageRateInput").val();
+    var imagesPageRateInput = $("#imagesPageRateInput").val();
+    var logsPageRateInput = $("#logsPageRateInput").val();
+    var networkAcLsPageRateInput = $("#networkAcLsPageRateInput").val();
+    var networksPageRateInput = $("#networksPageRateInput").val();
+    var operationsPageRateInput = $("#operationsPageRateInput").val();
+    var profilesPageRateInput = $("#profilesPageRateInput").val();
+    var projectsPageRateInput = $("#projectsPageRateInput").val();
+    var remotesSinglePageRateInput = $("#remotesSinglePageRateInput").val();
+    var remotesPageRateInput = $("#remotesPageRateInput").val();
+    var simplestreamsPageRateInput = $("#simplestreamsPageRateInput").val();
+    var storagePoolsPageRateInput = $("#storagePoolsPageRateInput").val();
+    var storageVolumesPageRateInput = $("#storageVolumesPageRateInput").val();
+    var virtualMachinesPageRateInput = $("#virtualMachinesPageRateInput").val();
+    var virtualMachinesSinglePageRateInput = $("#virtualMachinesSinglePageRateInput").val();
+    console.log("Info: updating event logging preferences");
+    $.get('./backend/admin/settings.php?certificates_page_rate=' + encodeURI(certificatesPageRateInput) + 
+      '&cluster_members_page_rate=' + encodeURI(clusterMembersPageRateInput) + 
+      '&containers_page_rate=' + encodeURI(containersPageRateInput) + 
+      '&containers_single_page_rate=' + encodeURI(containersSinglePageRateInput) + 
+      '&images_page_rate=' + encodeURI(imagesPageRateInput) + 
+      '&logs_page_rate=' + encodeURI(logsPageRateInput) + 
+      '&network_acls_page_rate=' + encodeURI(networkAcLsPageRateInput) + 
+      '&networks_page_rate=' + encodeURI(networksPageRateInput) + 
+      '&operations_page_rate=' + encodeURI(operationsPageRateInput) + 
+      '&profiles_page_rate=' + encodeURI(profilesPageRateInput) + 
+      '&projects_page_rate=' + encodeURI(projectsPageRateInput) + 
+      '&remotes_single_page_rate=' + encodeURI(remotesSinglePageRateInput) + 
+      '&remotes_page_rate=' + encodeURI(remotesPageRateInput) + 
+      '&simplestreams_page_rate=' + encodeURI(simplestreamsPageRateInput) + 
+      '&storage_pools_page_rate=' + encodeURI(storagePoolsPageRateInput) + 
+      '&storage_volumes_page_rate=' + encodeURI(storageVolumesPageRateInput) + 
+      '&virtual_machines_page_rate=' + encodeURI(virtualMachinesPageRateInput) + 
+      '&virtual_machines_single_page_rate=' + encodeURI(virtualMachinesSinglePageRateInput) + 
+      '&action=updateRefreshRatePreferences',  function (data) {
+      var operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code >= 400) {
+        alert(operationData.metadata.error);
+      }
+      else {
+        alert("Preferences updated");
+      }
+    });
+  }
+
   function setSidebarToggleValue(){
     sidebarState = localStorage.getItem('sidebarState');
     if (sidebarState == "collapsed"){
@@ -974,6 +1521,51 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     //Load the card contents
     loadPageContent();
+
+    //Load Existing Preference Value of Logs
+    $.get("./backend/admin/settings.php?action=retrieveLogPreferences", function (data) {
+      operationData = JSON.parse(data);
+      $("#logsEnabledStatusInput").val(operationData.logs_enabled);
+      $("#logsRetrievalNumberInput").val(operationData.logs_retrieval);
+    });
+
+    //Load Existing Preference Values for Outbound Requests
+    $.get("./backend/admin/settings.php?action=retrieveCurlTimeoutValues", function (data) {
+      operationData = JSON.parse(data);
+      $("#getConnectionTimeoutInput").val(operationData.get_connection_timeout);
+      $("#getOperationTimeoutInput").val(operationData.get_operation_timeout);
+      $("#postConnectionTimeoutInput").val(operationData.post_connection_timeout);
+      $("#postOperationTimeoutInput").val(operationData.post_operation_timeout);
+      $("#patchConnectionTimeoutInput").val(operationData.patch_connection_timeout);
+      $("#patchOperationTimeoutInput").val(operationData.patch_operation_timeout);
+      $("#putConnectionTimeoutInput").val(operationData.put_connection_timeout);
+      $("#putOperationTimeoutInput").val(operationData.put_operation_timeout);
+      $("#deleteConnectionTimeoutInput").val(operationData.delete_connection_timeout);
+      $("#deleteOperationTimeoutInput").val(operationData.delete_operation_timeout);
+    });
+
+    //Load Existing Preference Values for Refresh Rates
+    $.get("./backend/admin/settings.php?action=retrievePageRefreshRateValues", function (data) {
+      operationData = JSON.parse(data);
+      $("#certificatesPageRateInput").val(operationData.certificates_page_rate);
+      $("#clusterMembersPageRateInput").val(operationData.cluster_members_page_rate);
+      $("#containersPageRateInput").val(operationData.containers_page_rate);
+      $("#containersSinglePageRateInput").val(operationData.containers_single_page_rate);
+      $("#imagesPageRateInput").val(operationData.images_page_rate);
+      $("#logsPageRateInput").val(operationData.logs_page_rate);
+      $("#networkAcLsPageRateInput").val(operationData.network_acls_page_rate);
+      $("#networksPageRateInput").val(operationData.networks_page_rate);
+      $("#operationsPageRateInput").val(operationData.operations_page_rate);
+      $("#profilesPageRateInput").val(operationData.profiles_page_rate);
+      $("#projectsPageRateInput").val(operationData.projects_page_rate);
+      $("#remotesSinglePageRateInput").val(operationData.remotes_single_page_rate);
+      $("#remotesPageRateInput").val(operationData.remotes_page_rate);
+      $("#simplestreamsPageRateInput").val(operationData.simplestreams_page_rate);
+      $("#storagePoolsPageRateInput").val(operationData.storage_pools_page_rate);
+      $("#storageVolumesPageRateInput").val(operationData.storage_volumes_page_rate);
+      $("#virtualMachinesPageRateInput").val(operationData.virtual_machines_page_rate);
+      $("#virtualMachinesSinglePageRateInput").val(operationData.virtual_machines_single_page_rate);
+    });
     
     //Load the about info for the about modal
     $.get("./backend/config/about.php", function (data) {

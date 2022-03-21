@@ -45,6 +45,9 @@ if (!isset($_SESSION)) {
     -- listUsers
     -- removeGroupFromUser
     -- removeRoleFromGroup
+    -- updateLogPreferences
+    -- updateOutboundRequestPreferences
+    -- updateRefreshRatePreferences
 
 - /admin/backend/admin/user-profile.php
     -- retrieveUserId
@@ -197,6 +200,7 @@ if (!isset($_SESSION)) {
     -- displayStorageInfo
     -- displaySysInfo
     -- displayVirtualMachineInfo
+    -- validateRemoteConnection
 
 - /admin/backend/lxd/remotes.php
     -- addRemote
@@ -478,15 +482,19 @@ function getControls($roles){
             "updateImage",
             "updateInstanceInformation",
             "updateInstanceUsingForm",
+            "updateLogPreferences",
             "updateNetwork",
             "updateNetworkAcl",
+            "updateOutboundRequestPreferences",
             "updateProfile",
             "updateProject",
+            "updateRefreshRatePreferences",
             "updateRemote",
             "updateStoragePool",
             "updateStorageVolume",
             "updateUserAccount",
             "updateUserPassword",
+            "validateRemoteConnection",
             "viewCertificate"
         );
         $controls = array_merge($controls, $admin_controls);
@@ -651,6 +659,7 @@ function getControls($roles){
             "updateRemote",
             "updateStoragePool",
             "updateStorageVolume",
+            "validateRemoteConnection",
             "viewCertificate"
         );
         $controls = array_merge($controls, $operator_controls);
@@ -747,6 +756,7 @@ function getControls($roles){
             "stopInstance",
             "stopInstanceForcefully",
             "unfreezeInstance",
+            "validateRemoteConnection",
             "viewCertificate"
         );
         $controls = array_merge($controls, $user_controls);
@@ -827,7 +837,8 @@ function getControls($roles){
             "retrieveHostAndPort",
             "retrieveInstanceState",
             "retrieveUserDetails",
-            "retrieveUserId"
+            "retrieveUserId",
+            "validateRemoteConnection"
         );
         $controls = array_merge($controls, $auditor_controls);
         break;

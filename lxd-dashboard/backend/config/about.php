@@ -41,13 +41,14 @@ if (isset($_SESSION['username'])) {
 <!DOCTYPE html>
 <html lang="en">
 <body class="">
-  <p>This open source LXD dashboard is developed by LXDWARE and provides a web-based user interface capable of managing multiple LXD servers from a single location.</p>
+  <p>The open source LXD Dashboard is developed by LXDWARE and provides a web-based user interface capable of managing multiple LXD servers from a single location.</p>
   <p>
-    <strong>Version</strong>: <span id="versionNumber">v3.1.0</span> <br />
+    <strong>Version</strong>: <span id="versionNumber">v3.2.0</span> <br />
     <strong>License</strong>: AGPL-3.0 <br />
     <strong>URL</strong>: https://lxdware.com <br />
   </p>
   <p>
+  <strong>Hostname</strong>: <?php echo gethostname(); ?> <br />
   <strong>Database Type</strong>: <?php echo $database_type ?>
   </p>
   

@@ -134,6 +134,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                   <i class="fas fa-cog fa-sm fa-fw mr-2 text-gray-400"></i>
                   Settings
                 </a>
+                <a class="dropdown-item" href="logs.php">
+                  <i class="fas fa-history fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logs
+                </a>
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#aboutModal">
                   <i class="fas fa-info-circle fa-sm fa-fw mr-2 text-gray-400"></i>
                   About
@@ -3536,6 +3540,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   var execSocket;
   var execTerminal;
   var activeTab = "#nav-overview";
+  var reloadTime = 5000;
 
   function logout(){
     $.get("./backend/aaa/authentication.php?action=deauthenticateUser", function (data) {
@@ -3832,7 +3837,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         // code block
     } 
 
-    pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, 7000);
+    //Set reload page content
+    pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, reloadTime);
 
   }
 
@@ -3958,8 +3964,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     //Check for any running operations
     operationTimeout = setTimeout(() => { operationStatusCheck(); }, 1000);
 
-    //Reload page content in 7 seconds
-    pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, 7000);
+    //Set reload page content
+    $.get("./backend/admin/settings.php?action=retrievePageRefreshRateValues", function (data) {
+      operationData = JSON.parse(data);
+      if (operationData.containers_single_page_rate >= 1)
+        reloadTime = operationData.containers_single_page_rate * 1000;
+      pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, reloadTime);
+    });
 
   }
 
@@ -5891,74 +5902,84 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     $('#containersBreadCrumb').text("Containers");
     $('#containersBreadCrumb').attr("href", "containers.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName));
 
-    //Set top navbar dropdowns
-    $("#remoteListNav").load("./backend/lxd/remotes.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listRemotesForSelectOption");
-    $("#projectListNav").load("./backend/lxd/projects.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listProjectsForSelectOption");
+    //Validate remote host connection returns 200 status
+    $.get("./backend/lxd/remotes-single.php?remote=" + encodeURI(remoteId) + "&action=validateRemoteConnection", function (data) {
+      operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code == 200) {
+        //Set top navbar dropdowns
+        $("#remoteListNav").load("./backend/lxd/remotes.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listRemotesForSelectOption");
+        $("#projectListNav").load("./backend/lxd/projects.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listProjectsForSelectOption");
 
-    //Load the card contents
-    loadPageContent();
+        //Load Page Content
+        loadPageContent();
 
-    //Populate the select options fields used in modals
-    $("#selectProfileInput").load("./backend/lxd/profiles.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listProfilesForSelectOption");
-    $("#selectClusterInput").load("./backend/lxd/cluster-members.php?remote=" + encodeURI(remoteId) + "&action=listClusterMembersForSelectOption");
+        //Populate the select options fields used in modals
+        $("#selectProfileInput").load("./backend/lxd/profiles.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listProfilesForSelectOption");
+        $("#selectClusterInput").load("./backend/lxd/cluster-members.php?remote=" + encodeURI(remoteId) + "&action=listClusterMembersForSelectOption");
+
+        //When tab changes, set active tab for content refresh
+        $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+          clearTimeout(pageReloadTimeout);  //clear reload because new tab is being loaded
+          activeTab = $(e.target).attr("href"); // activated tab
+          loadTabContent(activeTab); //call new tab to load
+        });
+
+        //Initialize xterm for Console
+        consoleTerminal = new Terminal({
+          cursorBlink: "block"
+        });
+
+        //Setup listener for Console terminal
+        consoleTerminal.onData( (data) => {
+          if (consoleDataSocket.readyState === 1) {
+            consoleDataSocket.send(convertString2ArrayBuffer(data))
+          }
+        });
+
+        //Initialize xterm for Exec
+        execTerminal = new Terminal({
+          cursorBlink: "block"
+        });
+
+        //Setup listener for Exec terminal
+        execTerminal.onData( (data) => {
+          if (execDataSocket.readyState === 1) {
+            execDataSocket.send(convertString2ArrayBuffer(data))
+          }
+        });
+
+        //Open Console terminal
+        consoleTerminal.open(document.getElementById("terminal-console"));
+
+        //Open Exec terminal
+        execTerminal.open(document.getElementById("terminal-exec"));
+
+        //Add Event Listener for page unloading to close WebSocket connections
+        window.addEventListener("beforeunload", function () {
+          //Check to see if the Console WebSocket was initiated
+          if (typeof consoleDataSocket == "object"){
+            if(consoleDataSocket.readyState == WebSocket.OPEN){
+              closeWebSocketConsoleConnection()
+            }
+          }
+          //Check to see if the Exec WebSocket was initiated
+          if (typeof execDataSocket == "object"){
+            if(execDataSocket.readyState == WebSocket.OPEN){
+              closeWebSocketExecConnection();
+            }
+          }
+        });
+
+      }
+      else {
+        alert("Unable to connect to remote host. HTTP status code: " + operationData.status_code);
+      }
+    });
 
     //Load the about info for the about modal
     $.get("./backend/config/about.php", function (data) {
       $("#about").html(data);
-    });
-
-    //When tab changes, set active tab for content refresh
-    $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
-      clearTimeout(pageReloadTimeout);  //clear reload because new tab is being loaded
-      activeTab = $(e.target).attr("href"); // activated tab
-      loadTabContent(activeTab); //call new tab to load
-    });
-
-    //Initialize xterm for Console
-    consoleTerminal = new Terminal({
-      cursorBlink: "block"
-    });
-
-    //Setup listener for Console terminal
-    consoleTerminal.onData( (data) => {
-      if (consoleDataSocket.readyState === 1) {
-        consoleDataSocket.send(convertString2ArrayBuffer(data))
-      }
-    });
-
-    //Initialize xterm for Exec
-    execTerminal = new Terminal({
-      cursorBlink: "block"
-    });
-
-    //Setup listener for Exec terminal
-    execTerminal.onData( (data) => {
-      if (execDataSocket.readyState === 1) {
-        execDataSocket.send(convertString2ArrayBuffer(data))
-      }
-    });
-
-    //Open Console terminal
-    consoleTerminal.open(document.getElementById("terminal-console"));
-
-    //Open Exec terminal
-    execTerminal.open(document.getElementById("terminal-exec"));
-
-
-    //Add Event Listener for page unloading to close WebSocket connections
-    window.addEventListener("beforeunload", function () {
-      //Check to see if the Console WebSocket was initiated
-      if (typeof consoleDataSocket == "object"){
-        if(consoleDataSocket.readyState == WebSocket.OPEN){
-          closeWebSocketConsoleConnection()
-        }
-      }
-      //Check to see if the Exec WebSocket was initiated
-      if (typeof execDataSocket == "object"){
-        if(execDataSocket.readyState == WebSocket.OPEN){
-          closeWebSocketExecConnection();
-        }
-      }
     });
 
   });

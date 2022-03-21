@@ -17,8 +17,28 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+//Start session if not already started
+if (!isset($_SESSION)) {
+  session_start();
+}
+
 //Require code from lxd-dashboard/backend/aaa/authorization.php
 require_once('../aaa/authorization.php');
+
+//Require code from lxd-dashboard/backend/config/db.php
+require_once('../config/db.php');
+
+//Set required variables
+$get_connection_timeout = (isset($_SESSION['get_connection_timeout'])) ? $_SESSION['get_connection_timeout'] : 3;
+$get_operation_timeout = (isset($_SESSION['get_operation_timeout'])) ? $_SESSION['get_operation_timeout'] : 5;
+$post_connection_timeout = (isset($_SESSION['post_connection_timeout'])) ? $_SESSION['post_connection_timeout'] : 3;
+$post_operation_timeout = (isset($_SESSION['post_operation_timeout'])) ? $_SESSION['post_operation_timeout'] : 5;
+$patch_connection_timeout = (isset($_SESSION['patch_connection_timeout'])) ? $_SESSION['patch_connection_timeout'] : 3;
+$patch_operation_timeout = (isset($_SESSION['patch_operation_timeout'])) ? $_SESSION['patch_operation_timeout'] : 5;
+$put_connection_timeout = (isset($_SESSION['put_connection_timeout'])) ? $_SESSION['put_connection_timeout'] : 3;
+$put_operation_timeout = (isset($_SESSION['put_operation_timeout'])) ? $_SESSION['put_operation_timeout'] : 5;
+$delete_connection_timeout = (isset($_SESSION['delete_connection_timeout'])) ? $_SESSION['delete_connection_timeout'] : 3;
+$delete_operation_timeout = (isset($_SESSION['delete_operation_timeout'])) ? $_SESSION['delete_operation_timeout'] : 5;
 
 function sendCurlRequest($request_action, $request_type, $request_url, $request_data = "{}"){
   $cert = "/var/lxdware/data/lxd/client.crt";
@@ -32,8 +52,8 @@ function sendCurlRequest($request_action, $request_type, $request_url, $request_
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSLCERT, $cert);
         curl_setopt($ch, CURLOPT_SSLKEY, $key);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $get_connection_timeout);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $get_operation_timeout);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
@@ -55,8 +75,8 @@ function sendCurlRequest($request_action, $request_type, $request_url, $request_
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSLCERT, $cert);
         curl_setopt($ch, CURLOPT_SSLKEY, $key);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $post_connection_timeout);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $post_operation_timeout);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $request_data);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
@@ -78,8 +98,8 @@ function sendCurlRequest($request_action, $request_type, $request_url, $request_
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSLCERT, $cert);
         curl_setopt($ch, CURLOPT_SSLKEY, $key);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $put_connection_timeout);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $put_operation_timeout);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $request_data);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
@@ -101,8 +121,8 @@ function sendCurlRequest($request_action, $request_type, $request_url, $request_
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSLCERT, $cert);
         curl_setopt($ch, CURLOPT_SSLKEY, $key);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $patch_connection_timeout);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $patch_operation_timeout);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $request_data);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
@@ -124,8 +144,8 @@ function sendCurlRequest($request_action, $request_type, $request_url, $request_
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSLCERT, $cert);
         curl_setopt($ch, CURLOPT_SSLKEY, $key);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $delete_connection_timeout);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $delete_operation_timeout);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);

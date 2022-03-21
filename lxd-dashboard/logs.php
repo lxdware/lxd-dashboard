@@ -51,11 +51,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <!-- Sidebar -->
     <ul class="navbar-nav bg-dark sidebar sidebar-dark accordion sidebar-divider-right" id="accordionSidebar">
-      
-      <div id="sidebarLinks"></div>
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
+        <div class="sidebar-brand-icon rotate-n-0">
+          <img src="assets/images/logo-dark.svg" style="width: 2rem;"></img>
+          <!-- <i class="fas fa-cube" style="width: 2rem;"></i> -->
+        </div>
+        <div class="sidebar-brand-text mx-3">LXDWARE</div>
+      </a>
 
       <!-- Divider -->
-      <hr class="sidebar-divider d-none d-md-block"> 
+      <hr class="sidebar-divider">
+
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item">
+        <a class="nav-link" href="remotes.php">
+          <i class="fas fa-fw fa-server"></i>
+          <span>Hosts</span></a>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider d-none d-md-block">  
 
       <!-- Sidebar Toggler (Sidebar) -->
       <div class="text-center d-none d-md-inline">
@@ -63,7 +80,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </div>
     </ul>
     <!-- End of Sidebar -->
-
 
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
@@ -79,43 +95,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <i class="fa fa-bars"></i>
           </button>
 
-          <!-- Topbar Notification -->
-          <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-            <ul class="navbar-nav ml-auto"> 
-  
-              <li class="nav-item dropdown no-arrow" id="notificationArea" style="display: none;">
-                <div class="nav-link dropdown-toggle">
-                  <span id="notification" class="mr-2 d-none d-lg-inline text-danger">Notification</span>
-                </div>
-              </li>
-              
-            </ul>
-          </div>
-
           <!-- Topbar Navbar -->
-          <ul class="navbar-nav ml-auto"> 
+          <ul class="navbar-nav ml-auto">
 
-            <li class="nav-item dropdown">
-              <label class="h6 mt-4 mr-2 ml-4">Host: </label>
-            </li>
-            <li class="nav-item dropdown">
-              <div class="input-group mt-3">
-                <select class="form-control" id="remoteListNav" style="width:150px;" onchange="location = this.value;">
-                </select>
-              </div>
-            </li>
-
-            <li class="nav-item dropdown">
-              <label class="h6 mt-4 mr-2 ml-4">Project: </label>
-            </li>
-            <li class="nav-item dropdown">
-              <div class="input-group mt-3">
-                <select class="form-control" id="projectListNav" style="width:150px;" onchange="location = this.value;">
-                </select>
-              </div>
-            </li>
-
-            <!-- Nav Divider -->
             <div class="topbar-divider d-none d-sm-block"></div>
 
             <!-- Nav Item - User Information -->
@@ -164,13 +146,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <div class="row align-items-center justify-content-between mt-n5 ml-n5 mr-n5 bg-dark pb-6">
                   <div class="col-auto mt-4 ml-3">
                     <div class="page-header-subtitle">
-                      <a href="#" id="remoteBreadCrumb"></a>
+                      <span id="remoteBreadCrumb">LXD Dashboard</span>
                     </div>
                     <h2 class="page-header-title mt-2">
-                      OPERATIONS
+                      LOGS
                     </h2>
                     <div class="page-header-subtitle">
-                      Manage LXD host operations
+                      View LXD Dashboard event logs
                     </div>
                   </div>
                   <div class="col-12 col-xl-auto mt-4">
@@ -187,12 +169,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           <div class="row mt-n5 ml-2 mr-2">
 
             <div class="col-12 mt-n3">
-              <!-- Operations List -->
+              <!-- Logs List -->
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold">
-                    <span class="ml-1">Operations</span>
+                    <span class="ml-1">Logs</span>
                   </h6>
                   <div class="dropdown no-arrow">
                     <a class="dropdown-toggle mr-2" href="#" onclick="reloadPageContent()" title="Refresh" aria-hidden="true">
@@ -202,12 +184,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <!-- Card Body -->
                 <div class="card-body">
                   <div class="table-responsive">
-                    <table class="table" id="operationListTable" width="100%" cellspacing="0">
+                    <table class="table" id="eventLogTable" width="100%" cellspacing="0">
                     </table>
                   </div>
                 </div>
               </div>
-              <!-- End Operations List -->
+              <!-- End Logs List -->
             </div>
 
           </div>
@@ -238,35 +220,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
-
-  <!-- View Operation Modal-->
-  <div class="modal fade" id="viewOperationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">View Operation</h5>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <label class="col-8 col-form-label" id="operationNameEditInput"></label>
-              <div class="col-12">
-                <div class="form-group text-right">
-                  <pre>
-                    <textarea name="json" class="form-control" id="jsonEditInput" rows="16" ></textarea>
-                  </pre>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-          </div>
-      </div>
-    </div>
-  </div>
 
   <!-- About Modal-->
   <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -309,11 +262,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 </body>
 
 <script>
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const remoteId = urlParams.get('remote'); 
-  const projectName = urlParams.get('project');
-  var reloadTime = 3000;
+  var reloadTime = 5000;
 
   function logout(){
     $.get("./backend/aaa/authentication.php?action=deauthenticateUser", function (data) {
@@ -325,29 +274,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     });
   }
 
-  function operationStatusCheck(){
-    clearTimeout(operationTimeout);
-    //check to see if there are any running operations
-    $.get("./backend/lxd/operations.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=displayOperationStatus", function (data) {
-      //Check to see if we have running operations
-      if (data) {
-        //Display notification area if there are running tasks
-        $('#notificationArea').show();
-        $('#notification').text("Notice: " + data);
-        //Set the page to check operations again in 2 seconds
-        operationTimeout = setTimeout(() => { operationStatusCheck(); }, 2000);
-      }
-      else {
-        //Hide notification area if no running tasks
-        $('#notificationArea').hide();
-        $('#notification').text("");
-        //Set the page to check operations again in 4 seconds
-        operationTimeout = setTimeout(() => { operationStatusCheck(); }, 4000);
-      }
-    });
-  }
-
-  function reloadPageContent(){
+  function reloadPageContent() {
 
     clearTimeout(pageReloadTimeout);
 
@@ -360,7 +287,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       }
     });
 
-    $('#operationListTable').DataTable().ajax.reload(null, false);
+    $('#eventLogTable').DataTable().ajax.reload(null, false);
 
     //Set reload page content
     pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, reloadTime);
@@ -371,64 +298,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     //Display current logged in username
     $("#username").load("./backend/admin/settings.php?action=displayUsername");
 
-    $('#operationListTable').DataTable( {
-      ajax: "./backend/lxd/operations.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listOperations",
+    $('#eventLogTable').DataTable( {
+      ajax: "./backend/admin/logs.php?action=listLogEvents",
       columns: [
         {},
         { title: "ID" },
-        { title: "Class" },
-        { title: "Description" },
-        { title: "Status" },
-        { title: "Created" },
-        { title: "Cancelable" },
-        { title: "Action" }
+        { title: "Control" },
+        { title: "RemoteID" },
+        { title: "Project" },
+        { title: "Object" },
+        { title: "Status Code" },
+        { title: "Message" },
+        { title: "Hostname" },
+        { title: "UserID" },
+        { title: "Date" }
       ],
-      order: [],
+      order: [1, "desc" ],
       columnDefs: [
         { targets: 0, orderable: false, width: "25px" }
       ]
     });
 
-    //Check for any running operations
-    operationTimeout = setTimeout(() => { operationStatusCheck(); }, 1000);
-
     //Set reload page content
     $.get("./backend/admin/settings.php?action=retrievePageRefreshRateValues", function (data) {
       operationData = JSON.parse(data);
-      if (operationData.operations_page_rate >= 1)
-        reloadTime = operationData.operations_page_rate * 1000;
+      if (operationData.logs_page_rate >= 1)
+        reloadTime = operationData.logs_page_rate * 1000;
       pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, reloadTime);
     });
 
   }
 
-  function loadOperationJson(operationToLoad){
-    console.log("Info: loading operation " + operationToLoad);
-    $.get("./backend/lxd/operations.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&operation=" + encodeURI(operationToLoad) + "&action=loadOperation", function (data) {
-      //Sync type
-      var operationData = JSON.parse(data);
-      console.log(operationData);
-      if (operationData.error_code >= 400){
-        alert(operationData.error);
-      }
-      $("#operationNameEditInput").text("Name: " + operationToLoad);
-      $("#jsonEditInput").val(JSON.stringify(operationData.metadata, null, 2));
-      $("#viewOperationModal").modal('show');
-    });
-  }
 
-  function deleteOperation(operationToDelete){
-    console.log("Info: deleting operation " + operationToDelete);
-    $.get("./backend/lxd/operations.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&operation=" + encodeURI(operationToDelete) + "&action=deleteOperation",  function (data) {
-      //Sync type
-      var operationData = JSON.parse(data);
-      console.log(operationData);
-      if (operationData.error_code >= 400){
-        alert(operationData.error);
-      }
-      setTimeout(() => { reloadPageContent(); }, 1000);
-    });
-  }
 
   function setSidebarToggleValue(){
     sidebarState = localStorage.getItem('sidebarState');
@@ -448,9 +349,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       $(".sidebar").hasClass("toggled") && $(".sidebar .collapse").collapse("hide")
     }
   }
-  
-  applySidebarToggleValue();
 
+  applySidebarToggleValue();
+  
   $(document).ready(function(){
 
     //Check Authorization
@@ -462,34 +363,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       }
     });
 
-     //Load in the sidebar
-    $("#sidebarLinks").load("./sidebar.php?version=3.0");
+    //Load the card contents
+    loadPageContent();
     
-    //Setup Page Breadcrumb Links/Information
-    $('#remoteBreadCrumb').load("./backend/lxd/remote-breadcrumb.php?remote=" + encodeURI(remoteId));
-    $('#remoteBreadCrumb').attr("href", "remotes-single.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName));
-
-    //Validate remote host connection returns 200 status
-    $.get("./backend/lxd/remotes-single.php?remote=" + encodeURI(remoteId) + "&action=validateRemoteConnection", function (data) {
-      operationData = JSON.parse(data);
-      console.log(operationData);
-      if (operationData.status_code == 200) {
-        //Set top navbar dropdowns
-        $("#remoteListNav").load("./backend/lxd/remotes.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listRemotesForSelectOption");
-        $("#projectListNav").load("./backend/lxd/projects.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listProjectsForSelectOption");
-
-        //Load Page Content
-        loadPageContent();
-      }
-      else {
-        alert("Unable to connect to remote host. HTTP status code: " + operationData.status_code);
-      }
-    });
-
     //Load the about info for the about modal
     $.get("./backend/config/about.php", function (data) {
       $("#about").html(data);
-    });
+    });    
 
   });
 

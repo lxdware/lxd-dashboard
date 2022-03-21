@@ -133,6 +133,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                   <i class="fas fa-cog fa-sm fa-fw mr-2 text-gray-400"></i>
                   Settings
                 </a>
+                <a class="dropdown-item" href="logs.php">
+                  <i class="fas fa-history fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logs
+                </a>
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#aboutModal">
                   <i class="fas fa-info-circle fa-sm fa-fw mr-2 text-gray-400"></i>
                   About
@@ -898,6 +902,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   const projectName = urlParams.get('project');
   var selectList = "";
   var imageToUpdate = "";
+  var reloadTime = 5000;
 
   function logout(){
     $.get("./backend/aaa/authentication.php?action=deauthenticateUser", function (data) {
@@ -954,7 +959,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       }
     });
 
-    pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, 7000);
+    //Set reload page content
+    pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, reloadTime);
   }
   
   function loadPageContent(){
@@ -989,8 +995,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     //Check for any running operations
     operationTimeout = setTimeout(() => { operationStatusCheck(); }, 1000);
 
-    //Reload page content in 7 secondsons
-    pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, 7000);
+    //Set reload page content
+    $.get("./backend/admin/settings.php?action=retrievePageRefreshRateValues", function (data) {
+      operationData = JSON.parse(data);
+      if (operationData.images_page_rate >= 1)
+        reloadTime = operationData.images_page_rate * 1000;
+      pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, reloadTime);
+    });
+
   }
     
   function refreshImage(imageFingerprint){
@@ -1123,12 +1135,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     $('#remoteBreadCrumb').load("./backend/lxd/remote-breadcrumb.php?remote=" + encodeURI(remoteId));
     $('#remoteBreadCrumb').attr("href", "remotes-single.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName));
 
-    //Set top navbar dropdowns
-    $("#remoteListNav").load("./backend/lxd/remotes.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listRemotesForSelectOption");
-    $("#projectListNav").load("./backend/lxd/projects.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listProjectsForSelectOption");
+    //Validate remote host connection returns 200 status
+    $.get("./backend/lxd/remotes-single.php?remote=" + encodeURI(remoteId) + "&action=validateRemoteConnection", function (data) {
+      operationData = JSON.parse(data);
+      console.log(operationData);
+      if (operationData.status_code == 200) {
+        //Set top navbar dropdowns
+        $("#remoteListNav").load("./backend/lxd/remotes.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listRemotesForSelectOption");
+        $("#projectListNav").load("./backend/lxd/projects.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listProjectsForSelectOption");
 
-    //Load the card contents
-    loadPageContent();
+        //Load Page Content
+        loadPageContent();
+      }
+      else {
+        alert("Unable to connect to remote host. HTTP status code: " + operationData.status_code);
+      }
+    });
 
     //Load the about info for the about modal
     $.get("./backend/config/about.php", function (data) {

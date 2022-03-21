@@ -307,6 +307,12 @@ if (isset($_SESSION['username'])) {
 
       echo json_encode($arr);
       break;
+
+    case "validateRemoteConnection":
+      $url = $base_url. "/1.0";
+      $results = sendCurlRequest($action, "GET", $url);
+      echo $results;
+      break;
       
   }
 

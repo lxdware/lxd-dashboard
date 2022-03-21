@@ -25,7 +25,17 @@ if (!isset($_SESSION)) {
 //Require code from lxd-dashboard/backend/config/db.php
 require_once('../config/db.php');
 
-function logEvent($action, $remote, $project, $object, $status_code, $message){
-  //Will be used in future releases with remote database option
+function logEvent($action, $remote, $project, $object, $status_code, $message, $user_id = 0){
+  $logs_enabled_value = retrievePreference("logs_enabled");
+
+  if ($logs_enabled_value == 'true'){
+    $hostname = gethostname();
+
+    if ($user_id == 0){
+      $user_id = (!empty($_SESSION['user_id'])) ? $_SESSION['user_id'] : 0;
+    }
+    
+    $event_added = addLogEvent($action, $remote, $project, $object, $status_code, $message, $hostname, $user_id);
+  }
 }
 ?>

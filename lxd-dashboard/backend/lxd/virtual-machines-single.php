@@ -1303,7 +1303,7 @@ if (isset($_SESSION['username'])) {
       $url = $base_url . "/1.0/virtual-machines/" . $instance . "/exec?project=" . $project;
 
       //Write CPU and memory percentage to a file and retrieve the contents
-      $command = "echo $(top -bn 2 -d 1 | grep Cpu |tail -n 1 | awk -F, '{ print $4 }' | awk '{ print $1  }'), $(free | grep Mem | awk '{ print  $3 / $2 * 100 }') > /tmp/lxc_stats";
+      $command = "echo $(awk -v a=\\\"$(awk '/cpu /{print $2+$4,$2+$4+$5}' /proc/stat; sleep 1)\\\" '/cpu /{split(a,b, \\\" \\\"); print 100*($2+$4-b[1])/($2+$4+$5-b[2])}'  /proc/stat), $(free | grep Mem | awk '{ print  $3 / $2 * 100 }') > /tmp/lxc_stats";
       $data = '{ "command": ["/bin/sh", "-c", "' . $command . '"], "environment": {}, "wait-for-websocket": false, "record-output": false, "interactive": false, "width": 80, "height": 25, "user": 0, "group": 0, "cwd": "/"}';
       $results = sendCurlRequest($action, "POST", $url, $data);
       
@@ -1314,7 +1314,7 @@ if (isset($_SESSION['username'])) {
       $results = explode(",", $results);
       
       if (is_numeric($results[0])){
-        $results[0] = number_format(100-$results[0],1);
+        $results[0] = number_format($results[0],1);
       }
       else{
         $results[0] = null;
@@ -1328,16 +1328,19 @@ if (isset($_SESSION['username'])) {
       break;
 
     case "retrieveHostAndPort":
-      $host = retrieveHostName($remote);
-      $port = retrieveHostPort($remote);
-      $external_host = retrieveExternalHostName($remote);
-      $external_port = retrieveExternalHostPort($remote);
-      if (!empty($external_host) && !empty($external_port)){
-        $results =  '{"host": "'.$external_host.'", "port": "'.$external_port.'"}';
+      $hostname = retrieveExternalHostName($remote);
+      $port = retrieveExternalHostPort($remote);
+
+      if (empty($hostname)){
+        $hostname = retrieveHostName($remote);
       }
-      else {
-        $results =  '{"host": "'.$host.'", "port": "'.$port.'"}';
+
+      if (empty($port)){
+        $port = retrieveHostPort($remote);
       }
+      
+      $results =  '{"host": "'.$hostname.'", "port": "'.$port.'"}';
+      
       echo $results;
       break;
 

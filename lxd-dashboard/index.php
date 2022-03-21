@@ -78,7 +78,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <div class="pt-5">
                   <div class="pl-4">
                     <p class="h5 text-gray-900">Manage remote LXD servers with this open source LXD dashboard.</p>
-                    <p class="h5 text-gray-900 pt-3">For instructions on using the dashboard, visit <a href="https://lxdware.com" target="_blank">https://lxdware.com</a>.</p>
+                    <p class="h5 text-gray-900 pt-3">For instructions on using the LXD Dashboard, visit <a href="https://lxdware.com" target="_blank">https://lxdware.com</a>.</p>
                   </div>
                 </div>
                   

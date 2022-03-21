@@ -114,6 +114,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                   <i class="fas fa-cog fa-sm fa-fw mr-2 text-gray-400"></i>
                   Settings
                 </a>
+                <a class="dropdown-item" href="logs.php">
+                  <i class="fas fa-history fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logs
+                </a>
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#aboutModal">
                   <i class="fas fa-info-circle fa-sm fa-fw mr-2 text-gray-400"></i>
                   About

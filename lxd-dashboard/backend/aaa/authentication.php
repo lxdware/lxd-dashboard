@@ -72,6 +72,69 @@ switch ($action) {
       //Store user's controls in a SESSION array
       $_SESSION['controls'] = $controls;
 
+      //Store preference values in SESSION array
+      $preferences = retrieveTableRows("lxd_preferences");
+      foreach ($preferences as $preference){
+        //API Preferences
+        if ($preference['name'] == "get_connection_timeout")
+          $_SESSION['get_connection_timeout'] = $preference['value'];
+        if ($preference['name'] == "get_operation_timeout")
+          $_SESSION['get_operation_timeout'] = $preference['value'];
+        if ($preference['name'] == "post_connection_timeout")
+          $_SESSION['post_connection_timeout'] = $preference['value'];
+        if ($preference['name'] == "post_operation_timeout")
+          $_SESSION['post_operation_timeout'] = $preference['value'];
+        if ($preference['name'] == "patch_connection_timeout")
+          $_SESSION['patch_connection_timeout'] = $preference['value'];
+        if ($preference['name'] == "patch_operation_timeout")
+          $_SESSION['patch_operation_timeout'] = $preference['value'];
+        if ($preference['name'] == "put_connection_timeout")
+          $_SESSION['put_connection_timeout'] = $preference['value'];
+        if ($preference['name'] == "put_operation_timeout")
+          $_SESSION['put_operation_timeout'] = $preference['value'];
+        if ($preference['name'] == "delete_connection_timeout")
+          $_SESSION['delete_connection_timeout'] = $preference['value'];
+        if ($preference['name'] == "delete_operation_timeout")
+          $_SESSION['delete_operation_timeout'] = $preference['value'];
+        //Page Refresh Preferences
+        if ($preference['name'] == "certificates_page_rate")
+          $_SESSION['certificates_page_rate'] = $preference['value'];
+        if ($preference['name'] == "cluster_members_page_rate")
+          $_SESSION['cluster_members_page_rate'] = $preference['value'];
+        if ($preference['name'] == "containers_page_rate")
+          $_SESSION['containers_page_rate'] = $preference['value'];
+        if ($preference['name'] == "containers_single_page_rate")
+          $_SESSION['containers_single_page_rate'] = $preference['value'];
+        if ($preference['name'] == "images_page_rate")
+          $_SESSION['images_page_rate'] = $preference['value'];
+        if ($preference['name'] == "logs_page_rate")
+          $_SESSION['logs_page_rate'] = $preference['value'];
+        if ($preference['name'] == "network_acls_page_rate")
+          $_SESSION['network_acls_page_rate'] = $preference['value'];
+        if ($preference['name'] == "networks_page_rate")
+          $_SESSION['networks_page_rate'] = $preference['value'];
+        if ($preference['name'] == "operations_page_rate")
+          $_SESSION['operations_page_rate'] = $preference['value'];
+        if ($preference['name'] == "profiles_page_rate")
+          $_SESSION['profiles_page_rate'] = $preference['value'];
+        if ($preference['name'] == "projects_page_rate")
+          $_SESSION['projects_page_rate'] = $preference['value'];
+        if ($preference['name'] == "remotes_single_page_rate")
+          $_SESSION['remotes_single_page_rate'] = $preference['value'];
+        if ($preference['name'] == "remotes_page_rate")
+          $_SESSION['remotes_page_rate'] = $preference['value'];
+        if ($preference['name'] == "simplestreams_page_rate")
+          $_SESSION['simplestreams_page_rate'] = $preference['value'];
+        if ($preference['name'] == "storage_pools_page_rate")
+          $_SESSION['storage_pools_page_rate'] = $preference['value'];
+        if ($preference['name'] == "storage_volumes_page_rate")
+          $_SESSION['storage_volumes_page_rate'] = $preference['value'];
+        if ($preference['name'] == "virtual_machines_page_rate")
+          $_SESSION['virtual_machines_page_rate'] = $preference['value'];
+        if ($preference['name'] == "virtual_machines_single_page_rate")
+          $_SESSION['virtual_machines_single_page_rate'] = $preference['value'];
+      }
+
       $results = '{"status": "Ok", "status_code": 200, "metadata": "{}"}';
     }
     else {
@@ -90,6 +153,7 @@ switch ($action) {
 
   case "deauthenticateUser":
     $username = $_SESSION['username'];
+    $user_id = $_SESSION['user_id'];
     //Clear the SESSION variables
     $_SESSION = array();
     if (session_destroy())
@@ -100,7 +164,7 @@ switch ($action) {
     //Send event to accounting
     $event = json_decode($results, true);
     $object = $username;
-    logEvent($action, $remote, $project, $object, $event['status_code'], $event['status']);
+    logEvent($action, $remote, $project, $object, $event['status_code'], $event['status'], $user_id);
 
     break;
     

@@ -24,13 +24,43 @@ if (!isset($_SESSION)) {
 
 //Declare and instantiate GET variables
 $action = (isset($_GET['action'])) ? filter_var(urldecode($_GET['action']), FILTER_SANITIZE_STRING) : "";
+$certificates_page_rate = (isset($_GET['certificates_page_rate'])) ? filter_var(urldecode($_GET['certificates_page_rate']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$cluster_members_page_rate = (isset($_GET['cluster_members_page_rate'])) ? filter_var(urldecode($_GET['cluster_members_page_rate']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$containers_page_rate = (isset($_GET['containers_page_rate'])) ? filter_var(urldecode($_GET['containers_page_rate']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$containers_single_page_rate = (isset($_GET['containers_single_page_rate'])) ? filter_var(urldecode($_GET['containers_single_page_rate']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$delete_connection_timeout = (isset($_GET['delete_connection_timeout'])) ? filter_var(urldecode($_GET['delete_connection_timeout']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$delete_operation_timeout = (isset($_GET['delete_operation_timeout'])) ? filter_var(urldecode($_GET['delete_operation_timeout']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
 $description = (isset($_GET['description'])) ? filter_var(urldecode($_GET['description']), FILTER_SANITIZE_STRING) : "";
+$get_connection_timeout = (isset($_GET['get_connection_timeout'])) ? filter_var(urldecode($_GET['get_connection_timeout']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "2";
+$get_operation_timeout = (isset($_GET['get_operation_timeout'])) ? filter_var(urldecode($_GET['get_operation_timeout']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$images_page_rate = (isset($_GET['images_page_rate'])) ? filter_var(urldecode($_GET['images_page_rate']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$logs_enabled_status = (isset($_GET['logs_enabled_status'])) ? filter_var(urldecode($_GET['logs_enabled_status']), FILTER_SANITIZE_STRING) : "";
+$logs_page_rate = (isset($_GET['logs_page_rate'])) ? filter_var(urldecode($_GET['logs_page_rate']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$logs_retrieval_number = (isset($_GET['logs_retrieval_number'])) ? filter_var(urldecode($_GET['logs_retrieval_number']), FILTER_SANITIZE_NUMBER_INT) : "";
 $id = (isset($_GET['id'])) ? filter_var(urldecode($_GET['id']), FILTER_SANITIZE_NUMBER_INT) : "";
 $group_id = (isset($_GET['group_id'])) ? filter_var(urldecode($_GET['group_id']), FILTER_SANITIZE_NUMBER_INT) : "";
 $name = (isset($_GET['name'])) ? filter_var(urldecode($_GET['name']), FILTER_SANITIZE_STRING) : "";
+$network_acls_page_rate = (isset($_GET['network_acls_page_rate'])) ? filter_var(urldecode($_GET['network_acls_page_rate']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$networks_page_rate = (isset($_GET['networks_page_rate'])) ? filter_var(urldecode($_GET['networks_page_rate']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$operations_page_rate = (isset($_GET['operations_page_rate'])) ? filter_var(urldecode($_GET['operations_page_rate']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$patch_connection_timeout = (isset($_GET['patch_connection_timeout'])) ? filter_var(urldecode($_GET['patch_connection_timeout']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$patch_operation_timeout = (isset($_GET['patch_operation_timeout'])) ? filter_var(urldecode($_GET['patch_operation_timeout']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$post_connection_timeout = (isset($_GET['post_connection_timeout'])) ? filter_var(urldecode($_GET['post_connection_timeout']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$post_operation_timeout = (isset($_GET['post_operation_timeout'])) ? filter_var(urldecode($_GET['post_operation_timeout']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$profiles_page_rate = (isset($_GET['profiles_page_rate'])) ? filter_var(urldecode($_GET['profiles_page_rate']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
 $project = (isset($_GET['project'])) ? filter_var(urldecode($_GET['project']), FILTER_SANITIZE_STRING) : "";
+$projects_page_rate = (isset($_GET['projects_page_rate'])) ? filter_var(urldecode($_GET['projects_page_rate']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$put_connection_timeout = (isset($_GET['put_connection_timeout'])) ? filter_var(urldecode($_GET['put_connection_timeout']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$put_operation_timeout = (isset($_GET['put_operation_timeout'])) ? filter_var(urldecode($_GET['put_operation_timeout']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
 $remote = (isset($_GET['remote'])) ? filter_var(urldecode($_GET['remote']), FILTER_SANITIZE_NUMBER_INT) : "";
+$remotes_single_page_rate = (isset($_GET['remotes_single_page_rate'])) ? filter_var(urldecode($_GET['remotes_single_page_rate']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$remotes_page_rate = (isset($_GET['remotes_page_rate'])) ? filter_var(urldecode($_GET['remotes_page_rate']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
 $role_id = (isset($_GET['role_id'])) ? filter_var(urldecode($_GET['role_id']), FILTER_SANITIZE_NUMBER_INT) : "";
+$simplestreams_page_rate = (isset($_GET['simplestreams_page_rate'])) ? filter_var(urldecode($_GET['simplestreams_page_rate']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$storage_pools_page_rate = (isset($_GET['storage_pools_page_rate'])) ? filter_var(urldecode($_GET['storage_pools_page_rate']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$storage_volumes_page_rate = (isset($_GET['storage_volumes_page_rate'])) ? filter_var(urldecode($_GET['storage_volumes_page_rate']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$virtual_machines_page_rate = (isset($_GET['virtual_machines_page_rate'])) ? filter_var(urldecode($_GET['virtual_machines_page_rate']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
+$virtual_machines_single_page_rate = (isset($_GET['virtual_machines_single_page_rate'])) ? filter_var(urldecode($_GET['virtual_machines_single_page_rate']), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : "5";
 
 //Declare and instantiate POST variables
 $email = (isset($_POST['email'])) ? filter_var(urldecode($_POST['email']), FILTER_SANITIZE_STRING) : "";
@@ -404,6 +434,53 @@ if (isset($_SESSION['username'])) {
         echo '{ "data": [] }';
       }   
       break;
+   
+    case "retrieveCurlTimeoutValues":
+      //Retrieve SESSION variables and return JSON
+      $arr = array();
+      $arr['get_connection_timeout'] = $_SESSION['get_connection_timeout'];
+      $arr['get_operation_timeout'] = $_SESSION['get_operation_timeout'];
+      $arr['post_connection_timeout'] = $_SESSION['post_connection_timeout'];
+      $arr['post_operation_timeout'] = $_SESSION['post_operation_timeout'];
+      $arr['patch_connection_timeout'] = $_SESSION['patch_connection_timeout'];
+      $arr['patch_operation_timeout'] = $_SESSION['patch_operation_timeout'];
+      $arr['put_connection_timeout'] = $_SESSION['put_connection_timeout'];
+      $arr['put_operation_timeout'] = $_SESSION['put_operation_timeout'];
+      $arr['delete_connection_timeout'] = $_SESSION['delete_connection_timeout'];
+      $arr['delete_operation_timeout'] = $_SESSION['delete_operation_timeout'];
+      echo json_encode($arr);
+      break;
+    
+    case "retrieveLogPreferences":
+      $arr = array();
+      $arr['logs_enabled'] = retrievePreference("logs_enabled");
+      $arr['logs_retrieval'] = intval(retrievePreference("logs_retrieval"));
+      echo json_encode($arr);
+      break;
+
+    case "retrievePageRefreshRateValues":
+      //Retrieve SESSION variables and return JSON
+      $arr = array();
+      $arr['certificates_page_rate'] = $_SESSION['certificates_page_rate'];
+      $arr['cluster_members_page_rate'] = $_SESSION['cluster_members_page_rate'];
+      $arr['containers_page_rate'] = $_SESSION['containers_page_rate'];
+      $arr['containers_single_page_rate'] = $_SESSION['containers_single_page_rate'];
+      $arr['images_page_rate'] = $_SESSION['images_page_rate'];
+      $arr['logs_page_rate'] = $_SESSION['logs_page_rate'];
+      $arr['network_acls_page_rate'] = $_SESSION['network_acls_page_rate'];
+      $arr['networks_page_rate'] = $_SESSION['networks_page_rate'];
+      $arr['operations_page_rate'] = $_SESSION['operations_page_rate'];
+      $arr['profiles_page_rate'] = $_SESSION['profiles_page_rate'];
+      $arr['projects_page_rate'] = $_SESSION['projects_page_rate'];
+      $arr['remotes_single_page_rate'] = $_SESSION['remotes_single_page_rate'];
+      $arr['remotes_page_rate'] = $_SESSION['remotes_page_rate'];
+      $arr['simplestreams_page_rate'] = $_SESSION['simplestreams_page_rate'];
+      $arr['storage_pools_page_rate'] = $_SESSION['storage_pools_page_rate'];
+      $arr['storage_volumes_page_rate'] = $_SESSION['storage_volumes_page_rate'];
+      $arr['virtual_machines_page_rate'] = $_SESSION['virtual_machines_page_rate'];
+      $arr['virtual_machines_single_page_rate'] = $_SESSION['virtual_machines_single_page_rate'];
+      echo json_encode($arr);
+      break;
 
     case "removeGroupFromUser":
       if (validateAuthorization($action)) {
@@ -449,6 +526,219 @@ if (isset($_SESSION['username'])) {
       $object = $id . " - " . $role_id;
       logEvent($action, $remote, $project, $object, $event['status_code'], $event['status']);
 
+      break;
+
+    case "updateLogPreferences":
+      if (validateAuthorization($action)) {
+        if ($logs_enabled_status == "true" || $logs_enabled_status == "false"){
+          $logs_enabled_status_updated = updatePreference("logs_enabled", $logs_enabled_status);
+        }
+        
+        if (is_numeric($logs_retrieval_number) && $logs_retrieval_number >= 1){
+          $logs_retrieval_number_updated = updatePreference("logs_retrieval", $logs_retrieval_number);
+        }
+        
+        if ($logs_enabled_status_updated && $logs_retrieval_number_updated)
+          $results = '{"status": "Ok", "status_code": 200, "metadata": {"status": "Record added"}}';
+        else 
+          $results = '{"status": "Bad Request", "status_code": 400, "metadata": {"error": "There was an error while updating the lxd_preferences table"}}';
+        
+      }
+      else {
+        $results = '{"status": "Forbidden", "status_code": 403, "metadata": {"error": "You are not authorized to execute this action"}}';
+      }
+
+      echo $results;
+
+      //Send event to accounting
+      $event = json_decode($results, true);
+      $object = "";
+      logEvent($action, $remote, $project, $object, $event['status_code'], $event['status']);
+
+      break;
+
+    case "updateOutboundRequestPreferences":
+      if (validateAuthorization($action)) {
+        
+        if (is_numeric($get_connection_timeout) && $get_connection_timeout >= 1)
+          $get_connection_timeout_updated = updatePreference("get_connection_timeout", $get_connection_timeout);
+        if ($get_connection_timeout_updated)
+          $_SESSION['get_connection_timeout'] = $get_connection_timeout;
+
+        if (is_numeric($get_operation_timeout) && $get_operation_timeout >= 1)
+          $get_operation_timeout_updated = updatePreference("get_operation_timeout", $get_operation_timeout);
+        if ($get_operation_timeout_updated)
+          $_SESSION['get_operation_timeout'] = $get_operation_timeout;
+        
+        if (is_numeric($post_connection_timeout) && $post_connection_timeout >= 1)
+          $post_connection_timeout_updated = updatePreference("post_connection_timeout", $post_connection_timeout);
+        if ($post_connection_timeout_updated)
+          $_SESSION['post_connection_timeout'] = $post_connection_timeout;
+        
+        if (is_numeric($post_operation_timeout) && $post_operation_timeout >= 1)
+          $post_operation_timeout_updated = updatePreference("post_operation_timeout", $post_operation_timeout);
+        if ($post_operation_timeout_updated)
+          $_SESSION['post_operation_timeout'] = $post_operation_timeout;
+        
+        if (is_numeric($patch_connection_timeout) && $patch_connection_timeout >= 1)
+          $patch_connection_timeout_updated = updatePreference("patch_connection_timeout", $patch_connection_timeout);
+        if ($patch_connection_timeout_updated)
+          $_SESSION['patch_connection_timeout'] = $patch_connection_timeout;
+        
+        if (is_numeric($patch_operation_timeout) && $patch_operation_timeout >= 1)
+          $patch_operation_timeout_updated = updatePreference("patch_operation_timeout", $patch_operation_timeout);
+        if ($patch_operation_timeout_updated)
+          $_SESSION['patch_operation_timeout'] = $patch_operation_timeout;
+
+        if (is_numeric($put_connection_timeout) && $put_connection_timeout >= 1)
+          $put_connection_timeout_updated = updatePreference("put_connection_timeout", $put_connection_timeout);
+        if ($put_connection_timeout_updated)
+          $_SESSION['put_connection_timeout'] = $put_connection_timeout;
+
+        if (is_numeric($put_operation_timeout) && $put_operation_timeout >= 1)
+          $put_operation_timeout_updated = updatePreference("put_operation_timeout", $put_operation_timeout);
+        if ($put_operation_timeout_updated)
+          $_SESSION['put_operation_timeout'] = $put_operation_timeout;
+
+        if (is_numeric($delete_connection_timeout) && $delete_connection_timeout >= 1)
+          $delete_connection_timeout_updated = updatePreference("delete_connection_timeout", $delete_connection_timeout);
+        if ($delete_connection_timeout_updated)
+          $_SESSION['delete_connection_timeout'] = $delete_connection_timeout;
+
+        if (is_numeric($delete_operation_timeout) && $delete_operation_timeout >= 1)
+          $delete_operation_timeout_updated = updatePreference("delete_operation_timeout", $delete_operation_timeout);
+        if ($delete_operation_timeout_updated)
+          $_SESSION['delete_operation_timeout'] = $delete_operation_timeout;
+
+        
+        if ($get_connection_timeout_updated && $get_operation_timeout_updated && $post_connection_timeout_updated && $post_operation_timeout_updated && $patch_connection_timeout_updated && $patch_operation_timeout_updated && $put_connection_timeout_updated && $put_operation_timeout_updated && $delete_connection_timeout_updated && $delete_operation_timeout_updated)
+          $results = '{"status": "Ok", "status_code": 200, "metadata": {"status": "Record added"}}';
+        else 
+          $results = '{"status": "Bad Request", "status_code": 400, "metadata": {"error": "There was an error while updating the lxd_preferences table"}}';
+        
+      }
+      else {
+        $results = '{"status": "Forbidden", "status_code": 403, "metadata": {"error": "You are not authorized to execute this action"}}';
+      }
+
+      echo $results;
+
+      //Send event to accounting
+      $event = json_decode($results, true);
+      $object = "";
+      logEvent($action, $remote, $project, $object, $event['status_code'], $event['status']);
+      break;
+
+    case "updateRefreshRatePreferences":
+      if (validateAuthorization($action)) {
+
+        if (is_numeric($certificates_page_rate) && $certificates_page_rate >= 1)
+          $certificates_page_rate_updated = updatePreference("certificates_page_rate", $certificates_page_rate);
+        if ($certificates_page_rate_updated)
+          $_SESSION['certificates_page_rate'] = $certificates_page_rate;
+
+        if (is_numeric($cluster_members_page_rate) && $cluster_members_page_rate >= 1)
+          $cluster_members_page_rate_updated = updatePreference("cluster_members_page_rate", $cluster_members_page_rate);
+        if ($cluster_members_page_rate_updated)
+          $_SESSION['cluster_members_page_rate'] = $cluster_members_page_rate;
+
+        if (is_numeric($containers_page_rate) && $containers_page_rate >= 1)
+          $containers_page_rate_updated = updatePreference("containers_page_rate", $containers_page_rate);
+        if ($containers_page_rate_updated)
+          $_SESSION['containers_page_rate'] = $containers_page_rate;
+
+        if (is_numeric($containers_single_page_rate) && $containers_single_page_rate >= 1)
+          $containers_single_page_rate_updated = updatePreference("containers_single_page_rate", $containers_single_page_rate);
+        if ($containers_single_page_rate_updated  )
+          $_SESSION['containers_single_page_rate'] = $containers_single_page_rate;
+
+        if (is_numeric($images_page_rate) && $images_page_rate >= 1)
+          $images_page_rate_updated = updatePreference("images_page_rate", $images_page_rate);
+        if ($images_page_rate_updated)
+          $_SESSION['images_page_rate'] = $images_page_rate;
+
+        if (is_numeric($logs_page_rate) && $logs_page_rate >= 1)
+          $logs_page_rate_updated = updatePreference("logs_page_rate", $logs_page_rate);
+        if ($logs_page_rate_updated)
+          $_SESSION['logs_page_rate'] = $logs_page_rate;
+
+        if (is_numeric($network_acls_page_rate) && $network_acls_page_rate >= 1)
+          $network_acls_page_rate_updated = updatePreference("network_acls_page_rate", $network_acls_page_rate);
+        if ($network_acls_page_rate_updated)
+          $_SESSION['network_acls_page_rate'] = $network_acls_page_rate;
+
+        if (is_numeric($networks_page_rate) && $networks_page_rate >= 1)
+          $networks_page_rate_updated = updatePreference("networks_page_rate", $networks_page_rate);
+        if ($networks_page_rate_updated)
+          $_SESSION['networks_page_rate'] = $networks_page_rate;
+
+        if (is_numeric($operations_page_rate) && $operations_page_rate >= 1)
+          $operations_page_rate_updated = updatePreference("operations_page_rate", $operations_page_rate);
+        if ($operations_page_rate_updated)
+          $_SESSION['operations_page_rate'] = $operations_page_rate;
+
+        if (is_numeric($profiles_page_rate) && $profiles_page_rate >= 1)
+          $profiles_page_rate_updated = updatePreference("profiles_page_rate", $profiles_page_rate);
+        if ($profiles_page_rate_updated)
+          $_SESSION['profiles_page_rate'] = $profiles_page_rate;
+
+        if (is_numeric($projects_page_rate) && $projects_page_rate >= 1)
+          $projects_page_rate_updated = updatePreference("projects_page_rate", $projects_page_rate);
+        if ($projects_page_rate_updated)
+          $_SESSION['projects_page_rate'] = $projects_page_rate;
+
+        if (is_numeric($remotes_single_page_rate) && $remotes_single_page_rate >= 1)
+          $remotes_single_page_rate_updated = updatePreference("remotes_single_page_rate", $remotes_single_page_rate);
+        if ($remotes_single_page_rate_updated)
+          $_SESSION['remotes_single_page_rate'] = $remotes_single_page_rate;
+
+        if (is_numeric($remotes_page_rate) && $remotes_page_rate >= 1)
+          $remotes_page_rate_updated = updatePreference("remotes_page_rate", $remotes_page_rate);
+        if ($remotes_page_rate_updated)
+          $_SESSION['remotes_page_rate'] = $remotes_page_rate;
+
+        if (is_numeric($simplestreams_page_rate) && $simplestreams_page_rate >= 1)
+          $simplestreams_page_rate_updated = updatePreference("simplestreams_page_rate", $simplestreams_page_rate);
+        if ($simplestreams_page_rate_updated)
+          $_SESSION['simplestreams_page_rate'] = $simplestreams_page_rate;
+
+        if (is_numeric($storage_pools_page_rate) && $storage_pools_page_rate >= 1)
+          $storage_pools_page_rate_updated = updatePreference("storage_pools_page_rate", $storage_pools_page_rate);
+        if ($storage_pools_page_rate_updated)
+          $_SESSION['storage_pools_page_rate'] = $storage_pools_page_rate;
+
+        if (is_numeric($storage_volumes_page_rate) && $storage_volumes_page_rate >= 1)
+          $storage_volumes_page_rate_updated = updatePreference("storage_volumes_page_rate", $storage_volumes_page_rate);
+        if ($storage_volumes_page_rate_updated)
+          $_SESSION['storage_volumes_page_rate'] = $storage_volumes_page_rate;
+
+        if (is_numeric($virtual_machines_page_rate) && $virtual_machines_page_rate >= 1)
+          $virtual_machines_page_rate_updated = updatePreference("virtual_machines_page_rate", $virtual_machines_page_rate);
+        if ($virtual_machines_page_rate_updated)
+          $_SESSION['virtual_machines_page_rate'] = $virtual_machines_page_rate;
+
+        if (is_numeric($virtual_machines_single_page_rate) && $virtual_machines_single_page_rate >= 1)
+          $virtual_machines_single_page_rate_updated = updatePreference("virtual_machines_single_page_rate", $virtual_machines_single_page_rate);
+        if ($virtual_machines_single_page_rate_updated)
+          $_SESSION['virtual_machines_single_page_rate'] = $virtual_machines_single_page_rate;
+
+
+        if ($certificates_page_rate_updated && $cluster_members_page_rate_updated && $containers_page_rate_updated && $containers_single_page_rate_updated && $images_page_rate_updated && $logs_page_rate_updated && $network_acls_page_rate_updated && $networks_page_rate_updated && $operations_page_rate_updated && $profiles_page_rate_updated && $projects_page_rate_updated && $remotes_single_page_rate_updated && $remotes_page_rate_updated && $simplestreams_page_rate_updated && $storage_pools_page_rate_updated && $storage_volumes_page_rate_updated && $virtual_machines_page_rate_updated && $virtual_machines_single_page_rate_updated)
+          $results = '{"status": "Ok", "status_code": 200, "metadata": {"status": "Record added"}}';
+        else 
+          $results = '{"status": "Bad Request", "status_code": 400, "metadata": {"error": "There was an error while updating the lxd_preferences table"}}';
+        
+      }
+      else {
+        $results = '{"status": "Forbidden", "status_code": 403, "metadata": {"error": "You are not authorized to execute this action"}}';
+      }
+
+      echo $results;
+
+      //Send event to accounting
+      $event = json_decode($results, true);
+      $object = "";
+      logEvent($action, $remote, $project, $object, $event['status_code'], $event['status']);
       break;
  
   }

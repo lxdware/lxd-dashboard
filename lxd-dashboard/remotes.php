@@ -116,6 +116,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                   <i class="fas fa-cog fa-sm fa-fw mr-2 text-gray-400"></i>
                   Settings
                 </a>
+                <a class="dropdown-item" href="logs.php">
+                  <i class="fas fa-history fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logs
+                </a>
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#aboutModal">
                   <i class="fas fa-info-circle fa-sm fa-fw mr-2 text-gray-400"></i>
                   About
@@ -155,7 +159,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <div class="input-group input-group-joined border-0" style="width: 26rem">
                       <span class="input-group-text bg-transparent border-0">
                         <a class="btn btn-outline-primary mr-3" href="#" data-toggle="modal" data-target="#clientCertModal" title="View Certificate" aria-hidden="true">
-                          <i class="fas fa-plus fa-sm fa-fw"></i> View Certificate
+                          View Certificate
                         </a> 
                         <a class="btn btn-outline-primary" href="#" data-toggle="modal" data-target="#addLxdModal" title="Add Host" aria-hidden="true">
                           <i class="fas fa-plus fa-sm fa-fw"></i>  Add Host
@@ -440,7 +444,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div class="modal-body">
           <div class="row">
             <div class="col-12">
-              <pre><div id="clientCert"></div></pre>
+              <pre><div class="pl-5" id="clientCert"></div></pre>
             </div>
           </div>
         </div>
@@ -512,8 +516,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 <script>
+  var reloadTime = 5000;
 
-function logout(){
+  function logout(){
     $.get("./backend/aaa/authentication.php?action=deauthenticateUser", function (data) {
       operationData = JSON.parse(data);
       console.log(operationData);
@@ -538,7 +543,8 @@ function logout(){
 
     $('#lxdListTable').DataTable().ajax.reload(null, false);
 
-    pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, 7000);
+    //Set reload page content
+    pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, reloadTime);
   }
 
   function loadPageContent(){
@@ -569,8 +575,13 @@ function logout(){
       $("#clientCert").html(data);
     });
 
-    //Reload page content in 7 seconds
-    pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, 7000);
+    //Set reload page content
+    $.get("./backend/admin/settings.php?action=retrievePageRefreshRateValues", function (data) {
+      operationData = JSON.parse(data);
+      if (operationData.remotes_page_rate >= 1)
+        reloadTime = operationData.remotes_page_rate * 1000;
+      pageReloadTimeout = setTimeout(() => { reloadPageContent(); }, reloadTime);
+    });
 
   }
 
@@ -591,6 +602,17 @@ function logout(){
         alert(operationData.metadata.error);
       }
       setTimeout(() => { reloadPageContent(); }, 1000);
+    });
+  }
+
+  function confirmDeleteRemote(remoteID){
+    console.log("Info: confirming removal of remote host, id number " + remoteID);
+    $.get("./backend/lxd/remotes.php?id=" + encodeURI(remoteID) + "&action=retrieveRemoteInfo",  function (data) {
+      operationData = JSON.parse(data);
+      if (confirm("Are you sure you want to remove host " + operationData.host + "?") == true) {
+        deleteRemote(remoteID);
+      }
+      reloadPageContent();
     });
   }
 
