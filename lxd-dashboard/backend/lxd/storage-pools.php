@@ -453,7 +453,9 @@ if (isset($_SESSION['username'])) {
             echo '"' . htmlentities($storage_pool['driver']) . '",';
             echo '"' . htmlentities($storage_pool['status']) . '",';
             echo '"' . htmlentities($storage_pool['config']['source']) . '",';
-            echo '"' . htmlentities($storage_pool['config']['size']) . '",';
+
+            $storage_pool_size = (isset($storage_pool['config']['size'])) ? $storage_pool['config']['size'] : "N/A";
+            echo '"' . htmlentities($storage_pool_size) . '",';
         
             echo '"';
             echo "<a href='#' onclick=loadStoragePoolJson('".$storage_pool['name']."')><i class='fas fa-edit fa-lg' style='color:#ddd' title='Edit' aria-hidden='true'></i></a>";

@@ -640,7 +640,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     $.get("./backend/lxd/remotes.php?remote=" + encodeURI(id) + "&action=loadRemote", function (data) {
       operationData = JSON.parse(data);
       console.log(operationData);
-      idEditInput
+
+      // 0 is a valid interger value for the database but a reserved unusable port for TCP/UDP
+      if (operationData.external_port == 0) { operationData.external_port = ""; };
+
       $("#idEditInput").val(operationData.id);
       $("#hostEditInput").val(operationData.host);
       $("#portEditInput").val(operationData.port);

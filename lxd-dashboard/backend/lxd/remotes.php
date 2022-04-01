@@ -29,7 +29,7 @@ if (isset($_SESSION['username'])) {
   $action = (isset($_GET['action'])) ? filter_var(urldecode($_GET['action']), FILTER_SANITIZE_STRING) : "";
   $alias = (isset($_GET['alias'])) ? filter_var(urldecode($_GET['alias']), FILTER_SANITIZE_STRING) : "";
   $external_host = (isset($_GET['external_host'])) ? filter_var(urldecode($_GET['external_host']), FILTER_SANITIZE_STRING) : "";
-  $external_port = ($_GET['external_port'] != "") ? filter_var(urldecode($_GET['external_port']), FILTER_SANITIZE_NUMBER_INT) : null;
+  $external_port = (isset($_GET['external_port'])) ? filter_var(urldecode($_GET['external_port']), FILTER_SANITIZE_NUMBER_INT) : "";
   $host = (isset($_GET['host'])) ? filter_var(urldecode($_GET['host']), FILTER_SANITIZE_STRING) : "";
   $id = (isset($_GET['id'])) ? filter_var(urldecode($_GET['id']), FILTER_SANITIZE_NUMBER_INT) : "";
   $port = (isset($_GET['port'])) ? filter_var(urldecode($_GET['port']), FILTER_SANITIZE_NUMBER_INT) : "8443";
@@ -66,7 +66,6 @@ if (isset($_SESSION['username'])) {
           $data_auth = (isset($data['metadata']['auth'])) ? $data['metadata']['auth'] : "";
 
           if ($data_auth == "trusted"){
-
             $record_added = addHost($host, $port, $alias, $external_host, $external_port);
 
             if ($record_added)
@@ -157,7 +156,15 @@ if (isset($_SESSION['username'])) {
           echo '"' . htmlentities($row['port']) . '",';
           echo '"' . htmlentities($row['alias']) . '",';
           echo '"' . htmlentities($row['external_host']) . '",';
-          echo '"' . htmlentities($row['external_port']) . '",';
+
+          // 0 is a valid interger value for the database but a reserved unusable port for TCP/UDP
+          if ($row['external_port'] == 0) {
+            echo '"",';
+          }
+          else {
+            echo '"' . htmlentities($row['external_port']) . '",';
+          }
+         
           echo '"' . htmlentities($row['protocol']) . '",';
 
           echo '"';

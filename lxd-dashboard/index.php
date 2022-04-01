@@ -139,7 +139,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     var registerDatabaseUserInput = $("#registerDatabaseUserInput").val();
     var registerDatabasePasswordInput = $("#registerDatabasePasswordInput").val();
 
-    if (registerPasswordInput == registerRepeatPasswordInput){
+    if (registerUsernameInput.length > 0 && registerPasswordInput == registerRepeatPasswordInput){
       console.log("Info: setting up database");
       $.post('./backend/config/login.php?database_type=' + registerDatabaseTypeInput + '&database_host=' + registerDatabaseHostInput + '&database_name=' + registerDatabaseNameInput + '&database_user=' + registerDatabaseUserInput + '&action=writeDatabaseConfig', {database_password: registerDatabasePasswordInput},  function (data) {
         console.log(data);

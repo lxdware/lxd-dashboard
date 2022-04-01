@@ -1,9 +1,15 @@
+# v3.3.0
+- Updated PDO try-catch exception for PHP 8
+- Created recursive PHP in_array for SQLite Pragma array seach in PHP 8
+- Improved handling of external port for remotes
+- Fixed bug with scope of curl variables
+
 # v3.2.0
 - added removal confirmation of remote hosts
 - added preference choices for logging and logs page
 - added preferences for custom page refresh rates
 - added preferences for custom API connection and operation timeout
-- improved CPU guage, changing from top to /proc/stat readings
+- improved CPU gauge, changing from top to /proc/stat readings
 - improved handling connection to unresponsive remote hosts
 - fixed bug with adding hosts due to data type
 
@@ -14,5 +20,6 @@
 - updated remote host table header
 - updated link to display all volume types on storage volumes page
 - reduced curl connection timeout
+
 # v3.0.0
 - initial release of the LXDWARE LXD dashboard version 3.0.0

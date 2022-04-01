@@ -21,6 +21,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 if (!isset($_SESSION)) {
   session_start();
 }
+
+function in_array_r($needle, $haystacks){
+  foreach ($haystacks as $haystack){
+    if (in_array($needle, $haystack)){
+      return true;
+    }
+  }
+  return false;
+}
   
 function establishDatabaseConnection(){
 
@@ -31,10 +40,12 @@ function establishDatabaseConnection(){
     case "sqlite":
       $_SESSION['db_type'] = "SQLite";
       $conn = new PDO('sqlite:/var/lxdware/data/sqlite/lxdware.sqlite');
+      $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); //needed for catch backward compatability with PHP 7
       break;
     case "mysql":
       $_SESSION['db_type'] = "MySQL";
       $conn = new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME, DB_USER, DB_PASSWORD);
+      $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); //needed for catch backward compatability with PHP 7
       break;
   }
   
@@ -275,13 +286,13 @@ function initializeHostsTable(){
     //If needed, upgrade database table schema from LXD Dashboard version 1.x.x and 2.x.x to 3.x.x
     $stmt = $db->query("PRAGMA table_info(lxd_hosts);");
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    if (!in_array('external_host', $results)){
+    if (!in_array_r('external_host', $results)){
       $stmt = $db->query("ALTER TABLE lxd_hosts ADD COLUMN external_host TEXT;");
     }
-    if (!in_array('external_port', $results)){
+    if (!in_array_r('external_port', $results)){
       $stmt = $db->query("ALTER TABLE lxd_hosts ADD COLUMN external_port INTEGER;");
     }
-    if (!in_array('user_id', $results)){
+    if (!in_array_r('user_id', $results)){
       $stmt = $db->query("ALTER TABLE lxd_hosts ADD COLUMN user_id INTEGER;");
       $stmt = $db->query("UPDATE lxd_hosts SET user_id = 0;");
     }
@@ -594,7 +605,7 @@ function initializeSimplestreamsTable(){
     //If needed, upgrade database table schema from LXD Dashboard version 1.x.x to 2.x.x
     $stmt = $db->query("PRAGMA table_info(lxd_simplestreams)");
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    if (!in_array('user_id', $results)){
+    if (!in_array_r('user_id', $results)){
       $stmt = $db->query("ALTER TABLE lxd_simplestreams ADD COLUMN user_id INTEGER;");
       $stmt = $db->query("UPDATE lxd_simplestreams SET user_id = 0;");
     }
@@ -696,7 +707,7 @@ function addLogEvent($control, $remote_id, $project, $object, $status_code, $mes
     $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare("INSERT INTO lxd_logs (control, remote_id, project, object, status_code, message, hostname, user_id, date) VALUES (:control, :remote_id, :project, :object, :status_code, :message, :hostname, :user_id, datetime('now'));");
     $stmt->bindValue(':control', $control, PDO::PARAM_STR);
@@ -727,7 +738,7 @@ function addHost($host, $port, $alias, $external_host, $external_port){
     $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('INSERT INTO lxd_hosts (host, port, alias, protocol, external_host, external_port, user_id) VALUES (:host, :port, :alias, "lxd", :external_host, :external_port, :user_id);');
     $stmt->bindValue(':host', $host, PDO::PARAM_STR);
@@ -753,7 +764,7 @@ function addSimplestreams($host, $alias){
     $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('INSERT INTO lxd_simplestreams (host, alias, protocol, user_id) VALUES (:host, :alias, "simplestreams", :user_id);');
     $stmt->bindValue(':host', $host, PDO::PARAM_STR);
@@ -778,7 +789,7 @@ function addUser($username, $first_name, $last_name, $passwd_hash, $email){
     $stmt->bindValue(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('INSERT INTO lxd_users (username, first_name, last_name, passwd_hash, email, type) VALUES (:username, :first_name, :last_name, :passwd_hash, :email, "local");');
     $stmt->bindValue(':username', $username, PDO::PARAM_STR);
@@ -802,7 +813,7 @@ function addGroup($name, $description){
     $stmt->bindValue(':description', $description, PDO::PARAM_STR);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('INSERT INTO lxd_groups (name, description) VALUES (:name, :description);');
     $stmt->bindValue(':name', $name, PDO::PARAM_STR);
@@ -823,7 +834,7 @@ function addUserGroupMapping($user_id, $group_id) {
     $stmt->bindValue(':group_id', $group_id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('INSERT INTO lxd_users_groups_mapping (user_id, group_id) VALUES (:user_id, :group_id);');
     $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
@@ -844,7 +855,7 @@ function addGroupRoleMapping($group_id, $role_id) {
     $stmt->bindValue(':role_id', $role_id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('INSERT INTO lxd_groups_roles_mapping (group_id, role_id) VALUES (:group_id, :role_id);');
     $stmt->bindValue(':group_id', $group_id, PDO::PARAM_INT);
@@ -865,7 +876,7 @@ function addPreference($name, $value){
     $stmt->bindValue(':value', $value, PDO::PARAM_STR);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare("INSERT INTO lxd_preferences (name, value) VALUES (:name, :value);");
     $stmt->bindValue(':name', $name, PDO::PARAM_STR);
@@ -891,7 +902,7 @@ function deleteHost($id){
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('DELETE FROM lxd_hosts WHERE id = :id;');
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
@@ -910,7 +921,7 @@ function deleteSimplestreams($id){
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('DELETE FROM lxd_simplestreams WHERE id = :id;');
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
@@ -933,7 +944,7 @@ function deleteUser($id){
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('DELETE FROM lxd_users WHERE id = :id;');
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
@@ -964,7 +975,7 @@ function deleteGroup($id){
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('DELETE FROM lxd_groups WHERE id = :id;');
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
@@ -992,7 +1003,7 @@ function deleteUserGroupMapping($user_id, $group_id) {
     $stmt->bindValue(':group_id', $group_id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('DELETE FROM lxd_users_groups_mapping WHERE user_id = :user_id AND group_id = :group_id;');
     $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
@@ -1013,7 +1024,7 @@ function deleteGroupRoleMapping($group_id, $role_id) {
     $stmt->bindValue(':role_id', $role_id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('DELETE FROM lxd_groups_roles_mapping WHERE group_id = :group_id AND role_id = :role_id;');
     $stmt->bindValue(':group_id', $group_id, PDO::PARAM_INT);
@@ -1039,7 +1050,7 @@ function retrieveGroupId($name){
     $stmt->bindValue(':name', $name, PDO::PARAM_STR);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('SELECT id FROM lxd_groups WHERE name = :name LIMIT 1;');
     $stmt->bindValue(':name', $name, PDO::PARAM_STR);
@@ -1059,7 +1070,7 @@ function retrieveGroupRoles($group_id){
     $stmt->bindValue(':group_id', $group_id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('SELECT lxd_roles.id, lxd_roles.name FROM lxd_roles, lxd_groups, lxd_groups_roles_mapping WHERE lxd_groups.id = lxd_groups_roles_mapping.group_id AND lxd_roles.id = lxd_groups_roles_mapping.role_id AND lxd_groups.id = :group_id;');
     $stmt->bindValue(':group_id', $group_id, PDO::PARAM_INT);
@@ -1079,7 +1090,7 @@ function retrieveGroupUsers($group_id){
     $stmt->bindValue(':group_id', $group_id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('SELECT DISTINCT lxd_users.username FROM lxd_users, lxd_groups, lxd_users_groups_mapping WHERE lxd_users.id = lxd_users_groups_mapping.user_id AND lxd_groups.id = lxd_users_groups_mapping.group_id AND lxd_groups.id = :group_id;');
     $stmt->bindValue(':group_id', $group_id, PDO::PARAM_INT);
@@ -1099,7 +1110,7 @@ function retrieveRoleId($name){
     $stmt->bindValue(':name', $name, PDO::PARAM_STR);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('SELECT id FROM lxd_roles WHERE name = :name LIMIT 1;');
     $stmt->bindValue(':name', $name, PDO::PARAM_STR);
@@ -1118,7 +1129,7 @@ function retrieveDefaultRoles(){
     $stmt = $db->prepare('SELECT * FROM lxd_roles WHERE name IN ("ADMIN", "OPERATOR", "USER", "AUDITOR");');
     $stmt->execute();
   } 
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('SELECT * FROM lxd_roles WHERE name IN ("ADMIN", "OPERATOR", "USER", "AUDITOR");');
     $stmt->execute();
@@ -1137,7 +1148,7 @@ function retrieveUserGroups($user_id){
     $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('SELECT lxd_groups.id, lxd_groups.name FROM lxd_users, lxd_groups, lxd_users_groups_mapping WHERE lxd_users.id = lxd_users_groups_mapping.user_id AND lxd_groups.id = lxd_users_groups_mapping.group_id AND lxd_users.id = :user_id');
     $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
@@ -1157,7 +1168,7 @@ function retrieveUserId($username){
     $stmt->bindValue(':username', $username, PDO::PARAM_STR);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('SELECT id FROM lxd_users WHERE username = :username LIMIT 1;');
     $stmt->bindValue(':username', $username, PDO::PARAM_STR);
@@ -1177,7 +1188,7 @@ function retrieveUserDetails($user_id){
     $stmt->bindValue(':id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('SELECT * FROM lxd_users WHERE id = :id LIMIT 1;');
     $stmt->bindValue(':id', $user_id, PDO::PARAM_INT);
@@ -1197,7 +1208,7 @@ function retrieveUserRecord($username){
     $stmt->bindValue(':username', $username, PDO::PARAM_STR);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('SELECT * FROM lxd_users WHERE username = :username LIMIT 1;');
     $stmt->bindValue(':username', $username, PDO::PARAM_STR);
@@ -1217,7 +1228,7 @@ function retrieveUserRoles($user_id){
     $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('SELECT DISTINCT lxd_roles.name FROM lxd_roles, lxd_groups_roles_mapping, lxd_users_groups_mapping WHERE lxd_roles.id = lxd_groups_roles_mapping.role_id AND lxd_groups_roles_mapping.group_id = lxd_users_groups_mapping.group_id AND lxd_users_groups_mapping.user_id = :user_id');
     $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
@@ -1237,7 +1248,7 @@ function retrieveHostURL($remote_id){
     $stmt->bindValue(':id', $remote_id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('SELECT * FROM lxd_hosts WHERE id = :id LIMIT 1;');
     $stmt->bindValue(':id', $remote_id, PDO::PARAM_INT);
@@ -1262,7 +1273,7 @@ function retrieveHostName($remote_id){
     $stmt->bindValue(':id', $remote_id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('SELECT * FROM lxd_hosts WHERE id = :id LIMIT 1;');
     $stmt->bindValue(':id', $remote_id, PDO::PARAM_INT);
@@ -1287,7 +1298,7 @@ function retrieveExternalHostName($remote_id){
     $stmt->bindValue(':id', $remote_id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('SELECT * FROM lxd_hosts WHERE id = :id LIMIT 1;');
     $stmt->bindValue(':id', $remote_id, PDO::PARAM_INT);
@@ -1312,7 +1323,7 @@ function retrieveHostPort($remote_id){
     $stmt->bindValue(':id', $remote_id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('SELECT * FROM lxd_hosts WHERE id = :id LIMIT 1;');
     $stmt->bindValue(':id', $remote_id, PDO::PARAM_INT);
@@ -1337,7 +1348,7 @@ function retrieveExternalHostPort($remote_id){
     $stmt->bindValue(':id', $remote_id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('SELECT * FROM lxd_hosts WHERE id = :id LIMIT 1;');
     $stmt->bindValue(':id', $remote_id, PDO::PARAM_INT);
@@ -1362,7 +1373,7 @@ function retrieveHostAlias($remote_id){
     $stmt->bindValue(':id', $remote_id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('SELECT * FROM lxd_hosts WHERE id = :id LIMIT 1;');
     $stmt->bindValue(':id', $remote_id, PDO::PARAM_INT);
@@ -1418,7 +1429,7 @@ function retrieveTableRows($table, $limit = 100){
     }
     $stmt->execute();
   } 
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     switch ($table){
       case "lxd_hosts":
@@ -1469,7 +1480,7 @@ function retrieveHostInfo($remote_id){
     $stmt->bindValue(':id', $remote_id, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('SELECT * FROM lxd_hosts WHERE id = :id LIMIT 1;');
     $stmt->bindValue(':id', $remote_id, PDO::PARAM_INT);
@@ -1494,7 +1505,7 @@ function retrievePreference($name){
     $stmt->bindValue(':name', $name, PDO::PARAM_STR);
     $stmt->execute();
   } 
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('SELECT value FROM lxd_preferences WHERE name = :name LIMIT 1;');
     $stmt->bindValue(':name', $name, PDO::PARAM_STR);
@@ -1523,7 +1534,7 @@ function updateUserAccount($id, $first_name, $last_name, $email){
     $stmt->bindValue(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('UPDATE lxd_users SET first_name = :first_name, last_name = :last_name, email = :email WHERE id = :id;');
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
@@ -1546,7 +1557,7 @@ function updateUserPassword($id, $passwd_hash){
     $stmt->bindValue(':passwd_hash', $passwd_hash, PDO::PARAM_STR);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('UPDATE lxd_users SET passwd_hash = :passwd_hash WHERE id = :id;');
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
@@ -1571,7 +1582,7 @@ function updateHost($id, $host, $port, $alias, $external_host, $external_port){
     $stmt->bindValue(':external_port', $external_port, PDO::PARAM_INT);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare('UPDATE lxd_hosts SET host = :host, port = :port, alias = :alias, external_host = :external_host, external_port = :external_port WHERE id = :id;');
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
@@ -1596,7 +1607,7 @@ function updatePreference($name, $value){
     $stmt->bindValue(':value', $value, PDO::PARAM_STR);
     $stmt->execute();
   }
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $stmt = $db->prepare("UPDATE lxd_preferences SET value = :value WHERE name = :name;");
     $stmt->bindValue(':name', $name, PDO::PARAM_STR);
@@ -1626,7 +1637,7 @@ function isFirstUser(){
     $db_results = $db->query('SELECT COUNT(*) from lxd_users;');
     $count = $db_results->fetchColumn();
   } 
-  catch (\Error $e) {
+  catch ( PDOException $e ) {
     initializeAllTables();
     $db_results = $db->query('SELECT COUNT(*) from lxd_users;');
     $count = $db_results->fetchColumn();

@@ -1443,6 +1443,9 @@ if (isset($_SESSION['username'])) {
       $hostname = retrieveExternalHostName($remote);
       $port = retrieveExternalHostPort($remote);
 
+      // 0 is a valid interger value for the database but a reserved unusable port for TCP/UDP
+      if ($port == 0) { $port = ""; }
+
       if (empty($hostname)){
         $hostname = retrieveHostName($remote);
       }

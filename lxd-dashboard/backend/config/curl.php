@@ -28,21 +28,23 @@ require_once('../aaa/authorization.php');
 //Require code from lxd-dashboard/backend/config/db.php
 require_once('../config/db.php');
 
-//Set required variables
-$get_connection_timeout = (isset($_SESSION['get_connection_timeout'])) ? $_SESSION['get_connection_timeout'] : 3;
-$get_operation_timeout = (isset($_SESSION['get_operation_timeout'])) ? $_SESSION['get_operation_timeout'] : 5;
-$post_connection_timeout = (isset($_SESSION['post_connection_timeout'])) ? $_SESSION['post_connection_timeout'] : 3;
-$post_operation_timeout = (isset($_SESSION['post_operation_timeout'])) ? $_SESSION['post_operation_timeout'] : 5;
-$patch_connection_timeout = (isset($_SESSION['patch_connection_timeout'])) ? $_SESSION['patch_connection_timeout'] : 3;
-$patch_operation_timeout = (isset($_SESSION['patch_operation_timeout'])) ? $_SESSION['patch_operation_timeout'] : 5;
-$put_connection_timeout = (isset($_SESSION['put_connection_timeout'])) ? $_SESSION['put_connection_timeout'] : 3;
-$put_operation_timeout = (isset($_SESSION['put_operation_timeout'])) ? $_SESSION['put_operation_timeout'] : 5;
-$delete_connection_timeout = (isset($_SESSION['delete_connection_timeout'])) ? $_SESSION['delete_connection_timeout'] : 3;
-$delete_operation_timeout = (isset($_SESSION['delete_operation_timeout'])) ? $_SESSION['delete_operation_timeout'] : 5;
+
 
 function sendCurlRequest($request_action, $request_type, $request_url, $request_data = "{}"){
   $cert = "/var/lxdware/data/lxd/client.crt";
   $key = "/var/lxdware/data/lxd/client.key";
+
+  //Set required variables
+  $get_connection_timeout = (isset($_SESSION['get_connection_timeout'])) ? $_SESSION['get_connection_timeout'] : 3;
+  $get_operation_timeout = (isset($_SESSION['get_operation_timeout'])) ? $_SESSION['get_operation_timeout'] : 5;
+  $post_connection_timeout = (isset($_SESSION['post_connection_timeout'])) ? $_SESSION['post_connection_timeout'] : 3;
+  $post_operation_timeout = (isset($_SESSION['post_operation_timeout'])) ? $_SESSION['post_operation_timeout'] : 5;
+  $patch_connection_timeout = (isset($_SESSION['patch_connection_timeout'])) ? $_SESSION['patch_connection_timeout'] : 3;
+  $patch_operation_timeout = (isset($_SESSION['patch_operation_timeout'])) ? $_SESSION['patch_operation_timeout'] : 5;
+  $put_connection_timeout = (isset($_SESSION['put_connection_timeout'])) ? $_SESSION['put_connection_timeout'] : 3;
+  $put_operation_timeout = (isset($_SESSION['put_operation_timeout'])) ? $_SESSION['put_operation_timeout'] : 5;
+  $delete_connection_timeout = (isset($_SESSION['delete_connection_timeout'])) ? $_SESSION['delete_connection_timeout'] : 3;
+  $delete_operation_timeout = (isset($_SESSION['delete_operation_timeout'])) ? $_SESSION['delete_operation_timeout'] : 5;
 
   if (validateAuthorization($request_action)) {
     switch ($request_type) {
