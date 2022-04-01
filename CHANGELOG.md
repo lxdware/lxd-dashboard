@@ -1,6 +1,6 @@
 # v3.3.0
 - Updated PDO try-catch exception for PHP 8
-- Created recursive PHP in_array for SQLite Pragma array seach in PHP 8
+- Created recursive PHP in_array for SQLite Pragma array search in PHP 8
 - Improved handling of external port for remotes
 - Fixed bug with scope of curl variables
 
