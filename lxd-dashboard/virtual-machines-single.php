@@ -4883,6 +4883,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         //Load Page Content
         loadPageContent();
 
+        //Populate the select options fields used in modals
+        $("#selectProfileInput").load("./backend/lxd/profiles.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&action=listProfilesForSelectOption");
+        $("#selectClusterInput").load("./backend/lxd/cluster-members.php?remote=" + encodeURI(remoteId) + "&action=listClusterMembersForSelectOption");
+
         //When tab changes, set active tab for content refresh
         $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
           clearTimeout(pageReloadTimeout);  //clear reload because new tab is being loaded

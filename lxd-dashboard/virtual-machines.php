@@ -1101,6 +1101,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     });
   }
 
+  function confirmDeleteInstance(instanceName){
+    console.log("Info: confirming deletion of virtual machine " + instanceName);
+    if (confirm("Are you sure you want to delete virtual machine " + instanceName + "?") == true) {
+      $.get("./backend/lxd/virtual-machines.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + "&instance=" + encodeURI(instanceName) + "&action=deleteInstance", function (data) {
+        var operationData = JSON.parse(data);
+        console.log(operationData);
+        if (operationData.metadata.status_code >= 400){
+          alert(operationData.metadata.err)
+        }
+        setTimeout(() => { reloadPageContent(); }, 1000);
+      });
+    }    
+  }
+
   function setSidebarToggleValue(){
     sidebarState = localStorage.getItem('sidebarState');
     if (sidebarState == "collapsed"){

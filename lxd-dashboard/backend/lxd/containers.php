@@ -678,17 +678,23 @@ if (isset($_SESSION['username'])) {
             switch ($instance_data['status']) {
               case "Running":
                 echo '"';
-                echo "<a href='#' onclick=stopInstance('".$instance_data['name']."')> <i class='fas fa-stop fa-lg' style='color:#ddd' title='Stop' aria-hidden='true'></i> </a>";
+                echo "<a href='#' onclick=stopInstance('".$instance_data['name']."')> <i class='fas fa-stop fa-lg' style='color:#cdcdcd' title='Stop' aria-hidden='true'></i> </a>";
+                echo " &nbsp ";
+                echo "<a href='#'><i class='fas fa-trash-alt fa-lg' style='color:#ededed' title='Delete (disabled)' aria-hidden='true'></i></a>";
                 echo '"';
                 break;
               case "Frozen":
                 echo '"';
-                echo "<a href='#' onclick=unfreezeInstance('".$instance_data['name']."')> <i class='fas fa-pause fa-lg' style='color:#ddd' title='Unfreeze' aria-hidden='true'></i> </a>";
+                echo "<a href='#' onclick=unfreezeInstance('".$instance_data['name']."')> <i class='fas fa-pause fa-lg' style='color:#cdcdcd' title='Unfreeze' aria-hidden='true'></i> </a>";
+                echo " &nbsp ";
+                echo "<a href='#'><i class='fas fa-trash-alt fa-lg' style='color:#ededed' title='Delete (disabled)' aria-hidden='true'></i></a>";
                 echo '"';
                 break;
               case "Stopped":
                 echo '"';
-                echo "<a href='#' onclick=startInstance('".$instance_data['name']."')> <i class='fas fa-play fa-lg' style='color:#ddd' title='Start' aria-hidden='true'></i> </a>";
+                echo "<a href='#' onclick=startInstance('".$instance_data['name']."')> <i class='fas fa-play fa-lg' style='color:#cdcdcd' title='Start' aria-hidden='true'></i> </a>";
+                echo " &nbsp ";
+                echo "<a href='#' onclick=confirmDeleteInstance('".$instance_data['name']."')><i class='fas fa-trash-alt fa-lg' style='color:#cdcdcd' title='Delete' aria-hidden='true'></i></a>";
                 echo '"';
                 break;
               default:

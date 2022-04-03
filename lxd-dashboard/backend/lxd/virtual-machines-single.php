@@ -1320,7 +1320,13 @@ if (isset($_SESSION['username'])) {
         $results[0] = null;
       }
       
-      $results[1] = number_format($results[1],1);
+      if (is_numeric($results[1])){
+        $results[1] = number_format($results[1],1);
+      }
+      else{
+        $results[1] = null;
+      }
+
       $results = json_encode($results);
 
       echo $results;

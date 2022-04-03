@@ -43,7 +43,7 @@ if (isset($_SESSION['username'])) {
 <body class="">
   <p>The open source LXD Dashboard is developed by LXDWARE and provides a web-based user interface capable of managing multiple LXD servers from a single location.</p>
   <p>
-    <strong>Version</strong>: <span id="versionNumber">v3.3.0</span> <br />
+    <strong>Version</strong>: <span id="versionNumber">v3.4.0</span> <br />
     <strong>License</strong>: AGPL-3.0 <br />
     <strong>URL</strong>: https://lxdware.com <br />
   </p>

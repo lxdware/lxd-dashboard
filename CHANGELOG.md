@@ -1,3 +1,8 @@
+# v3.4.0
+- Added additional delete option for powered-off instances on the containers and virtual machines pages
+- Fixed bug in populating both profile and cluster member options in drop-down box for virtual machine configurations
+- Added verification for numeric values in instance memory gauge display
+
 # v3.3.0
 - Updated PDO try-catch exception for PHP 8
 - Created recursive PHP in_array for SQLite Pragma array search in PHP 8
