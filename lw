@@ -53,7 +53,9 @@ if ( $argc == 4 OR $argc == 6 ) {
 	$email      = $argv[3];
         $first_name = '';
 	$last_name  = '';
-} elseif ( $argc == 6 ) {
+}
+
+if ( $argc == 6 ) {
 	$first_name = $argv[4];
 	$last_name  = $argv[5];
 }
