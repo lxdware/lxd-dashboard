@@ -26,6 +26,7 @@ $_SESSION['db_type'] = "SQLite";
 
 //Required code with absolute paths
 require_once ('/var/www/html/lxd-dashboard/backend/config/db.php');
+require_once ('/var/www/html/lxd-dashboard/backend/config/cert.php');
 require_once ('/var/www/html/lxd-dashboard/backend/aaa/authorization.php');
 
 // out is echo with linefeed
