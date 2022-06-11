@@ -47,6 +47,21 @@ EOF;
 exit(0);
 endif;
 
+// create db_config.php if it does not exist
+if ( !file_exists('/var/lxdware/data/db_config.php') ) {
+        $file = fopen("/var/lxdware/data/db_config.php", "w") or die('{"status": "Bad Request", "status_code": 400, "metadata": {"error": "Unable to write database configuration file"}}');
+        $txt = "<?php\n";
+        $txt .= "define( 'DB_TYPE', 'sqlite' );\n";
+        $txt .= "define( 'DB_NAME', '' );\n";
+        $txt .= "define( 'DB_USER', '' );\n";
+        $txt .= "define( 'DB_PASSWORD', '' );\n";
+        $txt .= "define( 'DB_HOST', '' );\n";
+        $txt .= "?>";
+        fwrite($file, $txt);
+        fclose($file);
+        chmod('/var/lxdware/data/db_config.php',0600);
+}
+
 if ( $argc == 4 OR $argc == 6 ) {
 	$username   = $argv[1];
 	$password   = $argv[2];
