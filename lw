@@ -39,10 +39,14 @@ if ( $verbose >= 2 ) out("my cmdline name is $myname and we got argc: $argc argu
 if( $argc != 4 AND $argc != 6 ):
 	echo <<<EOF
 
-		Syntax Error: $myname must be called with either 
+		Syntax Error: $myname must be called with either:
+		
 			$myname [username] [password] [email]
-		or with 
+			
+		or with:
+		
 			$myname [username] [password] [email] [firstname] [lastname]
+			
 
 EOF;
 exit(0);
@@ -60,8 +64,17 @@ if ( !file_exists('/var/lxdware/data/db_config.php') ) {
         $txt .= "?>";
         fwrite($file, $txt);
         fclose($file);
-        chmod('/var/lxdware/data/db_config.php',0600);
+        chmod('/var/lxdware/data/db_config.php', 0600);
+        chown('/var/lxdware/data/db_config.php', 'nginx');
+        chgrp('/var/lxdware/data/db_config.php', 'www-data');
 }
+
+if ( !file_exists('/var/lxdware/data/sqlite/lxdware.sqlite') ) {
+	touch('/var/lxdware/data/sqlite/lxdware.sqlite');
+}
+chmod('/var/lxdware/data/sqlite/lxdware.sqlite', 0644);
+chown('/var/lxdware/data/sqlite/lxdware.sqlite', 'nginx');
+chgrp('/var/lxdware/data/sqlite/lxdware.sqlite', 'www-data');
 
 if ( $argc == 4 OR $argc == 6 ) {
 	$username   = $argv[1];
