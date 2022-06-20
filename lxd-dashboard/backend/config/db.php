@@ -65,7 +65,7 @@ function initializeLogsTable(){
   }
 
   if ($_SESSION['db_type'] == "MySQL"){
-    $db->exec('CREATE TABLE IF NOT EXISTS lxd_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, control VARCHAR(255), remote_id INTEGER, project VARCHAR(255), object VARCHAR(255), status_code INT, message VARCHAR(255), hostname VARCHAR(255), user_id INT, date DATE);');
+    $db->exec('CREATE TABLE IF NOT EXISTS lxd_logs (id INTEGER PRIMARY KEY AUTO_INCREMENT, control VARCHAR(255), remote_id INTEGER, project VARCHAR(255), object VARCHAR(255), status_code INT, message VARCHAR(255), hostname VARCHAR(255), user_id INT, date DATE);');
   }
 
   $db = null;
@@ -79,7 +79,7 @@ function initializePreferencesTable(){
   }
 
   if ($_SESSION['db_type'] == "MySQL"){
-    $db->exec('CREATE TABLE IF NOT EXISTS lxd_preferences (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), value VARCHAR(255));');
+    $db->exec('CREATE TABLE IF NOT EXISTS lxd_preferences (id INTEGER PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), value VARCHAR(255));');
   }
 
   //Default Preferences
