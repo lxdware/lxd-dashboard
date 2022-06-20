@@ -696,7 +696,14 @@ function addLogEvent($control, $remote_id, $project, $object, $status_code, $mes
   $db = establishDatabaseConnection();
 
   try{
-    $stmt = $db->prepare("INSERT INTO lxd_logs (control, remote_id, project, object, status_code, message, hostname, user_id, date) VALUES (:control, :remote_id, :project, :object, :status_code, :message, :hostname, :user_id, datetime('now'));");
+    $stmt = null;
+    if ($_SESSION['db_type'] == "SQLite"){
+      $stmt = $db->prepare("INSERT INTO lxd_logs (control, remote_id, project, object, status_code, message, hostname, user_id, date) VALUES (:control, :remote_id, :project, :object, :status_code, :message, :hostname, :user_id, datetime('now'));");
+    }
+    
+    if ($_SESSION['db_type'] == "MySQL"){
+      $stmt = $db->prepare("INSERT INTO lxd_logs (control, remote_id, project, object, status_code, message, hostname, user_id, date) VALUES (:control, :remote_id, :project, :object, :status_code, :message, :hostname, :user_id, DATE(NOW()));");
+    }
     $stmt->bindValue(':control', $control, PDO::PARAM_STR);
     $stmt->bindValue(':remote_id', $remote_id, PDO::PARAM_INT);
     $stmt->bindValue(':project', $project, PDO::PARAM_STR);
@@ -709,7 +716,13 @@ function addLogEvent($control, $remote_id, $project, $object, $status_code, $mes
   }
   catch ( PDOException $e ) {
     initializeAllTables();
-    $stmt = $db->prepare("INSERT INTO lxd_logs (control, remote_id, project, object, status_code, message, hostname, user_id, date) VALUES (:control, :remote_id, :project, :object, :status_code, :message, :hostname, :user_id, datetime('now'));");
+    if ($_SESSION['db_type'] == "SQLite"){
+      $stmt = $db->prepare("INSERT INTO lxd_logs (control, remote_id, project, object, status_code, message, hostname, user_id, date) VALUES (:control, :remote_id, :project, :object, :status_code, :message, :hostname, :user_id, datetime('now'));");
+    }
+    
+    if ($_SESSION['db_type'] == "MySQL"){
+      $stmt = $db->prepare("INSERT INTO lxd_logs (control, remote_id, project, object, status_code, message, hostname, user_id, date) VALUES (:control, :remote_id, :project, :object, :status_code, :message, :hostname, :user_id, DATE(NOW()));");
+    }
     $stmt->bindValue(':control', $control, PDO::PARAM_STR);
     $stmt->bindValue(':remote_id', $remote_id, PDO::PARAM_INT);
     $stmt->bindValue(':project', $project, PDO::PARAM_STR);
