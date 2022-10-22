@@ -65,7 +65,7 @@ function initializeLogsTable(){
   }
 
   if ($_SESSION['db_type'] == "MySQL"){
-    $db->exec('CREATE TABLE IF NOT EXISTS lxd_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, control VARCHAR(255), remote_id INTEGER, project VARCHAR(255), object VARCHAR(255), status_code INT, message VARCHAR(255), hostname VARCHAR(255), user_id INT, date DATE);');
+    $db->exec('CREATE TABLE IF NOT EXISTS lxd_logs (id INTEGER PRIMARY KEY AUTO_INCREMENT, control VARCHAR(255), remote_id INTEGER, project VARCHAR(255), object VARCHAR(255), status_code INT, message VARCHAR(255), hostname VARCHAR(255), user_id INT, date DATE);');
   }
 
   $db = null;
@@ -79,7 +79,7 @@ function initializePreferencesTable(){
   }
 
   if ($_SESSION['db_type'] == "MySQL"){
-    $db->exec('CREATE TABLE IF NOT EXISTS lxd_preferences (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), value VARCHAR(255));');
+    $db->exec('CREATE TABLE IF NOT EXISTS lxd_preferences (id INTEGER PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), value VARCHAR(255));');
   }
 
   //Default Preferences
@@ -696,7 +696,14 @@ function addLogEvent($control, $remote_id, $project, $object, $status_code, $mes
   $db = establishDatabaseConnection();
 
   try{
-    $stmt = $db->prepare("INSERT INTO lxd_logs (control, remote_id, project, object, status_code, message, hostname, user_id, date) VALUES (:control, :remote_id, :project, :object, :status_code, :message, :hostname, :user_id, datetime('now'));");
+    $stmt = null;
+    if ($_SESSION['db_type'] == "SQLite"){
+      $stmt = $db->prepare("INSERT INTO lxd_logs (control, remote_id, project, object, status_code, message, hostname, user_id, date) VALUES (:control, :remote_id, :project, :object, :status_code, :message, :hostname, :user_id, datetime('now'));");
+    }
+    
+    if ($_SESSION['db_type'] == "MySQL"){
+      $stmt = $db->prepare("INSERT INTO lxd_logs (control, remote_id, project, object, status_code, message, hostname, user_id, date) VALUES (:control, :remote_id, :project, :object, :status_code, :message, :hostname, :user_id, DATE(NOW()));");
+    }
     $stmt->bindValue(':control', $control, PDO::PARAM_STR);
     $stmt->bindValue(':remote_id', $remote_id, PDO::PARAM_INT);
     $stmt->bindValue(':project', $project, PDO::PARAM_STR);
@@ -709,7 +716,13 @@ function addLogEvent($control, $remote_id, $project, $object, $status_code, $mes
   }
   catch ( PDOException $e ) {
     initializeAllTables();
-    $stmt = $db->prepare("INSERT INTO lxd_logs (control, remote_id, project, object, status_code, message, hostname, user_id, date) VALUES (:control, :remote_id, :project, :object, :status_code, :message, :hostname, :user_id, datetime('now'));");
+    if ($_SESSION['db_type'] == "SQLite"){
+      $stmt = $db->prepare("INSERT INTO lxd_logs (control, remote_id, project, object, status_code, message, hostname, user_id, date) VALUES (:control, :remote_id, :project, :object, :status_code, :message, :hostname, :user_id, datetime('now'));");
+    }
+    
+    if ($_SESSION['db_type'] == "MySQL"){
+      $stmt = $db->prepare("INSERT INTO lxd_logs (control, remote_id, project, object, status_code, message, hostname, user_id, date) VALUES (:control, :remote_id, :project, :object, :status_code, :message, :hostname, :user_id, DATE(NOW()));");
+    }
     $stmt->bindValue(':control', $control, PDO::PARAM_STR);
     $stmt->bindValue(':remote_id', $remote_id, PDO::PARAM_INT);
     $stmt->bindValue(':project', $project, PDO::PARAM_STR);
