@@ -1,3 +1,7 @@
+# v3.5.0
+- Updated container image catalog based on results from from https://us.lxd.images
+- Merged pull request updating MySQL statments for auto increment and now time
+
 # v3.4.0
 - Added additional delete option for powered-off instances on the containers and virtual machines pages
 - Fixed bug in populating both profile and cluster member options in drop-down box for virtual machine configurations
