@@ -514,6 +514,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <a class="nav-link" id="nav-nvidia-tab" data-toggle="tab" href="#nav-nvidia" role="tab" aria-controls="nav-nvidia" aria-selected="false">Nvidia</a>
                     <a class="nav-link" id="nav-other-tab" data-toggle="tab" href="#nav-other" role="tab" aria-controls="nav-other" aria-selected="false">Other</a>
                     <a class="nav-link" id="nav-raw-tab" data-toggle="tab" href="#nav-raw" role="tab" aria-controls="nav-raw" aria-selected="false">Raw</a>
+                    <a class="nav-link" id="nav-cloud-init-tab" data-toggle="tab" href="#nav-cloud-init" role="tab" aria-controls="nav-cloud-init" aria-selected="false">Cloud-Init</a>
                     <a class="nav-link" id="nav-security-tab" data-toggle="tab" href="#nav-security" role="tab" aria-controls="nav-security" aria-selected="false">Security</a>
                     <a class="nav-link" id="nav-snapshots-tab" data-toggle="tab" href="#nav-snapshots" role="tab" aria-controls="nav-snapshots" aria-selected="false">Snapshots</a>
                   </div>
@@ -916,6 +917,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                       </div>
                     </div>
 
+                  </div>
+                  <div class="tab-pane fade" id="nav-cloud-init" role="tabpanel" aria-labelledby="nav-cloud-init">
+                    <div class="row">
+                      <label class="col-4 col-form-label text-right">User-Data: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+			  <textarea id="containerCloudInitUserDataInput" class="form-control" name="containerCloudInitUserDataInput"></textarea>
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title="Enter the user-data configuration for cloud-init. Default: (not set)."></i>
+                      </div>
+                    </div>
                   </div>
                   <div class="tab-pane fade" id="nav-security" role="tabpanel" aria-labelledby="nav-security-tab">
                     <br>
@@ -1443,6 +1457,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     var bootHostShutdownTimeout = $("#containerBootHostShutdownTimeoutInput").val();
     var bootStopPriority = $("#containerBootStopPriorityInput").val();
 
+    var cloudInitUserData = $("#containerCloudInitUserDataInput").val();
+
     var limitsCpu = $("#containerLimitsCpuInput").val();
     var limitsCpuAllowance = $("#containerLimitsCpuAllowanceInput").val();
     var limitsCpuPriority = $("#containerLimitsCpuPriorityInput").val();
@@ -1515,6 +1531,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     "&boot_autostart_priority=" + encodeURI(bootAutostartPriority) + 
     "&boot_host_shutdown_timeout=" + encodeURI(bootHostShutdownTimeout) + 
     "&boot_stop_priority=" + encodeURI(bootStopPriority) + 
+
+    "&cloud_init_user_data=" + encodeURIComponent(cloudInitUserData) +
 
     "&limits_cpu=" + encodeURI(limitsCpu) + 
     "&limits_cpu_allowance=" + encodeURI(limitsCpuAllowance) + 
