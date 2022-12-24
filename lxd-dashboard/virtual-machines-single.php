@@ -4759,9 +4759,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       
           //Listen for "data" websocket messages
           execDataSocket.onmessage = function (e) {      
-            if (e.data instanceof ArrayBuffer) {
-              if (convertArrayBuffer2String(e.data) != null){
-                execTerminal.write(convertArrayBuffer2String(e.data));
+            if (e.data.length == 0) {
+              execControlSocket.close();
+              execDataSocket.close();
+            } else {
+              if (e.data instanceof ArrayBuffer) {
+                if (convertArrayBuffer2String(e.data) != null){
+                  execTerminal.write(convertArrayBuffer2String(e.data));
+                }
               }
             }
           };
