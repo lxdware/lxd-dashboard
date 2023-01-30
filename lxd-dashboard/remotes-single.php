@@ -804,7 +804,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       $("#kernelArchitecture").text(stats.kernelArchitecture);
       $("#kernelVersion").text(stats.kernelVersion);
       $("#osName").text(stats.osName);
-      $("#osVersion").css("width", stats.osVersion)
+      $("#osVersion").text(stats.osVersion)
 
       $("#serverVersion").text(stats.serverVersion);
     

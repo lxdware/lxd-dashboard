@@ -607,6 +607,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                               </div>
                               </div>
                               <!-- End Security Syscalls Card -->
+
+                              <!-- Cloud-Init Card -->
+                              <div class="card col-12 border-0 mb-2">
+                              <!-- Card Header - Dropdown -->
+                              <div class="card-header border-0 bg-transparent py-1 d-flex flex-row align-items-center justify-content-between">
+                                <h5 class="m-0 font-weight-bold text-primary">Cloud-Init</h5>
+                              </div>
+                              <!-- Card Body -->
+                              <div class="card-body pt-1">
+                                <div class="row">
+                                  <div class="col-12">
+                                    <table class="table table-sm">
+                                      <tr><td class="pr-3 font-weight-bold">User-Data:</td> <td><span id="cloudInitUserData"></span></td></tr>
+                                    </table>
+                                  </div>
+                                </div>
+                              </div>
+                              </div>
+                              <!-- End Security Syscalls Card -->
                           </div>
                         </div>
                         <!-- End Config List -->
@@ -3718,6 +3737,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           if (dataConfig.hasOwnProperty('boot.host_shutdown_timeout')) { $("#bootHostShutdownTimeout").text(dataConfig['boot.host_shutdown_timeout']); } else { $("#bootHostShutdownTimeout").text(""); }
           if (dataConfig.hasOwnProperty('boot.stop.priority')) { $("#bootStopPriority").text(dataConfig['boot.stop.priority']); } else { $("#bootStopPriority").text(""); }
 
+          if (dataConfig.hasOwnProperty('cloud-init.user-data')) { $("#cloudInitUserData").text(dataConfig['cloud-init.user-data']); } else { $("#cloudInitUserData").text(""); }
+
           if (dataConfig.hasOwnProperty('cluster.evacuate')) { $("#clusterEvacuate").text(dataConfig['cluster.evacuate']); } else { $("#clusterEvacuate").text(""); }
 
           if (dataConfig.hasOwnProperty('limits.cpu')) { $("#limitsCpu").text(dataConfig['limits.cpu']); } else { $("#limitsCpu").text(""); }
@@ -5792,9 +5813,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       
           //Listen for "data" websocket messages
           execDataSocket.onmessage = function (e) {      
-            if (e.data instanceof ArrayBuffer) {
-              if (convertArrayBuffer2String(e.data) != null){
-                execTerminal.write(convertArrayBuffer2String(e.data));
+            if (e.data.length == 0) {
+              execControlSocket.close();
+              execDataSocket.close();
+            } else {
+              if (e.data instanceof ArrayBuffer) {
+                if (convertArrayBuffer2String(e.data) != null){
+                  execTerminal.write(convertArrayBuffer2String(e.data));
+                }
               }
             }
           };

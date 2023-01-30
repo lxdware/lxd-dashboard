@@ -1,3 +1,11 @@
+# v3.6.0
+- Merged pull request adding cloud init user data option for new containers via form
+- Fixed typo preventing OS version number from showing in remotes-single.php page, under LXD Information
+
+# v3.5.0
+- Updated container image catalog based on results from from https://us.lxd.images
+- Merged pull request updating MySQL statements for auto increment and now time
+
 # v3.4.0
 - Added additional delete option for powered-off instances on the containers and virtual machines pages
 - Fixed bug in populating both profile and cluster member options in drop-down box for virtual machine configurations
