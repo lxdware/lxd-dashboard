@@ -599,10 +599,10 @@ if (isset($_SESSION['username'])) {
     case "establishInstanceWebSocketExecConnection":
       $url = $base_url . "/1.0/instances/".$instance."/exec?project=" . $project;
       if ($shell == "sh"){
-        $data = '{ "command": ["/bin/sh"], "wait-for-websocket": true, "environment":{"HOME": "/root", "TERM": "xterm", "USER": "root"}, "interactive": true}';
+        $data = '{ "command": ["/bin/sh"], "wait-for-websocket": true, "environment":{"HOME": "/root", "TERM": "xterm", "USER": "root"}, "interactive": true, "width": 80, "height": 25}';
       }
       else {
-        $data = '{ "command": ["/bin/bash"], "wait-for-websocket": true, "environment":{"HOME": "/root", "TERM": "xterm", "USER": "root"}, "interactive": true}';
+        $data = '{ "command": ["/bin/bash"], "wait-for-websocket": true, "environment":{"HOME": "/root", "TERM": "xterm", "USER": "root"}, "interactive": true, "width": 80, "height": 25}';
       }
       $results = sendCurlRequest($action, "POST", $url, $data);
 

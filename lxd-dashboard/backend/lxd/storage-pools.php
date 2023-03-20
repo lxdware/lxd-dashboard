@@ -452,7 +452,12 @@ if (isset($_SESSION['username'])) {
             echo '"' . htmlentities($storage_pool['description']) . '",';
             echo '"' . htmlentities($storage_pool['driver']) . '",';
             echo '"' . htmlentities($storage_pool['status']) . '",';
-            echo '"' . htmlentities($storage_pool['config']['source']) . '",';
+
+            if(array_key_exists('source', $storage_pool['config']))
+              $storage_pool_source = (isset($storage_pool['config']['source'])) ? $storage_pool['config']['source'] : "N/A";
+            else
+              $storage_pool_source = "N/A";
+            echo '"' . htmlentities($storage_pool_source) . '",';
 
             $storage_pool_size = (isset($storage_pool['config']['size'])) ? $storage_pool['config']['size'] : "N/A";
             echo '"' . htmlentities($storage_pool_size) . '",';

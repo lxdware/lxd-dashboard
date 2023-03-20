@@ -5953,7 +5953,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         //Initialize xterm for Console
         consoleTerminal = new Terminal({
-          cursorBlink: "block"
+          cursorBlink: "block",
+          rows: 25
         });
 
         //Setup listener for Console terminal
@@ -5965,7 +5966,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         //Initialize xterm for Exec
         execTerminal = new Terminal({
-          cursorBlink: "block"
+          cursorBlink: "block",
+          rows: 25
         });
 
         //Setup listener for Exec terminal

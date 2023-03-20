@@ -61,6 +61,7 @@ if (isset($_SESSION['username'])) {
   $migration_stateful = (isset($_GET['migration_stateful'])) ? filter_var(urldecode($_GET['migration_stateful']), FILTER_SANITIZE_STRING) : "";
   $raw_apparmor = (isset($_GET['raw_apparmor'])) ? filter_var(urldecode($_GET['raw_apparmor']), FILTER_SANITIZE_STRING) : "";
   $raw_qemu = (isset($_GET['raw_qemu'])) ? filter_var(urldecode($_GET['raw_qemu']), FILTER_SANITIZE_STRING) : "";
+  $raw_qemu_conf = (isset($_GET['raw_qemu_conf'])) ? filter_var(urldecode($_GET['raw_qemu_conf']), FILTER_SANITIZE_STRING) : "";
   $security_devlxd = (isset($_GET['security_devlxd'])) ? filter_var(urldecode($_GET['security_devlxd']), FILTER_SANITIZE_STRING) : "";
   $security_protection_delete = (isset($_GET['security_protection_delete'])) ? filter_var(urldecode($_GET['security_protection_delete']), FILTER_SANITIZE_STRING) : "";
   $security_secureboot = (isset($_GET['security_secureboot'])) ? filter_var(urldecode($_GET['security_secureboot']), FILTER_SANITIZE_STRING) : "";
@@ -257,6 +258,7 @@ if (isset($_SESSION['username'])) {
       if (!empty($migration_stateful)){ $instance_array['config']['migration.stateful'] = $migration_stateful;}
       if (!empty($raw_apparmor)){ $instance_array['config']['raw.apparmor'] = $raw_apparmor;}
       if (!empty($raw_qemu)){ $instance_array['config']['raw.qemu'] = $raw_qemu;}
+      if (!empty($raw_qemu_conf)){ $instance_array['config']['raw.qemu.conf'] = $raw_qemu_conf;}
       if (!empty($security_devlxd)){ $instance_array['config']['security.devlxd'] = $security_devlxd;}
       if (!empty($security_protection_delete)){ $instance_array['config']['security.protection.delete'] = $security_protection_delete;}
       if (!empty($security_secureboot)){ $instance_array['config']['security.secureboot'] = $security_secureboot;}
@@ -899,6 +901,7 @@ if (isset($_SESSION['username'])) {
       $instance_array['config']['migration.stateful'] = $migration_stateful;
       $instance_array['config']['raw.apparmor'] = $raw_apparmor;
       $instance_array['config']['raw.qemu'] = $raw_qemu;
+      $instance_array['config']['raw.qemu.conf'] = $raw_qemu_conf;
       $instance_array['config']['security.devlxd'] = $security_devlxd;
       $instance_array['config']['security.protection.delete'] = $security_protection_delete;
       $instance_array['config']['security.secureboot'] = $security_secureboot;

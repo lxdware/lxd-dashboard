@@ -923,7 +923,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                       <label class="col-4 col-form-label text-right">User-Data: </label>
                       <div class="col-6">
                         <div class="form-group">
-			  <textarea id="containerCloudInitUserDataInput" class="form-control" name="containerCloudInitUserDataInput"></textarea>
+			                    <textarea id="containerCloudInitUserDataInput" class="form-control" name="containerCloudInitUserDataInput"></textarea>
                         </div>
                       </div>
                       <div class="col-1">
@@ -1517,7 +1517,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     var snapshotsExpiry = $("#containerSnapshotsExpiryInput").val();
 
     console.log("Info: creating container " + instanceName);
-    $.get("./backend/lxd/containers.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + 
+    $.post("./backend/lxd/containers.php?remote=" + encodeURI(remoteId) + "&project=" + encodeURI(projectName) + 
     "&name=" + encodeURI(instanceName) + 
     "&description=" + encodeURI(instanceDescription) + 
     "&fingerprint=" + encodeURI(fingerprint) + 
@@ -1531,8 +1531,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     "&boot_autostart_priority=" + encodeURI(bootAutostartPriority) + 
     "&boot_host_shutdown_timeout=" + encodeURI(bootHostShutdownTimeout) + 
     "&boot_stop_priority=" + encodeURI(bootStopPriority) + 
-
-    "&cloud_init_user_data=" + encodeURIComponent(cloudInitUserData) +
 
     "&limits_cpu=" + encodeURI(limitsCpu) + 
     "&limits_cpu_allowance=" + encodeURI(limitsCpuAllowance) + 
@@ -1591,7 +1589,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     "&snapshots_pattern=" + encodeURI(snapshotsPattern) + 
     "&snapshots_expiry=" + encodeURI(snapshotsExpiry) + 
 
-    "&action=createInstanceUsingForm",  function (data) {
+    "&action=createInstanceUsingForm", {
+      //Sending cloud_init_user_data over POST due to encoding. Shoul work to convert all variables to POST as well in future release.
+      cloud_init_user_data: cloudInitUserData
+    }, function (data) {
       //Sync type
       var operationData = JSON.parse(data);
       console.log(operationData);

@@ -705,6 +705,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <i class="far fa-sm fa-question-circle" title="Enter in qemu configuration to be appended to the profile. Default: (not set)."></i>
                       </div>
                     </div>
+                    <div class="row">
+                      <label class="col-4 col-form-label text-right">Qemu.conf: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="instanceRawQemuConfInput" class="form-control" placeholder="" name="instanceRawQemuConfInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title="Enter in qemu.conf configuration to override the generated qemu.conf file. Default: (not set)."></i>
+                      </div>
+                    </div>
 
                   </div>
                   <div class="tab-pane fade" id="nav-security" role="tabpanel" aria-labelledby="nav-security-tab">
@@ -995,6 +1006,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     var migrationStateful = $("#instanceMigrationStatefulInput").val();
     var rawApparmor = $("#instanceRawApparmorInput").val();
     var rawQemu = $("#instanceRawQemuInput").val();
+    var rawQemuConf = $("#instanceRawQemuConfInput").val();
     var securityDevLxd = $("#instanceSecurityDevLxdInput").val();
     var securityProtectionDelete = $("#instanceSecurityProtectionDeleteInput").val();
     var securitySecureboot = $("#instanceSecuritySecurebootInput").val();
@@ -1026,6 +1038,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     "&migration_stateful=" + encodeURI(migrationStateful) + 
     "&raw_apparmor=" + encodeURI(rawApparmor) + 
     "&raw_qemu=" + encodeURI(rawQemu) + 
+    "&raw_qemu_conf=" + encodeURI(rawQemuConf) + 
     "&security_devlxd=" + encodeURI(securityDevLxd) + 
     "&security_protection_delete=" + encodeURI(securityProtectionDelete) + 
     "&security_secureboot=" + encodeURI(securitySecureboot) + 

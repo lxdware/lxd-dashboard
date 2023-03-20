@@ -472,6 +472,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     <table class="table table-sm">
                                       <tr><td class="pr-3 font-weight-bold">Apparmor:</td> <td><span id="rawApparmor"></span></td></tr>
                                       <tr><td class="pr-3 font-weight-bold">Qemu:</td> <td><span id="rawQemu"></span></td></tr>
+                                      <tr><td class="pr-3 font-weight-bold">Qemu.conf:</td> <td><span id="rawQemuConf"></span></td></tr>
                                     </table>
                                   </div>
                                 </div>
@@ -2583,6 +2584,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <i class="far fa-sm fa-question-circle" title="Enter in qemu configuration to be appended to the profile. Default: (not set)."></i>
                       </div>
                     </div>
+                    <div class="row">
+                      <label class="col-4 col-form-label text-right">Qemu.conf: </label>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <input type="text" id="instanceRawQemuConfInput" class="form-control" placeholder="" name="instanceRawQemuConfInput">
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <i class="far fa-sm fa-question-circle" title="Enter in qemu.conf configuration to override the generated qemu.conf file. Default: (not set)."></i>
+                      </div>
+                    </div>
 
                   </div>
                   <div class="tab-pane fade" id="nav-security" role="tabpanel" aria-labelledby="nav-security-tab">
@@ -2985,6 +2997,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
           if (dataConfig.hasOwnProperty('raw.apparmor')) { $("#rawApparmor").text(dataConfig['raw.apparmor']); } else { $("#rawApparmor").text(""); }
           if (dataConfig.hasOwnProperty('raw.qemu')) { $("#rawQemu").text(dataConfig['raw.qemu']); } else { $("#rawQemu").text(""); }
+          if (dataConfig.hasOwnProperty('raw.qemu.conf')) { $("#rawQemuConf").text(dataConfig['raw.qemu.conf']); } else { $("#rawQemuConf").text(""); }
 
           if (dataConfig.hasOwnProperty('security.devlxd')) { $("#securityDevLxd").text(dataConfig['security.devlxd']); } else { $("#securityDevLxd").text(""); }
           if (dataConfig.hasOwnProperty('security.protection.delete')) { $("#securityProtectionDelete").text(dataConfig['security.protection.delete']); } else { $("#securityProtectionDelete").text(""); }
@@ -3092,6 +3105,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
       if (dataConfig.hasOwnProperty('raw.apparmor')) { $("#rawApparmor").text(dataConfig['raw.apparmor']); }
       if (dataConfig.hasOwnProperty('raw.qemu')) { $("#rawQemu").text(dataConfig['raw.qemu']); }
+      if (dataConfig.hasOwnProperty('raw.qemu.conf')) { $("#rawQemuConf").text(dataConfig['raw.qemu.conf']); }
 
       if (dataConfig.hasOwnProperty('security.devlxd')) { $("#securityDevLxd").text(dataConfig['security.devlxd']); }
       if (dataConfig.hasOwnProperty('security.protection.delete')) { $("#securityProtectionDelete").text(dataConfig['security.protection.delete']); }
@@ -4499,6 +4513,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       if (dataConfig.hasOwnProperty('migration.stateful')) { $("#instanceMigrationStatefulInput").val(dataConfig['migration.stateful']); }
       if (dataConfig.hasOwnProperty('raw.apparmor')) { $("#instanceRawApparmorInput").val(dataConfig['raw.apparmor']); }
       if (dataConfig.hasOwnProperty('raw.qemu')) { $("#instanceRawQemuInput").val(dataConfig['raw.qemu']); }
+      if (dataConfig.hasOwnProperty('raw.qemu.conf')) { $("#instanceRawQemuConfInput").val(dataConfig['raw.qemu.conf']); }
       if (dataConfig.hasOwnProperty('security.devlxd')) { $("#instanceSecurityDevLxdInput").val(dataConfig['security.devlxd']); }
       if (dataConfig.hasOwnProperty('security.protection.delete')) { $("#instanceSecurityProtectionDeleteInput").val(dataConfig['security.protection.delete']); }
       if (dataConfig.hasOwnProperty('security.secureboot')) { $("#instanceSecuritySecurebootInput").val(dataConfig['security.secureboot']); }
@@ -4531,6 +4546,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     "&migration_stateful=" + encodeURI($("#instanceMigrationStatefulInput").val()) + 
     "&raw_apparmor=" + encodeURI($("#instanceRawApparmorInput").val()) + 
     "&raw_qemu=" + encodeURI($("#instanceRawQemuInput").val()) + 
+    "&raw_qemu_conf=" + encodeURI($("#instanceRawQemuConfInput").val()) + 
     "&security_devlxd=" + encodeURI($("#instanceSecurityDevLxdInput").val()) + 
     "&security_protection_delete=" + encodeURI($("#instanceSecurityProtectionDeleteInput").val()) + 
     "&security_secureboot=" + encodeURI($("#instanceSecuritySecurebootInput").val()) + 
@@ -4901,7 +4917,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         //Initialize xterm for Console
         consoleTerminal = new Terminal({
-          cursorBlink: "block"
+          cursorBlink: "block",
+          rows: 25
         });
 
         //Setup listener for Console terminal
@@ -4913,7 +4930,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         //Initialize xterm for Exec
         execTerminal = new Terminal({
-          cursorBlink: "block"
+          cursorBlink: "block",
+          rows: 25
         });
 
         //Setup listener for Exec terminal

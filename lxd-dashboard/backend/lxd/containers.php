@@ -52,7 +52,6 @@ if (isset($_SESSION['username'])) {
   $boot_autostart_priority = (isset($_GET['boot_autostart_priority'])) ? filter_var(urldecode($_GET['boot_autostart_priority']), FILTER_SANITIZE_STRING) : "";
   $boot_host_shutdown_timeout = (isset($_GET['boot_host_shutdown_timeout'])) ? filter_var(urldecode($_GET['boot_host_shutdown_timeout']), FILTER_SANITIZE_STRING) : "";
   $boot_stop_priority = (isset($_GET['boot_stop_priority'])) ? filter_var(urldecode($_GET['boot_stop_priority']), FILTER_SANITIZE_STRING) : "";
-  $cloud_init_user_data = (isset($_GET['cloud_init_user_data'])) ? filter_var(urldecode($_GET['cloud_init_user_data']), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : "";
   $limits_cpu = (isset($_GET['limits_cpu'])) ? filter_var(urldecode($_GET['limits_cpu']), FILTER_SANITIZE_STRING) : "";
   $limits_cpu_allowance = (isset($_GET['limits_cpu_allowance'])) ? filter_var(urldecode($_GET['limits_cpu_allowance']), FILTER_SANITIZE_STRING) : "";
   $limits_cpu_priority = (isset($_GET['limits_cpu_priority'])) ? filter_var(urldecode($_GET['limits_cpu_priority']), FILTER_SANITIZE_STRING) : "";
@@ -108,6 +107,7 @@ if (isset($_SESSION['username'])) {
 
   //Declare and instantiate POST variables
   $json = (isset($_POST['json'])) ? $_POST['json'] : "";
+  $cloud_init_user_data = (isset($_POST['cloud_init_user_data'])) ? $_POST['cloud_init_user_data'] : "";
 
   //Require code from lxd-dashboard/backend/config/curl.php
   require_once('../config/curl.php');
