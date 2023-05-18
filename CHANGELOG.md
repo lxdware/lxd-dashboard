@@ -1,3 +1,10 @@
+# v3.7.0
+- Set console/exec terminal height to 25 rows because xterm.js defaults to 24 and lxd defaults to 25 there was a single row mismatch
+- Added qemu.conf to virtual machine configuration options
+- Changed cloud-init user data to use POST method rather than GET
+- Merged pull request improving websocket close on exec/console websockets
+- Added check for empty storage pool source configuration array item
+
 # v3.6.0
 - Merged pull request adding cloud init user data option for new containers via form
 - Fixed typo preventing OS version number from showing in remotes-single.php page, under LXD Information
