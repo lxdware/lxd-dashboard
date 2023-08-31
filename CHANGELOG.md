@@ -1,3 +1,8 @@
+# v3.8.0
+- Added a check for a null config in storage pools
+- Added image token cleanup with downloading images while in a cluster
+
+
 # v3.7.0
 - Set console/exec terminal height to 25 rows because xterm.js defaults to 24 and lxd defaults to 25 there was a single row mismatch
 - Added qemu.conf to virtual machine configuration options

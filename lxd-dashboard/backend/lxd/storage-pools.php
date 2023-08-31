@@ -453,7 +453,7 @@ if (isset($_SESSION['username'])) {
             echo '"' . htmlentities($storage_pool['driver']) . '",';
             echo '"' . htmlentities($storage_pool['status']) . '",';
 
-            if(array_key_exists('source', $storage_pool['config']))
+            if(isset($storage_pool['config']) && array_key_exists('source', $storage_pool['config']))
               $storage_pool_source = (isset($storage_pool['config']['source'])) ? $storage_pool['config']['source'] : "N/A";
             else
               $storage_pool_source = "N/A";

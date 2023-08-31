@@ -144,6 +144,13 @@ if (isset($_SESSION['username'])) {
               case "Updating instance":
                 $results .= " " . $instance; 
                 break;
+              case "Image download token":
+                #Remove image tokens left over from image downloads when in a cluster
+                if ($running_task['may_cancel'] == true){
+                  $url = $base_url . "/1.0/operations/" . $running_task['id'];
+                  $results = sendCurlRequest($action, "DELETE", $url);
+                }
+                break;
             }
           }
         }
