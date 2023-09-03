@@ -1,0 +1,125 @@
+#!/usr/bin/php 
+<?php 
+/*
+LXDWARE LXD Dashboard - A web-based interface for managing LXD servers
+Copyright (C) 2020-2021  LXDWARE.COM
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+// verbose level
+$verbose = 0; 
+
+//fake session
+$_SESSION['db_type'] = "SQLite";
+
+//Required code with absolute paths
+require_once ('/var/www/html/lxd-dashboard/backend/config/db.php');
+require_once ('/var/www/html/lxd-dashboard/backend/config/cert.php');
+require_once ('/var/www/html/lxd-dashboard/backend/aaa/authorization.php');
+
+// out is echo with linefeed
+function out ($s) { echo $s."\n"; }
+
+// my cmdline name
+$myname=basename($argv[0]);
+if ( $verbose >= 2 ) out("my cmdline name is $myname and we got argc: $argc arguments.");
+
+if( $argc != 4 AND $argc != 6 ):
+	echo <<<EOF
+
+		Syntax Error: $myname must be called with either:
+		
+			$myname [username] [password] [email]
+			
+		or with:
+		
+			$myname [username] [password] [email] [firstname] [lastname]
+			
+
+EOF;
+exit(0);
+endif;
+
+// create db_config.php if it does not exist
+if ( !file_exists('/var/lxdware/data/db_config.php') ) {
+        $file = fopen("/var/lxdware/data/db_config.php", "w") or die('{"status": "Bad Request", "status_code": 400, "metadata": {"error": "Unable to write database configuration file"}}');
+        $txt = "<?php\n";
+        $txt .= "define( 'DB_TYPE', 'sqlite' );\n";
+        $txt .= "define( 'DB_NAME', '' );\n";
+        $txt .= "define( 'DB_USER', '' );\n";
+        $txt .= "define( 'DB_PASSWORD', '' );\n";
+        $txt .= "define( 'DB_HOST', '' );\n";
+        $txt .= "?>";
+        fwrite($file, $txt);
+        fclose($file);
+        chmod('/var/lxdware/data/db_config.php', 0600);
+        chown('/var/lxdware/data/db_config.php', 'nginx');
+        chgrp('/var/lxdware/data/db_config.php', 'www-data');
+}
+
+if ( !file_exists('/var/lxdware/data/sqlite/lxdware.sqlite') ) {
+	touch('/var/lxdware/data/sqlite/lxdware.sqlite');
+}
+chmod('/var/lxdware/data/sqlite/lxdware.sqlite', 0644);
+chown('/var/lxdware/data/sqlite/lxdware.sqlite', 'nginx');
+chgrp('/var/lxdware/data/sqlite/lxdware.sqlite', 'www-data');
+
+if ( $argc == 4 OR $argc == 6 ) {
+	$username   = $argv[1];
+	$password   = $argv[2];
+	$email      = $argv[3];
+        $first_name = '';
+	$last_name  = '';
+}
+
+if ( $argc == 6 ) {
+	$first_name = $argv[4];
+	$last_name  = $argv[5];
+}
+
+if ( $verbose >= 1 ):
+	out("username   = $username");
+	out("password   = $password");
+	out("email      = $email");
+	out("first_name = $first_name");
+	out("last_name  = $last_name");
+endif;
+
+if (!empty($username) && !empty($password)) { 
+
+	//Hash and salt password with bcrypt 
+        $passwd_hash = password_hash($password, PASSWORD_BCRYPT); 
+       
+        if(isFirstUser()) { 
+            $record_added = addUser($username, $first_name, $last_name, $passwd_hash, $email); 
+   
+            if($record_added){ 
+              $user_id = retrieveUserId($username); 
+              $group_id = retrieveGroupId('admin'); 
+              addUserGroupMapping($user_id, $group_id); 
+            } 
+	    out('Ok: User record was added.');
+	} else {
+		out('Error: Only the first (admin) user can be added. The user database is not empty.');
+		out('You can delete all users with the command line:');
+		out('sqlite3 /var/lxdware/data/sqlite/lxdware.sqlite <<<\'DELETE FROM lxd_users; DELETE FROM lxd_users_groups_mapping;\'');
+	}
+} else {
+	out('Error: Neither username nor password can be empty!');
+	exit(1);
+}
+
+exit(0);
+
